@@ -70,7 +70,16 @@ let g:vroom_use_binstubs = 0
 let g:vroom_cucumber_path = 'cucumber'
 
 let g:rspec_command = "compiler rspec | set makeprg=zeus | Make rspec2 {spec}"
-map <Leader>t :call RunCurrentSpecFile()<CR>
+
+"====================
+"Thoughtbot vim-rspec
+"====================
+
+map <Leader>t :call RunLastSpec()<CR>
+map <Leader>r :call RunCurrentSpecFile()<CR>
+map <Leader>a :call RunAllSpecs()<CR>
+
+let g:rspec_command = "!bin/rspec {spec}"
 
 if executable('ag')
     " Use Ag over grep
