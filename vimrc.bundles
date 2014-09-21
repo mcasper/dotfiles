@@ -1,0 +1,47 @@
+set nocompatible
+
+filetype off
+set rtp+=~/.vim/bundle/vundle
+call vundle#rc()
+
+" Let Vundle manage Vundle
+Bundle 'gmarik/vundle'
+
+"misc
+Bundle 'kien/ctrlp.vim'
+Bundle 'airblade/vim-gitgutter'
+Bundle 'tomtom/tcomment_vim'
+Bundle 'junegunn/vim-easy-align'
+Bundle 'rking/ag.vim'
+Bundle 'ervandew/supertab'
+
+"tpope
+Bundle 'tpope/vim-endwise'
+Bundle 'tpope/vim-rails'
+Bundle 'tpope/vim-dispatch'
+Bundle 'tpope/vim-fugitive'
+
+"clojure
+Bundle 'tpope/vim-fireplace'
+Bundle 'guns/vim-clojure-static'
+Bundle 'guns/vim-clojure-highlight'
+
+"rails/ruby
+Bundle 'mikeastock/vim-vroom'
+Bundle 'thoughtbot/vim-rspec'
+
+"colors
+Bundle 'nanotech/jellybeans.vim'
+Bundle 'ChrisKempson/Vim-Tomorrow-Theme'
+Bundle 'morhetz/gruvbox'
+Bundle 'Keithbsmiley/rspec.vim'
+
+"airline
+" Bundle 'bling/vim-airline'
+" Bundle 'bling/vim-bufferline'
+
+"textobj
+Bundle 'kana/vim-textobj-user'
+Bundle 'nelstrom/vim-textobj-rubyblock'
+
+filetype on
