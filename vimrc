@@ -10,7 +10,6 @@ let g:gruvbox_italic=0
 "==============
 " Vundle setup
 "==============
-"
 if filereadable(expand("~/.vimrc.bundles"))
   source ~/.vimrc.bundles
 endif
