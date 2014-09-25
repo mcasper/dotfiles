@@ -19,7 +19,7 @@ alias gpull="git pull"
 alias gpoh="git push origin HEAD"
 
 alias b="bundle"
-alias s="bundle exec rails s"
+alias s="bin/rails s"
 alias rspec="bundle exec rspec"
 alias rake="bundle exec rake"
 alias migrate="bundle exec rake db:migrate"
@@ -70,7 +70,8 @@ source $ZSH/oh-my-zsh.sh
 # User configuration
 
 # expor tMANPATH="/usr/local/man:$MANPATH"
-export PATH="/usr/local/rbenv/shims:/usr/local/rbenv/bin:/usr/local/pgsql/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/ruby/bin/"
+export PATH="/usr/local/rbenv/shims:/usr/local/rbenv/bin:/usr/local/pgsql/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/ruby/bin/:$PATH"
+export RBENV_ROOT="/usr/local/rbenv"
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -96,5 +97,4 @@ export PATH="/usr/local/rbenv/shims:/usr/local/rbenv/bin:/usr/local/pgsql/bin:/u
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
