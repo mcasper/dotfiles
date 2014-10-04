@@ -1,13 +1,13 @@
 [user]
-	name = Matt Casper
-	email = matthewvcasper@gmail.com
+  name = Matt Casper
+  email = matthewvcasper@gmail.com
 [push]
   default = current
 [core]
-  editor  = vim
+  editor  = nvim
   autocrlf = input
 [color]
-	ui = auto 
+  ui = auto 
 [color "diff"]
   meta = yellow bold
   frag = magenta bold
