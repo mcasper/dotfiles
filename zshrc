@@ -17,6 +17,7 @@ alias gcm="git checkout master"
 alias gpush="git push"
 alias gpull="git pull"
 alias gpoh="git push origin HEAD"
+alias vim="nvim"
 
 alias b="bundle"
 alias s="bin/rails s"
