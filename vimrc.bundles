@@ -36,10 +36,6 @@ Plugin 'ChrisKempson/Vim-Tomorrow-Theme'
 Plugin 'morhetz/gruvbox'
 Plugin 'Keithbsmiley/rspec.vim'
 
-"airline
-" Plugin 'bling/vim-airline'
-" Plugin 'bling/vim-bufferline'
-
 "textobj
 Plugin 'kana/vim-textobj-user'
 Plugin 'nelstrom/vim-textobj-rubyblock'
