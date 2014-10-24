@@ -148,8 +148,8 @@ map <Leader>ag :topleft 20 :split Gemfile<CR>
 map <Leader>g :CtrlPMixed<CR>
 map <Leader>b :CtrlPBuffer<CR>
 map <Leader>p Obinding.pry<C-c>
-map <Leader>vi :tabe ~/.vimrc<CR>
-map <Leader>vs :source ~/.vimrc<CR>
+map <Leader>vi :tabe ~/.nvimrc<CR>
+map <Leader>vs :source ~/.nvimrc<CR>
 
 """"""""""""""""""
 " MY KEY BINDINGS
@@ -157,6 +157,38 @@ map <Leader>vs :source ~/.vimrc<CR>
 
 map <Leader>c :bp\|bd #<CR>
 map <Leader>ws :%s/\s\+$//<CR>
+map <Leader>le :%s/\r$//<CR>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" RENAME CURRENT FILE (thanks Gary Bernhardt) (Ben Orenstein)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! RenameFile()
+    let old_name = expand('%')
+    let new_name = input('New file name: ', expand('%'), 'file')
+    if new_name != '' && new_name != old_name
+        exec ':saveas ' . new_name
+        exec ':silent !rm ' . old_name
+        redraw!
+    endif
+endfunction
+map <Leader>n :call RenameFile()<cr>
+
+"""""""""""""""""""""""""""""
+"OTHER STUFF I STOLE FROM BEN
+"""""""""""""""""""""""""""""
+
+" Display extra whitespace
+set list listchars=tab:»·,trail:·
+
+" Switch syntax highlighting on, when the terminal has colors
+" Also switch on highlighting the last used search pattern.
+if &t_Co > 2 || has("gui_running")
+  syntax on
+  set hlsearch
+endif
+
+" Make it more obvious which paren I'm on
+hi MatchParen cterm=none ctermbg=black ctermfg=yellow
 
 map <Leader>
 "OTHER

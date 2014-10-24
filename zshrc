@@ -18,6 +18,7 @@ alias gpush="git push"
 alias gpull="git pull"
 alias gpoh="git push origin HEAD"
 alias vim="nvim"
+alias gsu="git submodule update"
 
 alias b="bundle"
 alias s="bin/rails s"
@@ -71,7 +72,7 @@ source $ZSH/oh-my-zsh.sh
 # User configuration
 
 # expor tMANPATH="/usr/local/man:$MANPATH"
-export PATH="/usr/local/rbenv/shims:/usr/local/rbenv/bin:/usr/local/pgsql/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/ruby/bin/:$PATH"
+export PATH="/home/vagrant/.linuxbrew/bin:/usr/local/rbenv/shims:/usr/local/rbenv/bin:/usr/local/pgsql/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/ruby/bin/:$PATH"
 export RBENV_ROOT="/usr/local/rbenv"
 
 # You may need to manually set your language environment
