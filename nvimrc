@@ -119,10 +119,10 @@ map <Leader>q :bd<CR>
 map <Leader>ar :topleft :split config/routes.rb<CR>
 map <Leader>f  :CtrlPRoot<CR>
 map <Leader>aa :CtrlP app<CR>
+map <Leader>af :CtrlP engines/checklist<CR>
 map <Leader>av :CtrlP app/views<CR>
 map <Leader>ac :CtrlP app/controllers<CR>
 map <Leader>am :CtrlP app/models<CR>
-map <Leader>af :CtrlPRoot<CR>
 map <Leader>ag :topleft 20 :split Gemfile<CR>
 map <Leader>b :CtrlPBuffer<CR>
 map <Leader>p obinding.pry<C-c>
