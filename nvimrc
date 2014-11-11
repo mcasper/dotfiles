@@ -2,7 +2,6 @@
 " Matt Casper's vimrc
 "
 " github.com/mcasper/dotfiles
-"
 
 "Colorscheme settings
 let g:gruvbox_italic=0
@@ -13,7 +12,6 @@ let g:gruvbox_italic=0
 if filereadable(expand("~/.vimrc.bundles"))
   source ~/.vimrc.bundles
 endif
-
 
 "============================
 " BASIC EDITING CONFIGURATION
@@ -66,17 +64,6 @@ let g:vroom_cucumber_path = 'cucumber'
 
 let g:rspec_command = "compiler rspec | set makeprg=zeus | Make rspec2 {spec}"
 
-"====================
-"Thoughtbot vim-rspec
-"====================
-
-map <Leader>t :call RunLastSpec()<CR>
-map <Leader>s :call RunNearestSpec()<CR>
-map <Leader>r :call RunCurrentSpecFile()<CR>
-map <Leader>a :call RunAllSpecs()<CR>
-
-let g:rspec_command = "!bin/rspec {spec}"
-
 if executable('ag')
     " Use Ag over grep
     set grepprg=ag\ --nogroup\ --nocolor
@@ -122,9 +109,9 @@ augroup END
 
 autocmd FileType gitcommit setlocal spell textwidth=72
 
-"===================
-"STOCK'S KEY BINDINGS
-"===================
+""""""""""""""""""
+" MY KEY BINDINGS
+""""""""""""""""""
 
 "LEADER
 map <Leader>w :w!<CR>
@@ -132,32 +119,31 @@ map <Leader>q :bd<CR>
 map <Leader>ar :topleft :split config/routes.rb<CR>
 map <Leader>f  :CtrlPRoot<CR>
 map <Leader>aa :CtrlP app<CR>
+map <Leader>af :CtrlP engines/checklist<CR>
 map <Leader>av :CtrlP app/views<CR>
 map <Leader>ac :CtrlP app/controllers<CR>
 map <Leader>am :CtrlP app/models<CR>
-map <Leader>ah :CtrlP app/helpers<CR>
-map <Leader>ai :CtrlP app/services<CR>
-map <Leader>as :CtrlP spec/<CR>
-map <Leader>ss :CtrlP spec2/<CR>
-map <Leader>al :CtrlP lib<CR>
-map <Leader>ap :CtrlP config<CR>
-map <Leader>af :CtrlP features<CR>
-map <Leader>ad :CtrlP docs<CR>
-map <Leader>ae :CtrlP engines<CR>
 map <Leader>ag :topleft 20 :split Gemfile<CR>
-map <Leader>g :CtrlPMixed<CR>
 map <Leader>b :CtrlPBuffer<CR>
-map <Leader>p Obinding.pry<C-c>
+map <Leader>p obinding.pry<C-c>
+map <Leader>P Obinding.pry<C-c>
 map <Leader>vi :tabe ~/.nvimrc<CR>
 map <Leader>vs :source ~/.nvimrc<CR>
-
-""""""""""""""""""
-" MY KEY BINDINGS
-""""""""""""""""""
-
 map <Leader>c :bp\|bd #<CR>
 map <Leader>ws :%s/\s\+$//<CR>
 map <Leader>le :%s/\r$//<CR>
+
+"====================
+"Thoughtbot vim-rspec
+"====================
+
+map <Leader>t :call RunLastSpec()<CR>
+map <Leader>s :call RunNearestSpec()<CR>
+map <Leader>r :call RunCurrentSpecFile()<CR>
+map <Leader>a :call RunAllSpecs()<CR>
+
+let g:rspec_command = "!bin/rspec {spec}"
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " RENAME CURRENT FILE (thanks Gary Bernhardt) (Ben Orenstein)
