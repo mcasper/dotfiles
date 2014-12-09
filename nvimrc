@@ -44,7 +44,7 @@ set hidden
 "Color and UI
 colorscheme gruvbox
 set background=dark
-set colorcolumn=100
+set colorcolumn=80
 set cursorline
 set ruler
 set synmaxcol=250
@@ -92,13 +92,6 @@ set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 "=========
 
 augroup vimrcEx
-" Jump to last cursor position unless it's invalid or in an event handler
-  autocmd!
-  autocmd BufReadPost *
-    \ if line("'\"") > 0 && line("'\"") <= line("$") |
-    \ exe "normal g`\"" |
-    \ endif
-
     "for ruby, autoindent with two spaces, always expand tabs
     autocmd FileType ruby,haml,eruby,yaml,fdoc,html,javascript,sass,cucumber set ai sw=2 sts=2 et
 
