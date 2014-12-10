@@ -57,10 +57,6 @@ let mapleader = " "
 "===============
 "PLUGIN SETTINGS
 "===============
-let g:vroom_detect_spec_helper = 1
-let g:vroom_use_spring = 1
-let g:vroom_use_binstubs = 0
-let g:vroom_cucumber_path = 'cucumber'
 
 let g:rspec_command = "compiler rspec | set makeprg=zeus | Make rspec2 {spec}"
 
