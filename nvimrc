@@ -42,7 +42,7 @@ set ignorecase smartcase
 set hidden
 
 "Color and UI
-colorscheme gruvbox
+colorscheme solarized
 set background=dark
 set colorcolumn=80
 set cursorline
@@ -57,12 +57,9 @@ let mapleader = " "
 "===============
 "PLUGIN SETTINGS
 "===============
-let g:vroom_detect_spec_helper = 1
-let g:vroom_use_spring = 1
-let g:vroom_use_binstubs = 0
-let g:vroom_cucumber_path = 'cucumber'
 
 let g:rspec_command = "compiler rspec | set makeprg=zeus | Make rspec2 {spec}"
+let g:vimrubocop_config = "./.rubocop.yml"
 
 if executable('ag')
     " Use Ag over grep
@@ -92,13 +89,6 @@ set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 "=========
 
 augroup vimrcEx
-" Jump to last cursor position unless it's invalid or in an event handler
-  autocmd!
-  autocmd BufReadPost *
-    \ if line("'\"") > 0 && line("'\"") <= line("$") |
-    \ exe "normal g`\"" |
-    \ endif
-
     "for ruby, autoindent with two spaces, always expand tabs
     autocmd FileType ruby,haml,eruby,yaml,fdoc,html,javascript,sass,cucumber set ai sw=2 sts=2 et
 

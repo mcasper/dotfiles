@@ -9,24 +9,6 @@ ZSH_THEME="norm"
 
 source ~/.vim/bundle/gruvbox/gruvbox_256palette_osx.sh
 
-# Aliases
-alias g="git"
-alias gs="git status"
-alias co="git checkout"
-alias gcm="git checkout master"
-alias gpush="git push"
-alias gpull="git pull"
-alias gpoh="git push origin HEAD"
-alias vim="nvim"
-alias gsu="git submodule update"
-
-alias b="bundle"
-alias s="bin/rails s"
-alias rspec="bundle exec rspec"
-alias rake="bundle exec rake"
-alias migrate="bundle exec rake db:migrate"
-
-alias la="ls -al"
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
 
