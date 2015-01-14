@@ -44,7 +44,7 @@ set hidden
 "Color and UI
 colorscheme gruvbox
 set background=dark
-set colorcolumn=100
+set colorcolumn=80
 set cursorline
 set ruler
 set synmaxcol=250
@@ -119,6 +119,8 @@ map <Leader>q :bd<CR>
 map <Leader>ar :topleft :split config/routes.rb<CR>
 map <Leader>f  :CtrlPRoot<CR>
 map <Leader>aa :CtrlP app<CR>
+map <Leader>as :CtrlP spec<CR>
+map <Leader>ad :CtrlP db<CR>
 map <Leader>af :CtrlP engines/checklist<CR>
 map <Leader>av :CtrlP app/views<CR>
 map <Leader>ac :CtrlP app/controllers<CR>
