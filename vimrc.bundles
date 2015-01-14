@@ -35,6 +35,7 @@ Plugin 'nanotech/jellybeans.vim'
 Plugin 'ChrisKempson/Vim-Tomorrow-Theme'
 Plugin 'morhetz/gruvbox'
 Plugin 'Keithbsmiley/rspec.vim'
+Plugin 'flazz/vim-colorschemes'
 
 "textobj
 Plugin 'kana/vim-textobj-user'
@@ -42,5 +43,8 @@ Plugin 'nelstrom/vim-textobj-rubyblock'
 
 "rspec
 " Plugin 'jgdavey/tslime.vim'
+
+"rubocop
+Plugin 'ngmy/vim-rubocop'
 
 filetype on

@@ -42,7 +42,7 @@ set ignorecase smartcase
 set hidden
 
 "Color and UI
-colorscheme gruvbox
+colorscheme solarized
 set background=dark
 set colorcolumn=80
 set cursorline
@@ -59,6 +59,7 @@ let mapleader = " "
 "===============
 
 let g:rspec_command = "compiler rspec | set makeprg=zeus | Make rspec2 {spec}"
+let g:vimrubocop_config = "./.rubocop.yml"
 
 if executable('ag')
     " Use Ag over grep
