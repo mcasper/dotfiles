@@ -7,6 +7,52 @@ export ZSH=$HOME/.oh-my-zsh
 # time that oh-my-zsh is loaded.
 ZSH_THEME="norm"
 
+# Aliases
+
+# I'm dumb
+alias vim="nvim"
+
+# Unix
+alias la="ls -al"
+alias ln="ln -v"
+alias mkdir="mkdir -p"
+alias grep="grep --color=auto"
+alias cp="cp -r"
+alias ...="../.."
+alias l="ls -lah"
+alias ll="ls -lh"
+alias lh="ls -Alh"
+
+# tmux
+alias tma="tmux att -t"
+alias tmls="tmux ls"
+alias t2="tmux -2"
+
+# Bundler
+alias b="bundle"
+alias be="bundle exec"
+
+# Rails
+alias migrate="bin/rake db:migrate"
+alias rake="bin/rake"
+alias s="bin/rails s"
+
+# Git
+alias g="git"
+alias co="git checkout"
+alias gcm="git checkout master"
+alias gs="git status"
+alias gpush="git push"
+alias gpull="git pull"
+alias gpoh="git push origin HEAD"
+alias gsu="git submodule update"
+alias gap="git add -p"
+
+# Procore for Bash
+alias vup="cd $HOME/documents/vagrant && vagrant up"
+
+# /Aliases
+
 source ~/.vim/bundle/gruvbox/gruvbox_256palette_osx.sh
 
 # Uncomment the following line to use case-sensitive completion.
