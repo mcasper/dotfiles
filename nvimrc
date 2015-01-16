@@ -42,8 +42,8 @@ set ignorecase smartcase
 set hidden
 
 "Color and UI
-colorscheme solarized
-set background=dark
+colorscheme lucius
+set background=light
 set colorcolumn=80
 set cursorline
 set ruler
