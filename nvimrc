@@ -42,8 +42,8 @@ set ignorecase smartcase
 set hidden
 
 "Color and UI
-colorscheme lucius
-set background=light
+colorscheme gruvbox
+set background=dark
 set colorcolumn=80
 set cursorline
 set ruler
