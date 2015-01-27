@@ -122,6 +122,7 @@ map <Leader>vs :source ~/.nvimrc<CR>
 map <Leader>c :bp\|bd #<CR>
 map <Leader>ws :%s/\s\+$//<CR>
 map <Leader>le :%s/\r$//<CR>
+map <Leader>hs :s/:\([^ ]*\)\(\s*\)=>/\1:/g<CR>
 
 "====================
 "Thoughtbot vim-rspec
