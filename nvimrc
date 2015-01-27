@@ -163,19 +163,18 @@ function! Pry()
 endfunction
 map <Leader>P :call Pry()<cr>
 
-function! Pry()
+function! LowerPry()
   let file_name = expand('%')
   let split_name = split(file_name, "/")[-1]
   let file_extension = matchstr(split_name, "html")
 
   if file_extension == "html"
-    normal! O <% binding.pry %>
+    normal! o <% binding.pry %>
   else
-    normal! O binding.pry
+    normal! o binding.pry
   endif
 endfunction
-map <Leader>p :call Pry()<cr>
-"
+map <Leader>p :call LowerPry()<cr>
 
 """""""""""""""""""""""""""""
 "OTHER STUFF I STOLE FROM BEN
