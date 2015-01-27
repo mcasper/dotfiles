@@ -117,8 +117,6 @@ map <Leader>ac :CtrlP app/controllers<CR>
 map <Leader>am :CtrlP app/models<CR>
 map <Leader>ag :topleft 20 :split Gemfile<CR>
 map <Leader>b :CtrlPBuffer<CR>
-map <Leader>p obinding.pry<C-c>
-map <Leader>P Obinding.pry<C-c>
 map <Leader>vi :tabe ~/.nvimrc<CR>
 map <Leader>vs :source ~/.nvimrc<CR>
 map <Leader>c :bp\|bd #<CR>
@@ -150,6 +148,34 @@ function! RenameFile()
     endif
 endfunction
 map <Leader>n :call RenameFile()<cr>
+
+" My first vimscript
+function! Pry()
+  let file_name = expand('%')
+  let split_name = split(file_name, "/")[-1]
+  let file_extension = matchstr(split_name, "html")
+
+  if file_extension == "html"
+    normal! O <% binding.pry %>
+  else
+    normal! O binding.pry
+  endif
+endfunction
+map <Leader>P :call Pry()<cr>
+
+function! Pry()
+  let file_name = expand('%')
+  let split_name = split(file_name, "/")[-1]
+  let file_extension = matchstr(split_name, "html")
+
+  if file_extension == "html"
+    normal! O <% binding.pry %>
+  else
+    normal! O binding.pry
+  endif
+endfunction
+map <Leader>p :call Pry()<cr>
+"
 
 """""""""""""""""""""""""""""
 "OTHER STUFF I STOLE FROM BEN
