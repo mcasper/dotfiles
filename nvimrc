@@ -115,6 +115,7 @@ map <Leader>af :CtrlP engines/checklist<CR>
 map <Leader>av :CtrlP app/views<CR>
 map <Leader>ac :CtrlP app/controllers<CR>
 map <Leader>am :CtrlP app/models<CR>
+map <Leader>h  :CtrlP engines/hh2<CR>
 map <Leader>ag :topleft 20 :split Gemfile<CR>
 map <Leader>b :CtrlPBuffer<CR>
 map <Leader>vi :tabe ~/.nvimrc<CR>
@@ -153,11 +154,14 @@ map <Leader>n :call RenameFile()<cr>
 " My first vimscript
 function! Pry()
   let file_name = expand('%')
-  let split_name = split(file_name, "/")[-1]
-  let file_extension = matchstr(split_name, "html")
+  let split_name = split(file_name, "/")
+  let html = matchstr(split_name[-1], "html")
+  let js = matchstr(split_name[0], "js") || matchstr(split_name[-1], "js")
 
-  if file_extension == "html"
+  if html == "html"
     normal! O <% binding.pry %>
+  elseif js == "js"
+    normal! O debugger;
   else
     normal! O binding.pry
   endif
@@ -166,11 +170,14 @@ map <Leader>P :call Pry()<cr>
 
 function! LowerPry()
   let file_name = expand('%')
-  let split_name = split(file_name, "/")[-1]
-  let file_extension = matchstr(split_name, "html")
+  let split_name = split(file_name, "/")
+  let html = matchstr(split_name[-1], "html")
+  let js = matchstr(split_name[0], "js") || matchstr(split_name[-1], "js")
 
-  if file_extension == "html"
+  if html == "html"
     normal! o <% binding.pry %>
+  elseif js == "js"
+    normal! o debugger;
   else
     normal! o binding.pry
   endif
