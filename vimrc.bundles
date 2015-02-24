@@ -46,4 +46,6 @@ Plugin 'Keithbsmiley/rspec.vim'
 "rubocop
 Plugin 'ngmy/vim-rubocop'
 
+Plugin 'FelikZ/ctrlp-py-matcher'
+
 filetype on

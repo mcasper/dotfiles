@@ -42,7 +42,8 @@ set ignorecase smartcase
 set hidden
 
 "Color and UI
-colorscheme gruvbox
+colorscheme hybrid
+"colorscheme gruvbox
 set background=dark
 set colorcolumn=80
 set cursorline
@@ -151,38 +152,27 @@ function! RenameFile()
 endfunction
 map <Leader>n :call RenameFile()<cr>
 
-" My first vimscript
-function! Pry()
+function! Debugging(direction)
   let file_name = expand('%')
-  let split_name = split(file_name, "/")
-  let html = matchstr(split_name[-1], "html")
-  let js = matchstr(split_name[0], "js") || matchstr(split_name[-1], "js")
+  let extension = split(file_name, "/")[-1]
+  let html = matchstr(extension, "html")
+  let json = matchstr(extension, "json")
+  let js = matchstr(extension, "js")
+
+  let @g = a:direction
 
   if html == "html"
-    normal! O <% binding.pry %>
+    normal! @g <% binding.pry %>
+  elseif json == "json"
+    normal! @g binding.pry
   elseif js == "js"
-    normal! O debugger;
+    normal! @g debugger;
   else
-    normal! O binding.pry
+    normal! @g binding.pry
   endif
 endfunction
-map <Leader>P :call Pry()<cr>
-
-function! LowerPry()
-  let file_name = expand('%')
-  let split_name = split(file_name, "/")
-  let html = matchstr(split_name[-1], "html")
-  let js = matchstr(split_name[0], "js") || matchstr(split_name[-1], "js")
-
-  if html == "html"
-    normal! o <% binding.pry %>
-  elseif js == "js"
-    normal! o debugger;
-  else
-    normal! o binding.pry
-  endif
-endfunction
-map <Leader>p :call LowerPry()<cr>
+map <Leader>P :call Debugging("O")<cr>
+map <Leader>p :call Debugging("o")<cr>
 
 """""""""""""""""""""""""""""
 "OTHER STUFF I STOLE FROM BEN
@@ -218,3 +208,30 @@ map <C-h> <C-W>h
 map <C-l> <C-W>l
 map <Right> :bn<CR>
 map <Left> :bp<CR>
+
+if executable("ag")
+  set grepprg=ag\ --nogroup\ --nocolor
+  let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
+        \ --ignore .git
+        \ --ignore .svn
+        \ --ignore .hg
+        \ --ignore .DS_Store
+        \ --ignore node_modules
+        \ -g ""'
+endif
+
+" PyMatcher for CtrlP
+if !has('python')
+  echo 'In order to use pymatcher plugin, you need +python compiled vim'
+else
+  let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
+endif
+
+let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:20'
+
+" Do not clear filenames cache, to improve CtrlP startup
+" You can manualy clear it by <F5>
+" let g:ctrlp_clear_cache_on_exit = 0
+
+" Set no file limit, we are building a big project
+let g:ctrlp_max_files = 0

@@ -47,6 +47,7 @@ alias gpull="git pull"
 alias gpoh="git push origin HEAD"
 alias gsu="git submodule update"
 alias gap="git add -p"
+alias grm="git pull --rebase origin master"
 
 # Procore for Bash
 alias vup="cd $HOME/documents/vagrant && vagrant up"
