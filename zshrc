@@ -35,7 +35,8 @@ alias be="bundle exec"
 # Rails
 alias migrate="bin/rake db:migrate"
 alias rake="bin/rake"
-alias s="bin/rails s"
+alias s="bin/rails s -b 0.0.0.0"
+alias rails="bin/rails"
 
 # Git
 alias g="git"
