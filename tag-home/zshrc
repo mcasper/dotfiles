@@ -98,7 +98,7 @@ source $ZSH/oh-my-zsh.sh
 # User configuration
 
 # expor tMANPATH="/usr/local/man:$MANPATH"
-export PATH="/usr/local/lein:/home/vagrant/.linuxbrew/bin:/Users/mattcasper/.rbenv/shims:/Users/mattcasper/.rbenv/bin:/usr/local/pgsql/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/ruby/bin/:$PATH"
+export PATH="/bin/lein:/home/vagrant/.linuxbrew/bin:/Users/mattcasper/.rbenv/shims:/Users/mattcasper/.rbenv/bin:/usr/local/pgsql/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/ruby/bin/:$PATH"
 export RBENV_ROOT="/Users/mattcasper/.rbenv"
 
 # You may need to manually set your language environment
