@@ -162,13 +162,13 @@ function! Debugging(direction)
   let @g = a:direction
 
   if html == "html"
-    normal! @g <% binding.pry %>
+    normal! @g<% binding.pry %>
   elseif json == "json"
-    normal! @g binding.pry
+    normal! @gbinding.pry
   elseif js == "js"
-    normal! @g debugger;
+    normal! @gdebugger;
   else
-    normal! @g binding.pry
+    normal! @gbinding.pry
   endif
 endfunction
 map <Leader>P :call Debugging("O")<cr>
