@@ -44,7 +44,7 @@ set hidden
 "Color and UI
 colorscheme hybrid
 "colorscheme gruvbox
-set background=dark
+" set background=dark
 set colorcolumn=80
 set cursorline
 set ruler
@@ -61,15 +61,6 @@ let mapleader = " "
 
 let g:rspec_command = "compiler rspec | set makeprg=zeus | Make rspec2 {spec}"
 let g:vimrubocop_config = "./.rubocop.yml"
-
-if executable('ag')
-    " Use Ag over grep
-    set grepprg=ag\ --nogroup\ --nocolor
-
-    " Use ag in CtrlP
-    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-    let g:ctrlp_use_caching = 0
-endif
 
 "==================
 "SETTINGS BY OTHERS
@@ -108,23 +99,22 @@ autocmd FileType gitcommit setlocal spell textwidth=72
 map <Leader>w :w!<CR>
 map <Leader>q :bd<CR>
 map <Leader>ar :topleft :split config/routes.rb<CR>
-map <Leader>f  :CtrlPRoot<CR>
-map <Leader>aa :CtrlP app<CR>
-map <Leader>as :CtrlP spec<CR>
-map <Leader>ad :CtrlP db<CR>
-map <Leader>af :CtrlP engines/checklist<CR>
-map <Leader>av :CtrlP app/views<CR>
-map <Leader>ac :CtrlP app/controllers<CR>
-map <Leader>am :CtrlP app/models<CR>
-map <Leader>h  :CtrlP engines/hh2<CR>
+map <Leader>f  :FZF<CR>
 map <Leader>ag :topleft 20 :split Gemfile<CR>
-map <Leader>b :CtrlPBuffer<CR>
 map <Leader>vi :tabe ~/.nvimrc<CR>
 map <Leader>vs :source ~/.nvimrc<CR>
-map <Leader>c :bp\|bd #<CR>
+map <Leader>c  :bp\|bd #<CR>
 map <Leader>ws :%s/\s\+$//<CR>
 map <Leader>le :%s/\r$//<CR>
 map <Leader>hs :s/:\([^ ]*\)\(\s*\)=>/\1:/g<CR>
+
+"""""""""""""""""""""
+" Correct Indentation
+"""""""""""""""""""""
+function! CorrectIndentation()
+  execute "silent normal! gg=G"
+endfunction
+map <Leader>i :call CorrectIndentation()<cr>
 
 "====================
 "Thoughtbot vim-rspec
@@ -152,6 +142,10 @@ function! RenameFile()
 endfunction
 map <Leader>n :call RenameFile()<cr>
 
+
+"""""""""""""""""""""""""""""""""""""""""
+" Infer debugger type from file extension
+"""""""""""""""""""""""""""""""""""""""""
 function! Debugging(direction)
   let file_name = expand('%')
   let extension = split(file_name, "/")[-1]
@@ -177,7 +171,6 @@ map <Leader>p :call Debugging("o")<cr>
 """""""""""""""""""""""""""""
 "OTHER STUFF I STOLE FROM BEN
 """""""""""""""""""""""""""""
-
 " Display extra whitespace
 set list listchars=tab:»·,trail:·
 
@@ -208,30 +201,3 @@ map <C-h> <C-W>h
 map <C-l> <C-W>l
 map <Right> :bn<CR>
 map <Left> :bp<CR>
-
-if executable("ag")
-  set grepprg=ag\ --nogroup\ --nocolor
-  let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
-        \ --ignore .git
-        \ --ignore .svn
-        \ --ignore .hg
-        \ --ignore .DS_Store
-        \ --ignore node_modules
-        \ -g ""'
-endif
-
-" PyMatcher for CtrlP
-if !has('python')
-  echo 'In order to use pymatcher plugin, you need +python compiled vim'
-else
-  let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
-endif
-
-let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:20'
-
-" Do not clear filenames cache, to improve CtrlP startup
-" You can manualy clear it by <F5>
-" let g:ctrlp_clear_cache_on_exit = 0
-
-" Set no file limit, we are building a big project
-let g:ctrlp_max_files = 0

@@ -8,7 +8,6 @@ call vundle#rc()
 Plugin 'gmarik/vundle'
 
 "misc
-Plugin 'kien/ctrlp.vim'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'tomtom/tcomment_vim'
 Plugin 'junegunn/vim-easy-align'
@@ -46,6 +45,7 @@ Plugin 'Keithbsmiley/rspec.vim'
 "rubocop
 Plugin 'ngmy/vim-rubocop'
 
-Plugin 'FelikZ/ctrlp-py-matcher'
+"Fuzzy Finder
+Plugin 'junegunn/fzf'
 
 filetype on
