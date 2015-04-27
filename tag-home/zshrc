@@ -11,9 +11,6 @@ source ~/.vim/bundle/gruvbox/gruvbox_256palette_osx.sh
 
 # Aliases
 
-# I'm dumb
-alias vim="nvim"
-
 # Unix
 alias la="ls -al"
 alias ln="ln -v"

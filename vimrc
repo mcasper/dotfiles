@@ -101,8 +101,8 @@ map <Leader>q :bd<CR>
 map <Leader>ar :topleft :split config/routes.rb<CR>
 map <Leader>f  :FZF<CR>
 map <Leader>ag :topleft 20 :split Gemfile<CR>
-map <Leader>vi :tabe ~/.nvimrc<CR>
-map <Leader>vs :source ~/.nvimrc<CR>
+map <Leader>vi :tabe ~/.vimrc<CR>
+map <Leader>vs :source ~/.vimrc<CR>
 map <Leader>c  :bp\|bd #<CR>
 map <Leader>ws :%s/\s\+$//<CR>
 map <Leader>le :%s/\r$//<CR>

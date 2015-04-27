@@ -9,9 +9,6 @@ ZSH_THEME="norm"
 
 # Aliases
 
-# I'm dumb
-alias vim="nvim"
-
 # Unix
 alias la="ls -al"
 alias ln="ln -v"
@@ -36,6 +33,10 @@ alias be="bundle exec"
 alias migrate="bin/rake db:migrate"
 alias rake="bin/rake"
 alias s="bin/rails s -b 0.0.0.0"
+
+# Elixir
+alias iexa="iex -S mix"
+alias mcp="mix compile"
 
 # Git
 alias g="git"
@@ -102,7 +103,6 @@ source $ZSH/oh-my-zsh.sh
 
 # expor tMANPATH="/usr/local/man:$MANPATH"
 export PATH="/home/vagrant/.linuxbrew/bin:/usr/local/rbenv/shims:/usr/local/rbenv/bin:/usr/local/pgsql/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/ruby/bin/:$PATH"
-export RBENV_ROOT="/usr/local/rbenv"
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
