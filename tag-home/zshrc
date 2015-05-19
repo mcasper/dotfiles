@@ -18,6 +18,7 @@ alias mkdir="mkdir -p"
 alias grep="grep --color=auto"
 alias cp="cp -r"
 alias ...="../.."
+alias ....="../../.."
 alias l="ls -lah"
 alias ll="ls -lh"
 alias lh="ls -Alh"
@@ -36,6 +37,10 @@ alias migrate="bin/rake db:migrate"
 alias rake="bin/rake"
 alias s="bin/rails s"
 
+# Elixir
+alias imix="iex -S mix"
+alias mcp="mix compile"
+
 # Git
 alias g="git"
 alias co="git checkout"
@@ -46,6 +51,7 @@ alias gpull="git pull"
 alias gpoh="git push origin HEAD"
 alias gsu="git submodule update"
 alias gap="git add -p"
+alias grm="git pull --rebase origin master"
 
 # Procore for Bash
 alias vup="cd $HOME/documents/vagrant && vagrant up"
@@ -95,7 +101,7 @@ source $ZSH/oh-my-zsh.sh
 # User configuration
 
 # expor tMANPATH="/usr/local/man:$MANPATH"
-export PATH="/bin/lein:/home/vagrant/.linuxbrew/bin:/Users/mattcasper/.rbenv/shims:/Users/mattcasper/.rbenv/bin:/usr/local/pgsql/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/ruby/bin/:$PATH"
+export PATH="/bin/lein:Users/mattcasper/.rbenv/shims:/Users/mattcasper/.rbenv/bin:/usr/local/pgsql/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/ruby/bin/:$PATH"
 export RBENV_ROOT="/Users/mattcasper/.rbenv"
 
 # You may need to manually set your language environment
