@@ -98,23 +98,19 @@ autocmd FileType gitcommit setlocal spell textwidth=72
 "LEADER
 map <Leader>w :w!<CR>
 map <Leader>q :bd<CR>
+map <Leader>Q :q<CR>
 map <Leader>ar :topleft :split config/routes.rb<CR>
 map <Leader>f  :FZF<CR>
-map <Leader>ag :topleft 20 :split Gemfile<CR>
 map <Leader>vi :tabe ~/.vimrc<CR>
 map <Leader>vs :source ~/.vimrc<CR>
 map <Leader>c  :bp\|bd #<CR>
 map <Leader>ws :%s/\s\+$//<CR>
 map <Leader>le :%s/\r$//<CR>
 map <Leader>hs :s/:\([^ ]*\)\(\s*\)=>/\1:/g<CR>
-
-"""""""""""""""""""""
-" Correct Indentation
-"""""""""""""""""""""
-function! CorrectIndentation()
-  execute "silent normal! gg=G"
-endfunction
+map <Leader>P :call Debugging("O")<cr>
+map <Leader>p :call Debugging("o")<cr>
 map <Leader>i :call CorrectIndentation()<cr>
+map <Leader>n :call RenameFile()<cr>
 
 "====================
 "Thoughtbot vim-rspec
@@ -127,6 +123,12 @@ map <Leader>a :call RunAllSpecs()<CR>
 
 let g:rspec_command = "!bin/rspec {spec}"
 
+"""""""""""""""""""""
+" Correct Indentation
+"""""""""""""""""""""
+function! CorrectIndentation()
+  execute "silent normal! gg=G"
+endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " RENAME CURRENT FILE (thanks Gary Bernhardt) (Ben Orenstein)
@@ -140,8 +142,6 @@ function! RenameFile()
         redraw!
     endif
 endfunction
-map <Leader>n :call RenameFile()<cr>
-
 
 """""""""""""""""""""""""""""""""""""""""
 " Infer debugger type from file extension
@@ -165,8 +165,6 @@ function! Debugging(direction)
     normal! @gbinding.pry
   endif
 endfunction
-map <Leader>P :call Debugging("O")<cr>
-map <Leader>p :call Debugging("o")<cr>
 
 """""""""""""""""""""""""""""
 "OTHER STUFF I STOLE FROM BEN
@@ -184,7 +182,6 @@ endif
 " Make it more obvious which paren I'm on
 hi MatchParen cterm=none ctermbg=black ctermfg=yellow
 
-map <Leader>
 "OTHER
 function! MapCR()
     nnoremap <CR> :nohlsearch<CR>
