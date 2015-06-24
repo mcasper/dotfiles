@@ -7,8 +7,6 @@ export ZSH=$HOME/.oh-my-zsh
 # time that oh-my-zsh is loaded.
 ZSH_THEME="norm"
 
-source ~/.vim/bundle/gruvbox/gruvbox_256palette_osx.sh
-
 # Aliases
 
 # Unix
@@ -35,7 +33,7 @@ alias be="bundle exec"
 # Rails
 alias migrate="bin/rake db:migrate"
 alias rake="bin/rake"
-alias s="bin/rails s"
+alias s="bin/rails s -b 0.0.0.0"
 
 # Elixir
 alias imix="iex -S mix"
@@ -55,6 +53,11 @@ alias grm="git pull --rebase origin master"
 
 # Procore for Bash
 alias vup="cd $HOME/documents/vagrant && vagrant up"
+alias vhalt="cd $HOME/documents/vagrant && vagrant halt"
+
+# /Aliases
+
+source ~/.vim/bundle/gruvbox/gruvbox_256palette_osx.sh
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
