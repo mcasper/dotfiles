@@ -51,4 +51,7 @@ Plugin 'junegunn/fzf'
 "Elixir
 Plugin 'elixir-lang/vim-elixir'
 
+" Minitest
+Plugin 'janko-m/vim-test'
+
 filetype on
