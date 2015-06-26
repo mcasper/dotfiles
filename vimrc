@@ -42,9 +42,9 @@ set ignorecase smartcase
 set hidden
 
 "Color and UI
-colorscheme hybrid
-"colorscheme gruvbox
-" set background=dark
+" colorscheme hybrid
+colorscheme visualstudio
+" set background=light
 set colorcolumn=80
 set cursorline
 set ruler
