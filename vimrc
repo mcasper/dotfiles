@@ -9,9 +9,51 @@ let g:gruvbox_italic=0
 "==============
 " Vundle setup
 "==============
-if filereadable(expand("~/.vimrc.bundles"))
-  source ~/.vimrc.bundles
-endif
+"
+set nocompatible
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#rc()
+
+" Let Vundle manage Vundle
+Plugin 'gmarik/Vundle.vim'
+
+"misc
+Plugin 'airblade/vim-gitgutter'
+Plugin 'tomtom/tcomment_vim'
+Plugin 'junegunn/vim-easy-align'
+Plugin 'rking/ag.vim'
+Plugin 'ervandew/supertab'
+
+"tpope
+Plugin 'tpope/vim-endwise'
+Plugin 'tpope/vim-rails'
+Plugin 'tpope/vim-dispatch'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-surround'
+
+"rails/ruby
+Plugin 'thoughtbot/vim-rspec'
+
+"colors
+Plugin 'flazz/vim-colorschemes'
+
+"Highlighting
+Plugin 'Keithbsmiley/rspec.vim'
+
+"rubocop
+Plugin 'ngmy/vim-rubocop'
+
+"Fuzzy Finder
+Plugin 'junegunn/fzf'
+
+"Elixir
+Plugin 'elixir-lang/vim-elixir'
+
+"Testing
+Plugin 'janko-m/vim-test'
+
+filetype on
 
 "============================
 " BASIC EDITING CONFIGURATION
@@ -42,9 +84,11 @@ set ignorecase smartcase
 set hidden
 
 "Color and UI
-" colorscheme hybrid
-colorscheme visualstudio
+colorscheme hybrid
+" colorscheme flattened_light
+" colorscheme gruvbox
 " set background=light
+set background=dark
 set colorcolumn=80
 set cursorline
 set ruler
@@ -81,12 +125,12 @@ set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 "=========
 
 augroup vimrcEx
-    "for ruby, autoindent with two spaces, always expand tabs
-    autocmd FileType ruby,haml,eruby,yaml,fdoc,html,javascript,sass,cucumber set ai sw=2 sts=2 et
+  "for ruby, autoindent with two spaces, always expand tabs
+  autocmd FileType ruby,haml,eruby,yaml,fdoc,html,javascript,sass,cucumber set ai sw=2 sts=2 et
 
-    autocmd BufNewFile,BufRead *.fdoc setfiletype yaml
-    autocmd Filetype yaml set nocursorline
-    autocmd BufNewFile,BufRead *.sass setfiletype sass
+  autocmd BufNewFile,BufRead *.fdoc setfiletype yaml
+  autocmd Filetype yaml set nocursorline
+  autocmd BufNewFile,BufRead *.sass setfiletype sass
 augroup END
 
 autocmd FileType gitcommit setlocal spell textwidth=72
@@ -116,12 +160,18 @@ map <Leader>n :call RenameFile()<cr>
 "Thoughtbot vim-rspec
 "====================
 
-map <Leader>t :call RunLastSpec()<CR>
-map <Leader>s :call RunNearestSpec()<CR>
-map <Leader>r :call RunCurrentSpecFile()<CR>
-map <Leader>a :call RunAllSpecs()<CR>
+" map <Leader>t :call RunLastSpec()<CR>
+" map <Leader>s :call RunNearestSpec()<CR>
+" map <Leader>r :call RunCurrentSpecFile()<CR>
+" map <Leader>a :call RunAllSpecs()<CR>
 
-let g:rspec_command = "!bin/rspec {spec}"
+" let g:rspec_command = "!bin/rspec {spec}"
+
+"============
+"Test Running
+"============
+nmap <silent> <leader>s :TestNearest<CR>
+nmap <silent> <leader>r :TestFile<CR>
 
 """""""""""""""""""""
 " Correct Indentation
@@ -134,35 +184,44 @@ endfunction
 " RENAME CURRENT FILE (thanks Gary Bernhardt) (Ben Orenstein)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! RenameFile()
-    let old_name = expand('%')
-    let new_name = input('New file name: ', expand('%'), 'file')
-    if new_name != '' && new_name != old_name
-        exec ':saveas ' . new_name
-        exec ':silent !rm ' . old_name
-        redraw!
-    endif
+  let old_name = expand('%')
+  let new_name = input('New file name: ', expand('%'), 'file')
+  if new_name != '' && new_name != old_name
+    exec ':saveas ' . new_name
+    exec ':silent !rm ' . old_name
+    redraw!
+  endif
 endfunction
 
 """""""""""""""""""""""""""""""""""""""""
 " Infer debugger type from file extension
 """""""""""""""""""""""""""""""""""""""""
 function! Debugging(direction)
-  let file_name = expand('%')
-  let extension = split(file_name, "/")[-1]
-  let html = matchstr(extension, "html")
-  let json = matchstr(extension, "json")
-  let js = matchstr(extension, "js")
+  let file_path = expand('%')
+  let file = split(file_path, "/")[-1]
+  let rb = matchstr(file, "\.rb")
+  let ex = matchstr(file, "\.ex")
+  let erb = matchstr(file, "\.erb")
+  let eex = matchstr(file, "\.eex")
+  let json = matchstr(file, "\.json")
+  let js = matchstr(file, "\.js")
 
   let @g = a:direction
 
-  if html == "html"
-    normal! @g<% binding.pry %>
-  elseif json == "json"
-    normal! @gbinding.pry
-  elseif js == "js"
+  if rb == ".rb"
+    normal! @grequire "pry"; binding.pry
+  elseif ex == ".ex"
+    normal! @grequire IEx; IEx.pry
+  elseif erb == ".erb"
+    normal! @g<% require "pry"; binding.pry %>
+  elseif eex == ".eex"
+    normal! @g<%= require IEx; IEx.pry %>
+  elseif json == ".json"
+    normal! @grequire "pry"; binding.pry
+  elseif js == ".js"
     normal! @gdebugger;
   else
-    normal! @gbinding.pry
+    normal! @gCouldn't figure out the debugger type, add support for this file extension
   endif
 endfunction
 
@@ -184,7 +243,7 @@ hi MatchParen cterm=none ctermbg=black ctermfg=yellow
 
 "OTHER
 function! MapCR()
-    nnoremap <CR> :nohlsearch<CR>
+  nnoremap <CR> :nohlsearch<CR>
 endfunction
 call MapCR()
 

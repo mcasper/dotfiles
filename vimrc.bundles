@@ -28,6 +28,7 @@ Plugin 'tpope/vim-surround'
 
 "rails/ruby
 Plugin 'thoughtbot/vim-rspec'
+Plugin 'skalnik/vim-vroom'
 
 "colors
 Plugin 'flazz/vim-colorschemes'
