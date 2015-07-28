@@ -1,4 +1,3 @@
-"
 " Matt Casper's vimrc
 "
 " github.com/mcasper/dotfiles
@@ -6,54 +5,48 @@
 "Colorscheme settings
 let g:gruvbox_italic=0
 
-"==============
-" Vundle setup
-"==============
-"
-set nocompatible
-filetype off
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#rc()
-
-" Let Vundle manage Vundle
-Plugin 'gmarik/Vundle.vim'
+" vim-plug https://github.com/junegunn/vim-plug
+call plug#begin('~/.vim/plugged')
 
 "misc
-Plugin 'airblade/vim-gitgutter'
-Plugin 'tomtom/tcomment_vim'
-Plugin 'junegunn/vim-easy-align'
-Plugin 'rking/ag.vim'
-Plugin 'ervandew/supertab'
+Plug 'airblade/vim-gitgutter'
+Plug 'tomtom/tcomment_vim'
+Plug 'junegunn/vim-easy-align'
+Plug 'rking/ag.vim'
+Plug 'ervandew/supertab'
 
 "tpope
-Plugin 'tpope/vim-endwise'
-Plugin 'tpope/vim-rails'
-Plugin 'tpope/vim-dispatch'
-Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-surround'
+Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-rails'
+Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
 
 "rails/ruby
-Plugin 'thoughtbot/vim-rspec'
+Plug 'thoughtbot/vim-rspec'
 
 "colors
-Plugin 'flazz/vim-colorschemes'
+Plug 'flazz/vim-colorschemes'
 
 "Highlighting
-Plugin 'Keithbsmiley/rspec.vim'
+Plug 'Keithbsmiley/rspec.vim'
 
 "rubocop
-Plugin 'ngmy/vim-rubocop'
+Plug 'ngmy/vim-rubocop'
 
 "Fuzzy Finder
-Plugin 'junegunn/fzf'
+Plug 'junegunn/fzf'
 
 "Elixir
-Plugin 'elixir-lang/vim-elixir'
+Plug 'elixir-lang/vim-elixir'
 
 "Testing
-Plugin 'janko-m/vim-test'
+Plug 'janko-m/vim-test'
 
-filetype on
+"File Utils
+Plug 'pbrisbin/vim-mkdir'
+
+call plug#end()
 
 "============================
 " BASIC EDITING CONFIGURATION
