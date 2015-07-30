@@ -37,7 +37,7 @@ alias s="bin/rails s -b 0.0.0.0"
 
 # Elixir
 alias imix="iex -S mix"
-alias mcp="mix compile"
+alias server="iex -S mix phoenix.server"
 
 # Git
 alias g="git"

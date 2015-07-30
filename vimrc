@@ -192,26 +192,26 @@ endfunction
 function! Debugging(direction)
   let file_path = expand('%')
   let file = split(file_path, "/")[-1]
-  let rb = matchstr(file, "\.rb")
-  let ex = matchstr(file, "\.ex")
-  let erb = matchstr(file, "\.erb")
-  let eex = matchstr(file, "\.eex")
-  let json = matchstr(file, "\.json")
-  let js = matchstr(file, "\.js")
+  let rb   = file =~ "\.rb"
+  let ex   = file =~ "\.ex"
+  let erb  = file =~ "\.erb"
+  let eex  = file =~ "\.eex"
+  let json = file =~ "\.json"
+  let js   = file =~ "\.js"
 
   let @g = a:direction
 
-  if rb == ".rb"
+  if rb
     normal! @grequire "pry"; binding.pry
-  elseif ex == ".ex"
+  elseif ex
     normal! @grequire IEx; IEx.pry
-  elseif erb == ".erb"
+  elseif erb
     normal! @g<% require "pry"; binding.pry %>
-  elseif eex == ".eex"
+  elseif eex
     normal! @g<%= require IEx; IEx.pry %>
-  elseif json == ".json"
+  elseif json
     normal! @grequire "pry"; binding.pry
-  elseif js == ".js"
+  elseif js
     normal! @gdebugger;
   else
     normal! @gCouldn't figure out the debugger type, add support for this file extension
