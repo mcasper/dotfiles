@@ -46,6 +46,9 @@ Plug 'janko-m/vim-test'
 "File Utils
 Plug 'pbrisbin/vim-mkdir'
 
+"Debuggin
+Plug 'mcasper/vim-infer-debugger'
+
 call plug#end()
 
 "============================
@@ -144,8 +147,6 @@ map <Leader>c  :bp\|bd #<CR>
 map <Leader>ws :%s/\s\+$//<CR>
 map <Leader>le :%s/\r$//<CR>
 map <Leader>hs :s/:\([^ ]*\)\(\s*\)=>/\1:/g<CR>
-map <Leader>P :call Debugging("O")<cr>
-map <Leader>p :call Debugging("o")<cr>
 map <Leader>i :call CorrectIndentation()<cr>
 map <Leader>n :call RenameFile()<cr>
 
@@ -183,38 +184,6 @@ function! RenameFile()
     exec ':saveas ' . new_name
     exec ':silent !rm ' . old_name
     redraw!
-  endif
-endfunction
-
-"""""""""""""""""""""""""""""""""""""""""
-" Infer debugger type from file extension
-"""""""""""""""""""""""""""""""""""""""""
-function! Debugging(direction)
-  let file_path = expand('%')
-  let file = split(file_path, "/")[-1]
-  let rb   = file =~ "\.rb"
-  let ex   = file =~ "\.ex"
-  let erb  = file =~ "\.erb"
-  let eex  = file =~ "\.eex"
-  let json = file =~ "\.json"
-  let js   = file =~ "\.js"
-
-  let @g = a:direction
-
-  if rb
-    normal! @grequire "pry"; binding.pry
-  elseif ex
-    normal! @grequire IEx; IEx.pry
-  elseif erb
-    normal! @g<% require "pry"; binding.pry %>
-  elseif eex
-    normal! @g<%= require IEx; IEx.pry %>
-  elseif json
-    normal! @grequire "pry"; binding.pry
-  elseif js
-    normal! @gdebugger;
-  else
-    normal! @gCouldn't figure out the debugger type, add support for this file extension
   endif
 endfunction
 
