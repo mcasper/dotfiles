@@ -22,9 +22,6 @@ Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 
-"rails/ruby
-Plug 'thoughtbot/vim-rspec'
-
 "colors
 Plug 'flazz/vim-colorschemes'
 
@@ -149,17 +146,6 @@ map <Leader>le :%s/\r$//<CR>
 map <Leader>hs :s/:\([^ ]*\)\(\s*\)=>/\1:/g<CR>
 map <Leader>i :call CorrectIndentation()<cr>
 map <Leader>n :call RenameFile()<cr>
-
-"====================
-"Thoughtbot vim-rspec
-"====================
-
-" map <Leader>t :call RunLastSpec()<CR>
-" map <Leader>s :call RunNearestSpec()<CR>
-" map <Leader>r :call RunCurrentSpecFile()<CR>
-" map <Leader>a :call RunAllSpecs()<CR>
-
-" let g:rspec_command = "!bin/rspec {spec}"
 
 "============
 "Test Running
