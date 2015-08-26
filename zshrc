@@ -1,11 +1,3 @@
-export ZSH=$HOME/.oh-my-zsh
-
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-ZSH_THEME="edvardm"
-
 # Aliases
 
 # Unix
@@ -58,22 +50,11 @@ alias grm="git pull --rebase origin master"
 # }
 # alias circle="chrome_circle()"
 
-# /Aliases
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
-
-source $ZSH/oh-my-zsh.sh
-
 # User configuration
 
-# expor tMANPATH="/usr/local/man:$MANPATH"
+# export tMANPATH="/usr/local/man:$MANPATH"
 export PATH="/bin/lein:Users/mattcasper/.rbenv/shims:/Users/mattcasper/.rbenv/bin:/usr/local/pgsql/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/ruby/bin/:$PATH"
 export RBENV_ROOT="/Users/mattcasper/.rbenv"
-export SALTPATH=/usr/local/Cellar/salt/2.4/data
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -82,3 +63,23 @@ export SALTPATH=/usr/local/Cellar/salt/2.4/data
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
 eval "$(rbenv init -)"
+
+setopt prompt_subst
+autoload -Uz vcs_info
+zstyle ':vcs_info:*' stagedstr 'M'
+zstyle ':vcs_info:*' unstagedstr 'M'
+zstyle ':vcs_info:*' check-for-changes true
+zstyle ':vcs_info:*' actionformats '%F{5}[%F{2}%b%F{3}|%F{1}%a%F{5}]%f '
+zstyle ':vcs_info:*' formats \
+  '%F{5}[%F{2}%b%F{5}] %F{2}%c%F{3}%u%f'
+zstyle ':vcs_info:git*+set-message:*' hooks git-untracked
+zstyle ':vcs_info:*' enable git
++vi-git-untracked() {
+if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
+  git status --porcelain | grep '??' &> /dev/null ; then
+hook_com[unstaged]+='%F{1}??%f'
+  fi
+}
+
+precmd () { vcs_info }
+PROMPT='%F{5}[%F{2}%n%F{5}] %F{3}%3~ ${vcs_info_msg_0_} %f%# '
