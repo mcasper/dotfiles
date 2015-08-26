@@ -1,4 +1,4 @@
 dotfiles
 ========
 
-My dotfiles
+Matt Casper's dotfiles
