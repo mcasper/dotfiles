@@ -10,6 +10,9 @@ alias ..="cd ../"
 alias ...="cd ../.."
 alias ....="cd ../../.."
 
+# Servers
+alias server_console="sudo -i -u www-data bash -c 'cd /data/procore/current && bundle exec rails c'"
+
 # tmux
 alias tma="tmux att -t"
 alias tmls="tmux ls"
@@ -58,4 +61,4 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-untracked
 zstyle ':vcs_info:*' enable git
 
 precmd () { vcs_info }
-PROMPT='%F{5} - %F{2}%n%F{5} %F{3}%3~ ${vcs_info_msg_0_}%f$ '
+PROMPT='%F{5} - %F{2}%M%F{5} %F{3}%3~ ${vcs_info_msg_0_}%f$ '
