@@ -1,11 +1,8 @@
 " Matt Casper's vimrc
-"
-" github.com/mcasper/dotfiles
+" https://github.com/mcasper/dotfiles
 
-"Colorscheme settings
-let g:gruvbox_italic=0
-
-" vim-plug https://github.com/junegunn/vim-plug
+" Use vim-plug for plugin management (Plug Install/Update)
+" https://github.com/junegunn/vim-plug
 call plug#begin('~/.vim/plugged')
 
 "misc
@@ -46,6 +43,9 @@ Plug 'pbrisbin/vim-mkdir'
 "Debuggin
 Plug 'mcasper/vim-infer-debugger'
 
+"Fun
+Plug 'mhinz/vim-startify'
+
 call plug#end()
 
 "============================
@@ -79,22 +79,23 @@ set hidden
 "Color and UI
 colorscheme hybrid
 " colorscheme flattened_light
-" colorscheme gruvbox
-" set background=light
 set background=dark
 set colorcolumn=80
 set cursorline
 set ruler
 set synmaxcol=250
 
-"SPEEEEEEEEEEEEEED
-" set re=1
-
 let mapleader = " "
 
 "===============
 "PLUGIN SETTINGS
 "===============
+"
+"Startify
+let g:startify_custom_header = [
+                             \ '   Matt Casper''s VIM',
+                             \ '',
+                             \ ]
 
 let g:rspec_command = "compiler rspec | set makeprg=zeus | Make rspec2 {spec}"
 let g:vimrubocop_config = "./.rubocop.yml"
@@ -161,7 +162,7 @@ function! CorrectIndentation()
 endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" RENAME CURRENT FILE (thanks Gary Bernhardt) (Ben Orenstein)
+" RENAME CURRENT FILE (thanks Gary Bernhardt) (thanks Ben Orenstein)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! RenameFile()
   let old_name = expand('%')

@@ -1,6 +1,6 @@
 # Aliases
 
-# Unix
+# Linux
 alias la="ls -al"
 alias ln="ln -v"
 alias mkdir="mkdir -p"
@@ -9,6 +9,7 @@ alias cp="cp -r"
 alias ..="cd ../"
 alias ...="cd ../.."
 alias ....="cd ../../.."
+alias ltree="tree -L 1"
 
 # Servers
 alias server_console="sudo -i -u www-data bash -c 'cd /data/procore/current && bundle exec rails c'"
@@ -45,7 +46,9 @@ alias grm="git pull --rebase origin master"
 
 # User configuration
 
+export GOPATH=$HOME/code/work/go
 export PATH="/usr/local/rbenv/bin:/usr/local/rbenv/shims:/usr/local/bin:$PATH"
+export PATH="$GOPATH/bin:$PATH"
 
 eval "$(rbenv init -)"
 
