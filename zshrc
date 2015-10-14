@@ -1,4 +1,4 @@
-# Aliases
+## Aliases ##
 
 # Linux
 alias la="ls -al"
@@ -44,14 +44,23 @@ alias gsu="git submodule update"
 alias gap="git add -p"
 alias grm="git pull --rebase origin master"
 
-# User configuration
+## User configuration ##
 
+# History
+export HISTSIZE=10000
+export SAVEHIST=10000
+export HISTFILE=~/.history
+
+# Path VARs
 export GOPATH=$HOME/code/work/go
 export PATH="/usr/local/rbenv/bin:/usr/local/rbenv/shims:/usr/local/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
 
+# Start rbenv
 eval "$(rbenv init -)"
 
+# Path Settings
+# - MATTCASPER.local work/go/action_tracker_queue (master) $
 setopt prompt_subst
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' stagedstr 'M '
