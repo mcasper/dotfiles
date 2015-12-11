@@ -52,8 +52,8 @@ export SAVEHIST=10000
 export HISTFILE=~/.history
 
 # Path VARs
-export GOPATH=$HOME/code/work/go
-export PATH="/usr/local/rbenv/bin:/usr/local/rbenv/shims:/usr/local/bin:$PATH"
+export GOPATH="$HOME/code/work/go"
+export PATH="/usr/local/bin:/usr/bin:/usr/local/rbenv/bin:/usr/local/rbenv/shims:/usr/local/bin:$HOME/.multirust/toolchains/nightly/cargo/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
 
 # Start rbenv
@@ -74,3 +74,4 @@ zstyle ':vcs_info:*' enable git
 
 precmd () { vcs_info }
 PROMPT='%F{5} - %F{2}%M%F{5} %F{3}%3~ ${vcs_info_msg_0_}%f$ '
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

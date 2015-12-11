@@ -1,8 +1,8 @@
-" Matt Casper's vimrc
-" https://github.com/mcasper/dotfiles
+"Matt Casper's vimrc
+"https://github.com/mcasper/dotfiles
 
-" Use vim-plug for plugin management (Plug Install/Update)
-" https://github.com/junegunn/vim-plug
+"Use vim-plug for plugin management (Plug Install/Update)
+"https://github.com/junegunn/vim-plug
 call plug#begin('~/.vim/plugged')
 
 "misc
@@ -25,26 +25,29 @@ Plug 'flazz/vim-colorschemes'
 "Highlighting
 Plug 'Keithbsmiley/rspec.vim'
 
-"rubocop
-Plug 'ngmy/vim-rubocop'
-
 "Fuzzy Finder
 Plug 'junegunn/fzf'
 
 "Elixir
 Plug 'elixir-lang/vim-elixir'
 
-"Testing
+"Ruby/Rails Testing
 Plug 'janko-m/vim-test'
 
 "File Utils
 Plug 'pbrisbin/vim-mkdir'
 
-"Debuggin
+"Debugging
 Plug 'mcasper/vim-infer-debugger'
 
-"Fun
-Plug 'mhinz/vim-startify'
+"Puppet
+Plug 'rodjek/vim-puppet'
+
+"Rust
+Plug 'rust-lang/rust.vim'
+
+"AutoFormat
+Plug 'Chiel92/vim-autoformat'
 
 call plug#end()
 
@@ -90,15 +93,9 @@ let mapleader = " "
 "===============
 "PLUGIN SETTINGS
 "===============
-"
-"Startify
-let g:startify_custom_header = [
-                             \ '   Matt Casper''s VIM',
-                             \ '',
-                             \ ]
 
-let g:rspec_command = "compiler rspec | set makeprg=zeus | Make rspec2 {spec}"
-let g:vimrubocop_config = "./.rubocop.yml"
+let g:formatdef_rustfmt = '"rustfmt"'
+let g:formatters_rust = ['rustfmt']
 
 "==================
 "SETTINGS BY OTHERS
