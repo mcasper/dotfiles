@@ -1,12 +1,11 @@
 "Matt Casper's vimrc
 "https://github.com/mcasper/dotfiles
 
-"Use vim-plug for plugin management (Plug Install/Update)
+"Use vim-plug for plugin management (Plug[Install|Update])
 "https://github.com/junegunn/vim-plug
 call plug#begin('~/.vim/plugged')
 
 "misc
-Plug 'airblade/vim-gitgutter'
 Plug 'tomtom/tcomment_vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'rking/ag.vim'
@@ -45,6 +44,9 @@ Plug 'rodjek/vim-puppet'
 
 "Rust
 Plug 'rust-lang/rust.vim'
+
+"Go
+Plug 'fatih/vim-go'
 
 "AutoFormat
 Plug 'Chiel92/vim-autoformat'
@@ -144,6 +146,9 @@ map <Leader>le :%s/\r$//<CR>
 map <Leader>hs :s/:\([^ ]*\)\(\s*\)=>/\1:/g<CR>
 map <Leader>i :call CorrectIndentation()<cr>
 map <Leader>n :call RenameFile()<cr>
+map <Leader>p :call AddDebugger("o")<cr>
+map <Leader>P :call AddDebugger("O")<cr>
+map <Leader>d :call RemoveAllDebuggers()<cr>
 
 "============
 "Test Running

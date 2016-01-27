@@ -1,6 +1,6 @@
 ## Aliases ##
 
-# Linux
+# General
 alias la="ls -al"
 alias ln="ln -v"
 alias mkdir="mkdir -p"
@@ -11,7 +11,7 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 alias ltree="tree -L 1"
 
-# Servers
+# Procore Servers
 alias server_console="sudo -i -u www-data bash -c 'cd /data/procore/current && bundle exec rails c'"
 
 # tmux
@@ -52,8 +52,11 @@ export SAVEHIST=10000
 export HISTFILE=~/.history
 
 # Path VARs
-export GOPATH="$HOME/code/work/go"
+export GOPATH="$HOME/code/gocode"
 export PATH="/usr/local/bin:/usr/bin:/usr/local/rbenv/bin:/usr/local/rbenv/shims:/usr/local/bin:$HOME/.multirust/toolchains/nightly/cargo/bin:$PATH"
+export PATH="/Users/mattcasper/.multirust/toolchains/stable/cargo/bin:$PATH"
+export PATH="/Users/mattcasper/.multirust/toolchains/beta/cargo/bin:$PATH"
+export PATH="/Users/mattcasper/.multirust/toolchains/nightly/cargo/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
 
 # Start rbenv
@@ -74,4 +77,12 @@ zstyle ':vcs_info:*' enable git
 
 precmd () { vcs_info }
 PROMPT='%F{5} - %F{2}%M%F{5} %F{3}%3~ ${vcs_info_msg_0_}%f$ '
+
+# Source FZF
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Source and load Git completion
+autoload -Uz compinit && compinit
+
+# Z
+source `brew --prefix`/etc/profile.d/z.sh
