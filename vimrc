@@ -8,7 +8,6 @@ call plug#begin('~/.vim/plugged')
 "misc
 Plug 'tomtom/tcomment_vim'
 Plug 'junegunn/vim-easy-align'
-Plug 'rking/ag.vim'
 Plug 'ervandew/supertab'
 
 "tpope
@@ -20,12 +19,15 @@ Plug 'tpope/vim-surround'
 
 "colors
 Plug 'flazz/vim-colorschemes'
+Plug 'reedes/vim-colors-pencil'
+Plug 'junegunn/seoul256.vim'
 
 "Highlighting
 Plug 'Keithbsmiley/rspec.vim'
 
 "Fuzzy Finder
 Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 
 "Elixir
 Plug 'elixir-lang/vim-elixir'
@@ -48,8 +50,17 @@ Plug 'rust-lang/rust.vim'
 "Go
 Plug 'fatih/vim-go'
 
+"Elm
+Plug 'lambdatoast/elm.vim'
+
+"Status Bar
+Plug 'vim-airline/vim-airline'
+
+"Searching
+Plug 'rking/ag.vim'
+
 "AutoFormat
-Plug 'Chiel92/vim-autoformat'
+" Plug 'Chiel92/vim-autoformat'
 
 call plug#end()
 
@@ -82,13 +93,24 @@ set ignorecase smartcase
 set hidden
 
 "Color and UI
-colorscheme hybrid
+" colorscheme hybrid
 " colorscheme flattened_light
+" https://github.com/junegunn/seoul256.vim
+let g:seoul256_background = 234
+colo seoul256
+" colorscheme hybrid
 set background=dark
 set colorcolumn=80
 set cursorline
 set ruler
 set synmaxcol=250
+
+" Pencil Settings
+let g:pencil_terminal_italics = 0
+let g:pencil_neutral_code_bg = 1
+let g:pencil_neutral_headings = 1
+let g:pencil_higher_contrast_ui = 1
+let g:airline_theme = 'pencil'
 
 let mapleader = " "
 
@@ -96,8 +118,7 @@ let mapleader = " "
 "PLUGIN SETTINGS
 "===============
 
-let g:formatdef_rustfmt = '"rustfmt"'
-let g:formatters_rust = ['rustfmt']
+let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
 
 "==================
 "SETTINGS BY OTHERS
@@ -120,6 +141,7 @@ set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 augroup vimrcEx
   "for ruby, autoindent with two spaces, always expand tabs
   autocmd FileType ruby,haml,eruby,yaml,fdoc,html,javascript,sass,cucumber set ai sw=2 sts=2 et
+  autocmd FileType go set ai sw=4 sts=4 et nolist
 
   autocmd BufNewFile,BufRead *.fdoc setfiletype yaml
   autocmd Filetype yaml set nocursorline
@@ -136,7 +158,6 @@ autocmd FileType gitcommit setlocal spell textwidth=72
 map <Leader>w :w!<CR>
 map <Leader>q :bd<CR>
 map <Leader>Q :q<CR>
-map <Leader>ar :topleft :split config/routes.rb<CR>
 map <Leader>f  :FZF<CR>
 map <Leader>vi :tabe ~/.vimrc<CR>
 map <Leader>vs :source ~/.vimrc<CR>
@@ -149,6 +170,9 @@ map <Leader>n :call RenameFile()<cr>
 map <Leader>p :call AddDebugger("o")<cr>
 map <Leader>P :call AddDebugger("O")<cr>
 map <Leader>d :call RemoveAllDebuggers()<cr>
+
+" Turn into function
+map <Leader>ar :topleft :split config/routes.rb<CR>
 
 "============
 "Test Running

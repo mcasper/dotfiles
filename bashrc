@@ -106,3 +106,6 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# added by travis gem
+[ -f /Users/mattcasper/.travis/travis.sh ] && source /Users/mattcasper/.travis/travis.sh

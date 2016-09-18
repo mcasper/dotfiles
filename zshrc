@@ -11,9 +11,6 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 alias ltree="tree -L 1"
 
-# Procore Servers
-alias server_console="sudo -i -u www-data bash -c 'cd /data/procore/current && bundle exec rails c'"
-
 # tmux
 alias tma="tmux att -t"
 alias tmls="tmux ls"
@@ -26,7 +23,6 @@ alias be="bundle exec"
 # Rails
 alias migrate="bin/rake db:migrate"
 alias rake="bin/rake"
-alias s="puma -b tcp://0.0.0.0 -p 3000"
 
 # Elixir
 alias imix="iex -S mix"
@@ -43,6 +39,10 @@ alias gpoh="git push origin HEAD"
 alias gsu="git submodule update"
 alias gap="git add -p"
 alias grm="git pull --rebase origin master"
+alias gupdate="git pull && git-clean -y"
+
+# Docker
+# alias dockersource="eval $(docker-machine env default)"
 
 ## User configuration ##
 
@@ -52,7 +52,7 @@ export SAVEHIST=10000
 export HISTFILE=~/.history
 
 # Path VARs
-export GOPATH="$HOME/code/gocode"
+export GOPATH="$HOME/code/gocode:/code/work/pgnetdetective"
 export PATH="/usr/local/bin:/usr/bin:/usr/local/rbenv/bin:/usr/local/rbenv/shims:/usr/local/bin:$HOME/.multirust/toolchains/nightly/cargo/bin:$PATH"
 export PATH="/Users/mattcasper/.multirust/toolchains/stable/cargo/bin:$PATH"
 export PATH="/Users/mattcasper/.multirust/toolchains/beta/cargo/bin:$PATH"
@@ -86,3 +86,14 @@ autoload -Uz compinit && compinit
 
 # Z
 source `brew --prefix`/etc/profile.d/z.sh
+
+# Cargo
+source /Users/mattcasper/.cargo/env
+
+# Kiex
+[ -f "$HOME/.kiex/scripts/kiex" ] && source "$HOME/.kiex/scripts/kiex"
+
+# added by travis gem
+[ -f /Users/mattcasper/.travis/travis.sh ] && source /Users/mattcasper/.travis/travis.sh
+
+fpath+=~/.zfunc
