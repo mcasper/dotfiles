@@ -53,3 +53,6 @@ curl https://sh.rustup.rs -sSf -o rustup.sh
 sh rustup.sh -y
 rm rustup.sh
 rustup update
+
+# Dotfiles
+rcup -f
