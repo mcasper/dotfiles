@@ -18,15 +18,13 @@ if [[ ! -x /usr/local/bin/brew ]]; then
   /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
 
+# Install homebrew bundle
 brew update
+brew tap Homebrew/bundle
+brew bundle
 
-TAPS=("caskroom/cask" "homebrew/boneyard" "homebrew/dupes" "homebrew/python" "homebrew/science" "homebrew/services" "joshuaclayton/formulae" "neovim/neovim" "thoughtbot/formulae")
 SERVICES=("postgresql" "elasticsearch" "memcached" "redis")
-PACKAGES=("carthage" "git" "heroku" "ncdu" "openssh" "swiftlint" "v8" "tmux" "wget" "unused" "z" "zsh" "vim")
-
-for tap in "${TAPS[@]}"; do brew tap $tap; done
-for service in "${SERVICES[@]}"; do brew install $service; brew services start $service; done
-for package in "${PACKAGES[@]}"; do brew install $package; done
+for service in "${SERVICES[@]}"; do brew services start $service; done
 
 ## Language specific installations
 
@@ -49,3 +47,9 @@ brew install elm
 
 # Go
 brew install go
+
+# Rust
+curl https://sh.rustup.rs -sSf -o rustup.sh
+sh rustup.sh -y
+rm rustup.sh
+rustup update
