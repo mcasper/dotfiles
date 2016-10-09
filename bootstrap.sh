@@ -37,7 +37,7 @@ kiex default $latest_elixir
 
 # Ruby - rbenv (version manager)
 brew install rbenv
-brew install ruby-build
+yes | brew install ruby-build
 latest_ruby=$(rbenv install --list | grep -E '^\s+[0-9]\.[0-9]\.[0-9]$' | tail -n 1 | xargs)
 rbenv install $latest_ruby
 rbenv global $latest_ruby
