@@ -50,6 +50,7 @@ alias gupdate="git pull && git-clean -y"
 export HISTSIZE=10000
 export SAVEHIST=10000
 export HISTFILE=~/.history
+setopt SHARE_HISTORY
 
 # Path VARs
 export GOPATH="$HOME/code/gocode:/code/work/pgnetdetective"

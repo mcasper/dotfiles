@@ -53,6 +53,9 @@ Plug 'fatih/vim-go'
 "Elm
 Plug 'lambdatoast/elm.vim'
 
+"Swift
+Plug 'toyamarinyon/vim-swift'
+
 "Status Bar
 Plug 'vim-airline/vim-airline'
 
