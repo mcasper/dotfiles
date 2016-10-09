@@ -19,7 +19,7 @@ if [[ ! -x /usr/local/bin/brew ]]; then
   brew update
 fi
 
-TAPS=("caskroom/cask" "homebrew/boneyard" "homebrew/core" "homebrew/dupes" "homebrew/python" "homebrew/science" "homebrew/services" "homebrew/versions" "joshuaclayton/formulae" "neovim/neovim" "thoughtbot/formulae")
+TAPS=("caskroom/cask" "homebrew/boneyard" "homebrew/dupes" "homebrew/python" "homebrew/science" "homebrew/services" "joshuaclayton/formulae" "neovim/neovim" "thoughtbot/formulae")
 SERVICES=("postgresql" "elasticsearch" "memcached" "redis")
 PACKAGES=("carthage" "git" "heroku" "ncdu" "openssh" "swiftlint" "v8" "tmux" "wget" "unused" "z" "zsh" "vim")
 
