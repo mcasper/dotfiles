@@ -16,8 +16,9 @@ fi
 if [[ ! -x /usr/local/bin/brew ]]; then
   echo "Installing Homebrew"
   /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-  brew update
 fi
+
+brew update
 
 TAPS=("caskroom/cask" "homebrew/boneyard" "homebrew/dupes" "homebrew/python" "homebrew/science" "homebrew/services" "joshuaclayton/formulae" "neovim/neovim" "thoughtbot/formulae")
 SERVICES=("postgresql" "elasticsearch" "memcached" "redis")
