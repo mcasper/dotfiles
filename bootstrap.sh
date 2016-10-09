@@ -49,9 +49,7 @@ brew install elm
 brew install go
 
 # Rust
-curl https://sh.rustup.rs -sSf -o rustup.sh
-sh rustup.sh -y
-rm rustup.sh
+curl https://sh.rustup.rs -sSf | bash -s -- -y
 rustup update
 
 # Dotfiles
