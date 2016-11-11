@@ -34,6 +34,7 @@ latest_elixir=$(kiex list known | tail -n 1 | xargs)
 kiex install $latest_elixir
 kiex use $latest_elixir
 kiex default $latest_elixir
+mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new.ez --force
 
 # Ruby - rbenv (version manager)
 brew install rbenv
