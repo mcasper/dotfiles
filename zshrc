@@ -41,9 +41,6 @@ alias gap="git add -p"
 alias grm="git pull --rebase origin master"
 alias gupdate="git pull && git-clean -y"
 
-# Docker
-# alias dockersource="eval $(docker-machine env default)"
-
 ## User configuration ##
 
 # History
@@ -54,10 +51,10 @@ setopt SHARE_HISTORY
 
 # Path VARs
 export GOPATH="$HOME/code/gocode:/code/work/pgnetdetective"
-export PATH="/usr/local/bin:/usr/bin:/usr/local/rbenv/bin:/usr/local/rbenv/shims:/usr/local/bin:$HOME/.multirust/toolchains/nightly/cargo/bin:$PATH"
-export PATH="/Users/mattcasper/.multirust/toolchains/stable/cargo/bin:$PATH"
-export PATH="/Users/mattcasper/.multirust/toolchains/beta/cargo/bin:$PATH"
-export PATH="/Users/mattcasper/.multirust/toolchains/nightly/cargo/bin:$PATH"
+export PATH="/usr/local/bin:/usr/bin:/usr/local/rbenv/bin:/usr/local/rbenv/shims:/usr/local/bin:$PATH"
+export PATH="$HOME/.multirust/toolchains/stable/cargo/bin:$PATH"
+export PATH="$HOME/.multirust/toolchains/beta/cargo/bin:$PATH"
+export PATH="$HOME/.multirust/toolchains/nightly/cargo/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
 
 # Start rbenv
@@ -89,12 +86,12 @@ autoload -Uz compinit && compinit
 source `brew --prefix`/etc/profile.d/z.sh
 
 # Cargo
-source /Users/mattcasper/.cargo/env
+source "$HOME/.cargo/env"
 
 # Kiex
 [ -f "$HOME/.kiex/scripts/kiex" ] && source "$HOME/.kiex/scripts/kiex"
 
 # added by travis gem
-[ -f /Users/mattcasper/.travis/travis.sh ] && source /Users/mattcasper/.travis/travis.sh
+[ -f "$HOME/.travis/travis.sh" ] && source "$HOME/.travis/travis.sh"
 
 fpath+=~/.zfunc
