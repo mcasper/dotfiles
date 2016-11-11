@@ -28,5 +28,3 @@
   merge = refs/heads/master
 [credential]
 	helper = osxkeychain
-[init]
-	templatedir = ~/.git_template
