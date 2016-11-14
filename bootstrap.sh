@@ -39,7 +39,9 @@ SERVICES=("postgresql" "elasticsearch" "memcached" "redis")
 for service in "${SERVICES[@]}"; do brew services start $service; done
 
 # Set default shell
-chsh -s /bin/zsh
+if ! [ "$SHELL" == "/bin/zsh" ]; then
+  chsh -s /bin/zsh
+fi
 
 ## Cloning
 
