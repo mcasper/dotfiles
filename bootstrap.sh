@@ -3,6 +3,10 @@
 # Bootstrap a development environment for Matt Casper
 # usage: bash bootstrap.sh
 
+# Can't "set e", because our clones return 1 for existing dirs ATM.
+# Can't "set u", because we use several potentially unbound variables
+set -o pipefail
+
 if [ -n "$TMUX" ]; then
   echo "I can't be run from inside a tmux session, please exit the session and run me in a bare terminal."
   exit 1
@@ -39,8 +43,19 @@ SERVICES=("postgresql" "elasticsearch" "memcached" "redis")
 for service in "${SERVICES[@]}"; do brew services start $service; done
 
 # Set default shell
-if ! [ "$SHELL" == "/bin/zsh" ]; then
+if ! [ "$SHELL" = "/bin/zsh" ]; then
   chsh -s /bin/zsh
+fi
+
+# Rehash so zsh can find all its commands
+rehash
+
+# Install vim-plug
+if ! [ -d "$HOME/.vim/autoload/plug.vim" ]; then
+  curl -fLo "$HOME/.vim/autoload/plug.vim" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  vim +PlugInstall +qall
+else
+  vim +PlugUpdate +qall
 fi
 
 ## Cloning
@@ -68,7 +83,10 @@ mix archive.install https://github.com/phoenixframework/archives/raw/master/phoe
 brew install rbenv
 yes | brew install ruby-build
 latest_ruby=$(rbenv install --list | grep -E '^\s+[0-9]\.[0-9]\.[0-9]$' | tail -n 1 | xargs)
-rbenv install $latest_ruby
+
+if ! rbenv versions | grep "$latest_ruby"; then
+  rbenv install $latest_ruby
+fi
 rbenv global $latest_ruby
 
 # Elm

@@ -10,6 +10,7 @@ tap "thoughtbot/formulae"
 
 brew "carthage"
 brew "elasticsearch"
+brew "erlang"
 brew "git"
 brew "heroku"
 brew "httpie"
