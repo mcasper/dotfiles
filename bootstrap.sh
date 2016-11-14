@@ -3,8 +3,14 @@
 # Bootstrap a development environment for Matt Casper
 # usage: bash bootstrap.sh
 
+if [ -n "$TMUX" ]; then
+  echo "I can't be run from inside a tmux session, please exit the session and run me in a bare terminal."
+  exit 1
+fi
+
 # Setup code directory
-mkdir -p ~/code/home
+mkdir -p ~/code/home/upto
+mkdir -p ~/code/work
 
 # Install essentials when necessary
 if [[ $(/usr/bin/gcc 2>&1) =~ "no developer tools were found" ]] || [[ ! -x /usr/bin/gcc ]]; then
@@ -19,12 +25,25 @@ if [[ ! -x /usr/local/bin/brew ]]; then
 fi
 
 # Install homebrew bundle
+echo "Updating brew, running 'brew bundle', and upgrading packages"
 brew update
 brew tap Homebrew/bundle
-brew bundle
+brew bundle --verbose
+brew upgrade
 
 SERVICES=("postgresql" "elasticsearch" "memcached" "redis")
 for service in "${SERVICES[@]}"; do brew services start $service; done
+
+## Cloning
+
+PROCORE_REPOS=("procore", "ios", "puppet", "mobile-shared")
+for repo in "${PROCORE_REPOS[@]}"; do git clone "git@github.com:procore/$repo" "$HOME/code/work/$repo"; done
+
+UPTO_REPOS=("cocoamates-marketing", "leads-marketing", "contact-us", "scripts", "bach-bracket")
+for repo in "${UPTO_REPOS[@]}"; do git clone "git@github.com:upto/$repo" "$HOME/code/home/upto/$repo"; done
+
+UPTO_APPS=("log-rx", "conner", "room-tracker")
+for repo in "${UPTO_APPS[@]}"; do git clone "git@github.com:upto/${repo}-backend" "$HOME/code/home/upto/${repo}-backend"; git clone "git@github.com:upto/${repo}-ios" "$HOME/code/home/upto/${repo}-ios"; done
 
 ## Language specific installations
 
