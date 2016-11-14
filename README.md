@@ -3,8 +3,9 @@ dotfiles
 
 Matt Casper's dotfiles
 
-Run:
+Clone this repo to `~/code/dotfiles`
+
+And run:
 ```shell
 bash bootstrap.sh
 ```
-to get setup!

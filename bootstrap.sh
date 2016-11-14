@@ -31,18 +31,25 @@ brew tap Homebrew/bundle
 brew bundle --verbose
 brew upgrade
 
+# Dotfiles
+rcup -f -d "$HOME/code/dotfiles"
+source "$HOME/.zshrc"
+
 SERVICES=("postgresql" "elasticsearch" "memcached" "redis")
 for service in "${SERVICES[@]}"; do brew services start $service; done
 
+# Set default shell
+chsh -s /bin/zsh
+
 ## Cloning
 
-PROCORE_REPOS=("procore", "ios", "puppet", "mobile-shared")
-for repo in "${PROCORE_REPOS[@]}"; do git clone "git@github.com:procore/$repo" "$HOME/code/work/$repo"; done
+PROCORE_REPOS=("procore" "ios" "puppet" "mobile-shared")
+for repo in "${PROCORE_REPOS[@]}"; do git clone "git@github.com:procore/${repo}" "$HOME/code/work/${repo}"; done
 
-UPTO_REPOS=("cocoamates-marketing", "leads-marketing", "contact-us", "scripts", "bach-bracket")
-for repo in "${UPTO_REPOS[@]}"; do git clone "git@github.com:upto/$repo" "$HOME/code/home/upto/$repo"; done
+UPTO_REPOS=("cocoamates-marketing" "leads-marketing" "contact-us" "scripts" "bach-bracket")
+for repo in "${UPTO_REPOS[@]}"; do git clone "git@github.com:upto/${repo}" "$HOME/code/home/upto/${repo}"; done
 
-UPTO_APPS=("log-rx", "conner", "room-tracker")
+UPTO_APPS=("log-rx" "conner" "room-tracker")
 for repo in "${UPTO_APPS[@]}"; do git clone "git@github.com:upto/${repo}-backend" "$HOME/code/home/upto/${repo}-backend"; git clone "git@github.com:upto/${repo}-ios" "$HOME/code/home/upto/${repo}-ios"; done
 
 ## Language specific installations
@@ -71,6 +78,3 @@ brew install go
 # Rust
 curl https://sh.rustup.rs -sSf | bash -s -- -y
 rustup update
-
-# Dotfiles
-rcup -f
