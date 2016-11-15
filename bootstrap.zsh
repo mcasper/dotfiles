@@ -34,6 +34,13 @@ brew tap Homebrew/bundle
 brew bundle --verbose
 brew upgrade
 
+# Git setup
+mkdir -p "$HOME/.git_template/hooks"
+cp git/ctags "$HOME/.git_template/hooks/ctags"
+cp git/ctags_hook "$HOME/.git_template/hooks/post-commit"
+cp git/ctags_hook "$HOME/.git_template/hooks/post-merge"
+cp git/ctags_hook "$HOME/.git_template/hooks/post-checkout"
+
 # Dotfiles
 rcup -f -d "$HOME/code/dotfiles"
 . "$HOME/.zshrc"

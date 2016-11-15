@@ -1,14 +1,14 @@
 [user]
   name = Matt Casper
   email = matthewvcasper@gmail.com
-	signingkey = DFFF72AF
+  signingkey = DFFF72AF
 [push]
-	default = matching
+  default = matching
 [core]
   editor  = vim
   autocrlf = input
 [color]
-  ui = auto 
+  ui = auto
 [color "diff"]
   meta = yellow bold
   frag = magenta bold
@@ -27,4 +27,6 @@
   remote = origin
   merge = refs/heads/master
 [credential]
-	helper = osxkeychain
+  helper = osxkeychain
+[init]
+  templatedir = ~/.git_template
