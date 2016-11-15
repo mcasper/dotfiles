@@ -58,7 +58,9 @@ export PATH="$HOME/.multirust/toolchains/nightly/cargo/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
 
 # Start rbenv
-eval "$(rbenv init -)"
+if type rbenv > /dev/null; then
+  eval "$(rbenv init -)"
+fi
 
 # Path Settings
 # - MATTCASPER.local work/go/action_tracker_queue (master) $
@@ -86,7 +88,9 @@ autoload -Uz compinit && compinit
 source `brew --prefix`/etc/profile.d/z.sh
 
 # Cargo
-source "$HOME/.cargo/env"
+if [ -d "$HOME/.cargo" ]; then
+  source "$HOME/.cargo/env"
+fi
 
 # Kiex
 [ -f "$HOME/.kiex/scripts/kiex" ] && source "$HOME/.kiex/scripts/kiex"

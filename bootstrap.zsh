@@ -87,8 +87,10 @@ git_clone ()
     exit 1
   fi
 
-  if ! [ -d "$DIR_PATH" ]; then
+  if ! [ -d "$DIR_PATH/$REPO" ]; then
     git clone "git@github.com:${ORG}/${REPO}" "$DIR_PATH/$REPO"
+  else
+    echo "$DIR_PATH/$REPO already exists, skipping"
   fi
 }
 
@@ -116,11 +118,12 @@ for repo in $UPTO_APPS; do upto_clone "${repo}-backend"; upto_clone "${repo}-ios
 # Elixir - kiex (version manager)
 if ! type kiex > /dev/null 2>&1; then
   curl -sSL https://raw.githubusercontent.com/taylor/kiex/master/install | bash -s
+  . "$HOME/.zshrc"
 fi
 
 latest_elixir=$(kiex list known | tail -n 1 | xargs)
 
-if ! kiex list | grep -q "$latest_elixir"; then
+if ! [[ -n $(kiex list | grep "$latest_elixir") ]]; then
   kiex install "$latest_elixir"
 fi
 
@@ -129,20 +132,12 @@ kiex default "$latest_elixir"
 mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new.ez --force
 
 # Ruby - rbenv (version manager)
-brew install rbenv
-yes | brew install ruby-build
 latest_ruby=$(rbenv install --list | grep -E '^\s+[0-9]\.[0-9]\.[0-9]$' | tail -n 1 | xargs)
 
 if ! rbenv versions | grep -q "$latest_ruby"; then
   rbenv install "$latest_ruby"
 fi
 rbenv global "$latest_ruby"
-
-# Elm
-brew install elm
-
-# Go
-brew install go
 
 # Rust
 curl https://sh.rustup.rs -sSf | bash -s -- -y
