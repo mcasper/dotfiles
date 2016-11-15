@@ -1,13 +1,12 @@
-#!/bin/bash
+#!/bin/zsh
 
 # Bootstrap a development environment for Matt Casper
-# usage: bash bootstrap.sh
+# usage: ./bootstrap.zsh
 
-# Can't "set e", because our clones return 1 for existing dirs ATM.
-# Can't "set u", because we use several potentially unbound variables
-set -o pipefail
+set -eo pipefail
 
-if [ -n "$TMUX" ]; then
+# "${VAR-}" takes the value of the variable, or empty string if it doesn't exist
+if [ -n "${TMUX-}" ]; then
   echo "I can't be run from inside a tmux session, please exit the session and run me in a bare terminal."
   exit 1
 fi
@@ -37,10 +36,10 @@ brew upgrade
 
 # Dotfiles
 rcup -f -d "$HOME/code/dotfiles"
-source "$HOME/.zshrc"
+. "$HOME/.zshrc"
 
 SERVICES=("postgresql" "elasticsearch" "memcached" "redis")
-for service in "${SERVICES[@]}"; do brew services start $service; done
+for service in "${SERVICES[@]}"; do brew services start "$service"; done
 
 # Set default shell
 if ! [ "$SHELL" = "/bin/zsh" ]; then
@@ -51,7 +50,7 @@ fi
 rehash
 
 # Install vim-plug
-if ! [ -d "$HOME/.vim/autoload/plug.vim" ]; then
+if ! [ -f "$HOME/.vim/autoload/plug.vim" ]; then
   curl -fLo "$HOME/.vim/autoload/plug.vim" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   vim +PlugInstall +qall
 else
@@ -60,23 +59,66 @@ fi
 
 ## Cloning
 
+git_clone ()
+{
+  ORG=${1-}
+  REPO=${2-}
+  DIR_PATH=${3-}
+
+  if ! [ -n "$ORG" ]; then
+    echo "git_clone() expects \$1 to be an org"
+    exit 1
+  fi
+
+  if ! [ -n "$REPO" ]; then
+    echo "git_clone() expects \$2 to be a repo"
+    exit 1
+  fi
+
+  if ! [ -n "$DIR_PATH" ]; then
+    echo "git_clone() expects \$3 to be a path"
+    exit 1
+  fi
+
+  if ! [ -d "$DIR_PATH" ]; then
+    git clone "git@github.com:${ORG}/${REPO}" "$DIR_PATH/$REPO"
+  fi
+}
+
+procore_clone ()
+{
+  git_clone "procore" "$1" "$HOME/code/work"
+}
+
+upto_clone ()
+{
+  git_clone "upto" "$1" "$HOME/code/home/upto"
+}
+
 PROCORE_REPOS=("procore" "ios" "puppet" "mobile-shared")
-for repo in "${PROCORE_REPOS[@]}"; do git clone "git@github.com:procore/${repo}" "$HOME/code/work/${repo}"; done
+for repo in $PROCORE_REPOS; do procore_clone "$repo"; done
 
 UPTO_REPOS=("cocoamates-marketing" "leads-marketing" "contact-us" "scripts" "bach-bracket")
-for repo in "${UPTO_REPOS[@]}"; do git clone "git@github.com:upto/${repo}" "$HOME/code/home/upto/${repo}"; done
+for repo in $UPTO_REPOS; do upto_clone "$repo"; done
 
 UPTO_APPS=("log-rx" "conner" "room-tracker")
-for repo in "${UPTO_APPS[@]}"; do git clone "git@github.com:upto/${repo}-backend" "$HOME/code/home/upto/${repo}-backend"; git clone "git@github.com:upto/${repo}-ios" "$HOME/code/home/upto/${repo}-ios"; done
+for repo in $UPTO_APPS; do upto_clone "${repo}-backend"; upto_clone "${repo}-ios"; done
 
 ## Language specific installations
 
 # Elixir - kiex (version manager)
-curl -sSL https://raw.githubusercontent.com/taylor/kiex/master/install | bash -s
+if ! type kiex > /dev/null 2>&1; then
+  curl -sSL https://raw.githubusercontent.com/taylor/kiex/master/install | bash -s
+fi
+
 latest_elixir=$(kiex list known | tail -n 1 | xargs)
-kiex install $latest_elixir
-kiex use $latest_elixir
-kiex default $latest_elixir
+
+if ! kiex list | grep -q "$latest_elixir"; then
+  kiex install "$latest_elixir"
+fi
+
+kiex use "$latest_elixir"
+kiex default "$latest_elixir"
 mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new.ez --force
 
 # Ruby - rbenv (version manager)
@@ -84,10 +126,10 @@ brew install rbenv
 yes | brew install ruby-build
 latest_ruby=$(rbenv install --list | grep -E '^\s+[0-9]\.[0-9]\.[0-9]$' | tail -n 1 | xargs)
 
-if ! rbenv versions | grep "$latest_ruby"; then
-  rbenv install $latest_ruby
+if ! rbenv versions | grep -q "$latest_ruby"; then
+  rbenv install "$latest_ruby"
 fi
-rbenv global $latest_ruby
+rbenv global "$latest_ruby"
 
 # Elm
 brew install elm
@@ -98,3 +140,7 @@ brew install go
 # Rust
 curl https://sh.rustup.rs -sSf | bash -s -- -y
 rustup update
+
+if ! cargo install --list | grep -q ripgrep; then
+  cargo install ripgrep
+fi
