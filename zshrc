@@ -10,6 +10,7 @@ alias ..="cd ../"
 alias ...="cd ../.."
 alias ....="cd ../../.."
 alias ltree="tree -L 1"
+alias updatedb="/usr/libexec/locate.updatedb"
 
 # tmux
 alias tma="tmux att -t"
