@@ -136,6 +136,7 @@ latest_ruby=$(rbenv install --list | grep -E '^\s+[0-9]\.[0-9]\.[0-9]$' | tail -
 
 if ! rbenv versions | grep -q "$latest_ruby"; then
   rbenv install "$latest_ruby"
+  gem install bundler
 fi
 rbenv global "$latest_ruby"
 
