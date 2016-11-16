@@ -144,6 +144,6 @@ rbenv global "$latest_ruby"
 curl https://sh.rustup.rs -sSf | bash -s -- -y
 rustup update
 
-if ! cargo install --list | grep -q ripgrep; then
+if ! [[ -n $(cargo install --list | grep ripgrep) ]]; then
   cargo install ripgrep
 fi
