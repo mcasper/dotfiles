@@ -52,7 +52,7 @@ setopt SHARE_HISTORY
 
 # Path VARs
 export GOPATH="$HOME/code/gocode:/code/work/pgnetdetective"
-export PATH="/usr/local/bin:/usr/bin:/usr/local/rbenv/bin:/usr/local/rbenv/shims:/usr/local/bin:$PATH"
+export PATH="/usr/local/bin:/usr/bin:/usr/local/bin:$PATH"
 export PATH="$HOME/.multirust/toolchains/stable/cargo/bin:$PATH"
 export PATH="$HOME/.multirust/toolchains/beta/cargo/bin:$PATH"
 export PATH="$HOME/.multirust/toolchains/nightly/cargo/bin:$PATH"
