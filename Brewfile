@@ -12,6 +12,7 @@ tap "thoughtbot/formulae"
 
 brew "carthage"
 brew "cmake"
+brew "doxygen"
 brew "elasticsearch"
 brew "elm"
 brew "erlang"
