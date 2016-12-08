@@ -3,7 +3,7 @@
   email = matthewvcasper@gmail.com
   signingkey = DFFF72AF
 [push]
-  default = matching
+  default = simple
 [core]
   editor  = vim
   autocrlf = input
