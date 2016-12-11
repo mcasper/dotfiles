@@ -1,4 +1,5 @@
 cask "java"
+cask "handbrake"
 
 tap "caskroom/cask"
 tap "homebrew/boneyard"
