@@ -45,8 +45,8 @@ alias gupdate="git pull && git-clean -y"
 ## User configuration ##
 
 # History
-export HISTSIZE=10000
-export SAVEHIST=10000
+export HISTSIZE=100000
+export SAVEHIST=100000
 export HISTFILE=~/.history
 setopt SHARE_HISTORY
 
@@ -100,3 +100,13 @@ fi
 [ -f "$HOME/.travis/travis.sh" ] && source "$HOME/.travis/travis.sh"
 
 fpath+=~/.zfunc
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f /Users/mattcasper/google-cloud-sdk/path.zsh.inc ]; then
+  source '/Users/mattcasper/google-cloud-sdk/path.zsh.inc'
+fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f /Users/mattcasper/google-cloud-sdk/completion.zsh.inc ]; then
+  source '/Users/mattcasper/google-cloud-sdk/completion.zsh.inc'
+fi
