@@ -1,12 +1,12 @@
 [user]
   name = Matt Casper
   email = matthewvcasper@gmail.com
-  signingkey = DFFF72AF
 [push]
   default = simple
 [core]
   editor  = vim
   autocrlf = input
+  excludesfile = ~/.gitignore_global
 [color]
   ui = auto
 [color "diff"]
