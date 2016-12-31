@@ -12,6 +12,9 @@ alias ....="cd ../../.."
 alias ltree="tree -L 1"
 alias updatedb="/usr/libexec/locate.updatedb"
 
+# Heroku
+alias heroku_remote="heroku git:remote -a"
+
 # tmux
 alias tma="tmux att -t"
 alias tmls="tmux ls"
