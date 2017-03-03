@@ -51,7 +51,8 @@ Plug 'rust-lang/rust.vim'
 Plug 'fatih/vim-go'
 
 "Elm
-Plug 'lambdatoast/elm.vim'
+" Plug 'lambdatoast/elm.vim'
+Plug 'ElmCast/elm-vim'
 
 "Swift
 Plug 'toyamarinyon/vim-swift'
@@ -122,6 +123,8 @@ let mapleader = " "
 "===============
 
 let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
+
+let g:elm_format_autosave = 1
 
 "==================
 "SETTINGS BY OTHERS
