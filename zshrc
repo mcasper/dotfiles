@@ -43,6 +43,7 @@ alias gpoh="git push origin HEAD"
 alias gsu="git submodule update"
 alias gap="git add -p"
 alias grm="git pull --rebase origin master"
+alias grd="git pull --rebase origin development"
 alias gupdate="git pull && git-clean -y"
 
 ## User configuration ##
