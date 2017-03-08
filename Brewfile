@@ -10,6 +10,7 @@ tap "homebrew/services"
 tap "joshuaclayton/formulae"
 tap "neovim/neovim"
 tap "thoughtbot/formulae"
+tap "facebook/fb"
 
 brew "carthage"
 brew "cloc"
