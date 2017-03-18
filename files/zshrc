@@ -12,6 +12,9 @@ alias ....="cd ../../.."
 alias ltree="tree -L 1"
 alias updatedb="/usr/libexec/locate.updatedb"
 
+# Because I'm dumb
+alias vim="nvim"
+
 # Heroku
 alias heroku_remote="heroku git:remote -a"
 

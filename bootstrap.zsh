@@ -43,7 +43,7 @@ cp git/ctags_hook "$HOME/.git_template/hooks/post-checkout"
 cp git/gitignore_global "$HOME/.gitignore_global"
 
 # Dotfiles
-rcup -f -d "$HOME/code/dotfiles"
+rcup -f -d "$HOME/code/dotfiles/files"
 . "$HOME/.zshrc"
 
 SERVICES=("postgresql" "elasticsearch" "memcached" "redis")
@@ -57,12 +57,16 @@ fi
 # Rehash so zsh can find all its commands
 rehash
 
+# Setup neovim
+mkdir -p $HOME/.config
+ln -sf $HOME/code/dotfiles/files/nvim $HOME/.config
+
 # Install vim-plug
-if ! [ -f "$HOME/.vim/autoload/plug.vim" ]; then
-  curl -fLo "$HOME/.vim/autoload/plug.vim" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  vim +PlugInstall +qall
+if ! [ -f "$HOME/.local/share/nvim/site/autoload/plug.vim" ]; then
+  curl -fLo "$HOME/.local/share/nvim/site/autoload/plug.vim" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  nvim +PlugInstall +qall
 else
-  vim +PlugUpdate +qall
+  nvim +PlugUpdate +qall
 fi
 
 ## Cloning
