@@ -52,6 +52,10 @@ Plug 'ElmCast/elm-vim'
 "Swift
 Plug 'toyamarinyon/vim-swift'
 
+"Javascript
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
+
 "Status Bar
 Plug 'vim-airline/vim-airline'
 

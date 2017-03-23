@@ -10,8 +10,8 @@ if filereadable(expand("$HOME/.config/nvim/plugins.vim"))
 endif
 
 " Functions
-if filereadable(expand("$HOME/.config/nvim/plugins.vim"))
-  source $HOME/.config/nvim/plugins.vim
+if filereadable(expand("$HOME/.config/nvim/functions.vim"))
+  source $HOME/.config/nvim/functions.vim
 endif
 
 " Basic Config
@@ -56,6 +56,8 @@ set synmaxcol=250
 " Plugin Settings
 let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
 
+let g:jsx_ext_required = 0
+
 " Verify These
 
 " Prevent Vim from clobbering the scrollback buffer. See
@@ -87,6 +89,7 @@ autocmd FileType gitcommit setlocal spell textwidth=72
 " Mappings
 
 let mapleader = "\<Space>"
+let mouse = " "
 
 map <Leader>w :w!<CR>
 map <Leader>q :bd<CR>
