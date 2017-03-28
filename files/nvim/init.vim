@@ -61,6 +61,8 @@ let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
 
 let g:jsx_ext_required = 0
 
+let test#strategy = "neovim"
+
 " Verify These
 
 " Prevent Vim from clobbering the scrollback buffer. See
