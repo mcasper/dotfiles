@@ -95,8 +95,8 @@ map <Leader>w :w!<CR>
 map <Leader>q :bd<CR>
 map <Leader>Q :q<CR>
 map <Leader>f  :FZF<CR>
-map <Leader>vi :tabe ~/.vimrc<CR>
-map <Leader>vs :source ~/.vimrc<CR>
+map <Leader>vi :tabe ~/.config/nvim/init.vim<CR>
+map <Leader>vs :source ~/.config/nvim/init.vim<CR>
 map <Leader>c  :bp\|bd #<CR>
 map <Leader>ws :%s/\s\+$//<CR>
 map <Leader>le :%s/\r$//<CR>

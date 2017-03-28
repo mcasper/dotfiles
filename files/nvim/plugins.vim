@@ -57,7 +57,7 @@ Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
 
 "Status Bar
-Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline'
 
 "Searching
 Plug 'rking/ag.vim'
