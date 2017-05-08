@@ -1,5 +1,6 @@
-cask "java"
+cask "android-studio"
 cask "handbrake"
+cask "java"
 
 tap "caskroom/cask"
 tap "homebrew/boneyard"
