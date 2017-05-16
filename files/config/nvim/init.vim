@@ -27,6 +27,7 @@ set tabstop=2
 set shiftwidth=2
 set softtabstop=2
 set expandtab
+set cursorline
 set smarttab
 set autoindent
 set splitbelow
@@ -52,9 +53,11 @@ colo seoul256
 
 set background=dark
 set colorcolumn=80
-set cursorline
 set ruler
 set synmaxcol=250
+
+set guicursor=a:hor10
+au VimLeave * set guicursor=a:hor10
 
 " Plugin Settings
 let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
@@ -62,6 +65,12 @@ let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
 let g:jsx_ext_required = 0
 
 let test#strategy = "neovim"
+
+let g:ycm_rust_src_path = '/usr/local/src'
+
+let g:ycm_server_python_interpreter = '/usr/local/bin/python'
+let g:python2_host_prog = '/usr/local/bin/python'
+let g:python3_host_prog = '/usr/local/bin/python3'
 
 " Verify These
 

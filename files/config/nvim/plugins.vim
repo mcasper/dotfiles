@@ -6,7 +6,10 @@ call plug#begin('~/.vim/plugged')
 " misc
 Plug 'tpope/vim-commentary'
 Plug 'junegunn/vim-easy-align'
-Plug 'ervandew/supertab'
+
+" Completion
+" Plug 'ervandew/supertab'
+Plug 'valloric/youcompleteme'
 
 "tpope
 Plug 'tpope/vim-endwise'

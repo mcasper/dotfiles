@@ -153,6 +153,10 @@ if ! [[ -n $(cargo install --list | grep ripgrep) ]]; then
   cargo install ripgrep
 fi
 
+# Python
+pip2 install neovim --upgrade
+pip3 install neovim --upgrade
+
 # Google Cloud SDK
 wget -O /Users/mattcasper/google-cloud-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-138.0.0-darwin-x86_64.tar.gz
 tar -xzf /Users/mattcasper/google-cloud-sdk.tar.gz -f /Users/mattcasper/google-cloud-sdk
