@@ -45,19 +45,26 @@ set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 
 " Color and UI
-" colorscheme hybrid
-" colorscheme flattened_light
-" https://github.com/junegunn/seoul256.vim
-let g:seoul256_background = 234
-colo seoul256
+if $LIGHT_SHELL
+  " Light
+  let g:seoul256_background = 255
+  colo seoul256-light
+  set background=light
+else
+  " Dark
+  let g:seoul256_background = 234
+  colo seoul256
+  set background=dark
+endif
 
-set background=dark
 set colorcolumn=80
 set ruler
 set synmaxcol=250
 
 set guicursor=a:hor10
 au VimLeave * set guicursor=a:hor10
+au BufEnter * set guicursor=a:hor10
+au BufLeave * set guicursor=a:hor10
 
 " Plugin Settings
 let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
@@ -67,10 +74,14 @@ let g:jsx_ext_required = 0
 let test#strategy = "neovim"
 
 let g:ycm_rust_src_path = '/usr/local/src'
-
+let g:ycm_complete_in_comments = 1
+let g:ycm_complete_in_strings = 1
+let g:ycm_collect_identifiers_from_comments_and_strings = 1
 let g:ycm_server_python_interpreter = '/usr/local/bin/python'
 let g:python2_host_prog = '/usr/local/bin/python'
 let g:python3_host_prog = '/usr/local/bin/python3'
+
+let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 0
 
 " Verify These
 

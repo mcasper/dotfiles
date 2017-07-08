@@ -30,3 +30,14 @@
   helper = osxkeychain
 [init]
   templatedir = ~/.git_template
+[alias]
+  co = checkout
+  cm = commit
+  s = status
+  br = branch --sort=-committerdate
+  df = diff --color
+  dfom = diff master --color
+  pl = pull
+  p = push
+  ad = add --patch
+  pim = pull origin master
