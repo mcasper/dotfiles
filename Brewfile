@@ -1,4 +1,5 @@
 cask "android-studio"
+cask "docker"
 cask "handbrake"
 cask "java"
 
