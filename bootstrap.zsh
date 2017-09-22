@@ -43,7 +43,7 @@ cp git/ctags_hook "$HOME/.git_template/hooks/post-checkout"
 cp git/gitignore_global "$HOME/.gitignore_global"
 
 # Dotfiles
-rcup -f -d "$HOME/code/dotfiles/files"
+rcup -f -d "$HOME/code/dotfiles_local/files"
 . "$HOME/.zshrc"
 
 SERVICES=("postgresql" "elasticsearch" "memcached" "redis")
@@ -68,55 +68,6 @@ if ! [ -f "$HOME/.local/share/nvim/site/autoload/plug.vim" ]; then
 else
   nvim +PlugUpdate +qall
 fi
-
-## Cloning
-
-git_clone ()
-{
-  ORG=${1-}
-  REPO=${2-}
-  DIR_PATH=${3-}
-
-  if ! [ -n "$ORG" ]; then
-    echo "git_clone() expects \$1 to be an org"
-    exit 1
-  fi
-
-  if ! [ -n "$REPO" ]; then
-    echo "git_clone() expects \$2 to be a repo"
-    exit 1
-  fi
-
-  if ! [ -n "$DIR_PATH" ]; then
-    echo "git_clone() expects \$3 to be a path"
-    exit 1
-  fi
-
-  if ! [ -d "$DIR_PATH/$REPO" ]; then
-    git clone "git@github.com:${ORG}/${REPO}" "$DIR_PATH/$REPO"
-  else
-    echo "$DIR_PATH/$REPO already exists, skipping"
-  fi
-}
-
-procore_clone ()
-{
-  git_clone "procore" "$1" "$HOME/code/work"
-}
-
-upto_clone ()
-{
-  git_clone "upto" "$1" "$HOME/code/home/upto"
-}
-
-PROCORE_REPOS=("procore" "ios" "puppet" "mobile-shared")
-for repo in $PROCORE_REPOS; do procore_clone "$repo"; done
-
-UPTO_REPOS=("cocoamates-marketing" "leads-marketing" "contact-us" "scripts" "bach-bracket")
-for repo in $UPTO_REPOS; do upto_clone "$repo"; done
-
-UPTO_APPS=("log-rx" "conner" "room-tracker")
-for repo in $UPTO_APPS; do upto_clone "${repo}-backend"; upto_clone "${repo}-ios"; done
 
 ## Language specific installations
 
@@ -154,6 +105,10 @@ if ! [[ -n $(cargo install --list | grep ripgrep) ]]; then
 fi
 
 # Python
+if [[ ! -e /usr/local/bin/python ]]; then
+  ln -sfn /usr/bin/python /usr/local/bin/python
+fi
+
 pip2 install neovim --upgrade
 pip3 install neovim --upgrade
 
