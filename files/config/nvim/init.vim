@@ -43,6 +43,7 @@ set mouse=""
 set backup
 set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+set clipboard=unnamed
 
 " Color and UI
 if $LIGHT_SHELL
@@ -71,7 +72,7 @@ let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
 
 let g:jsx_ext_required = 0
 
-let test#strategy = "neovim"
+let test#strategy = "vimux"
 
 let g:ycm_rust_src_path = '/usr/local/src'
 let g:ycm_complete_in_comments = 1
@@ -92,6 +93,10 @@ set t_ti= t_te=
 set scrolloff=3
 
 let g:elm_format_autosave = 1
+
+let g:ycm_semantic_triggers = {
+     \ 'elm' : ['.'],
+     \}
 
 " Autocmds
 

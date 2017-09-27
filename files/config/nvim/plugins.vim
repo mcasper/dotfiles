@@ -32,6 +32,7 @@ Plug 'elixir-lang/vim-elixir'
 
 "Ruby/Rails Testing
 Plug 'janko-m/vim-test'
+Plug 'benmills/vimux'
 
 "File Utils
 Plug 'pbrisbin/vim-mkdir'
@@ -50,7 +51,8 @@ Plug 'fatih/vim-go'
 
 "Elm
 " Plug 'lambdatoast/elm.vim'
-Plug 'ElmCast/elm-vim'
+" Plug 'ElmCast/elm-vim'
+Plug 'mdxprograms/elm-vim', { 'branch': 'patch-1' }
 
 "Swift
 Plug 'toyamarinyon/vim-swift'
