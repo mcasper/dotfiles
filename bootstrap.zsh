@@ -99,9 +99,14 @@ rbenv global "$latest_ruby"
 # Rust
 curl https://sh.rustup.rs -sSf | bash -s -- -y
 rustup update
+rustup component add rust-src
 
 if ! [[ -n $(cargo install --list | grep ripgrep) ]]; then
   cargo install ripgrep
+fi
+
+if ! [[ -n $(cargo install --list | grep racer) ]]; then
+  cargo install racer
 fi
 
 # Python
