@@ -74,13 +74,24 @@ let g:jsx_ext_required = 0
 
 let test#strategy = "vimux"
 
-let g:ycm_rust_src_path = '/usr/local/src'
-let g:ycm_complete_in_comments = 1
-let g:ycm_complete_in_strings = 1
-let g:ycm_collect_identifiers_from_comments_and_strings = 1
-let g:ycm_server_python_interpreter = '/usr/local/bin/python'
-let g:python2_host_prog = '/usr/local/bin/python'
-let g:python3_host_prog = '/usr/local/bin/python3'
+" let g:ycm_rust_src_path = '/usr/local/src'
+" let g:ycm_complete_in_comments = 1
+" let g:ycm_complete_in_strings = 1
+" let g:ycm_collect_identifiers_from_comments_and_strings = 1
+" let g:ycm_server_python_interpreter = '/usr/local/bin/python2'
+" let g:python2_host_prog = '/usr/local/bin/python2'
+" let g:python3_host_prog = '/usr/local/bin/python3'
+" let g:ycm_semantic_triggers = {
+     " \ 'elm' : ['.'],
+     " \}
+
+" let g:deoplete#enable_at_startup = 1
+
+set shortmess+=c
+" inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS noci
+let g:rust_src_path = '/Users/mattcasper/.rustup/toolchains/nightly-x86_64-apple-darwin/lib/rustlib/src/rust/src'
+
 
 let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 0
 
@@ -93,10 +104,6 @@ set t_ti= t_te=
 set scrolloff=3
 
 let g:elm_format_autosave = 1
-
-let g:ycm_semantic_triggers = {
-     \ 'elm' : ['.'],
-     \}
 
 " Autocmds
 
