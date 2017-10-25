@@ -11,8 +11,13 @@ if [ -n "${TMUX-}" ]; then
   exit 1
 fi
 
+if [[ $(pwd) != "$HOME/dotfiles" ]]; then
+  echo "Dotfiles must be located at $HOME/dotfiles, I won't work from anywhere else."
+  exit 1
+fi
+
 # Setup code directory
-mkdir -p ~/code/home/upto
+mkdir -p ~/code/home
 mkdir -p ~/code/work
 
 # Install essentials when necessary
@@ -43,7 +48,7 @@ cp git/ctags_hook "$HOME/.git_template/hooks/post-checkout"
 cp git/gitignore_global "$HOME/.gitignore_global"
 
 # Dotfiles
-rcup -f -d "$HOME/code/dotfiles_local/files"
+rcup -f -d "$HOME/dotfiles/files"
 . "$HOME/.zshrc"
 
 SERVICES=("postgresql" "elasticsearch" "memcached" "redis")

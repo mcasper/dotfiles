@@ -121,6 +121,7 @@ map <Leader>q :bd<CR>
 map <Leader>Q :q<CR>
 map <Leader>f  :FZF<CR>
 map <Leader>vi :tabe ~/.config/nvim/init.vim<CR>
+map <Leader>vp :tabe ~/.config/nvim/plugins.vim<CR>
 map <Leader>vs :source ~/.config/nvim/init.vim<CR>
 map <Leader>c  :bp\|bd #<CR>
 map <Leader>ws :%s/\s\+$//<CR>
