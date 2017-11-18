@@ -42,6 +42,9 @@ Plug 'elixir-lang/vim-elixir'
 Plug 'benmills/vimux'
 Plug 'janko-m/vim-test'
 
+"Crystal
+Plug 'rhysd/vim-crystal'
+
 "File Utils
 Plug 'pbrisbin/vim-mkdir'
 
