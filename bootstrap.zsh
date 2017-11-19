@@ -48,7 +48,7 @@ cp git/ctags_hook "$HOME/.git_template/hooks/post-checkout"
 cp git/gitignore_global "$HOME/.gitignore_global"
 
 # Dotfiles
-rcup -f -d "$HOME/dotfiles/files"
+rcup -f -d "$HOME/dotfiles/files" -v
 . "$HOME/.zshrc"
 
 SERVICES=("postgresql" "elasticsearch" "memcached" "redis")
