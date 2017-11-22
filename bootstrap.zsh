@@ -47,6 +47,9 @@ cp git/ctags_hook "$HOME/.git_template/hooks/post-merge"
 cp git/ctags_hook "$HOME/.git_template/hooks/post-checkout"
 cp git/gitignore_global "$HOME/.gitignore_global"
 
+# tern
+npm install -g tern
+
 # Dotfiles
 rcup -f -d "$HOME/dotfiles/files" -v
 . "$HOME/.zshrc"
