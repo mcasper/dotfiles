@@ -124,3 +124,7 @@ if [ -f /Users/mattcasper/google-cloud-sdk/completion.zsh.inc ]; then
 fi
 
 alias emacs="/usr/local/Cellar/emacs/25.3/bin/emacs -nw"
+
+. $HOME/.asdf/asdf.sh
+
+. $HOME/.asdf/completions/asdf.bash
