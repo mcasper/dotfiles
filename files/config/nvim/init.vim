@@ -74,6 +74,8 @@ let g:jsx_ext_required = 0
 
 let test#strategy = "vimux"
 
+let g:mix_format_on_save = 1
+
 " let g:ycm_rust_src_path = '/usr/local/src'
 " let g:ycm_complete_in_comments = 1
 " let g:ycm_complete_in_strings = 1

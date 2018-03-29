@@ -37,6 +37,7 @@ Plug 'junegunn/fzf.vim'
 
 "Elixir
 Plug 'elixir-lang/vim-elixir'
+" Plug 'mhinz/vim-mix-format'
 
 "Ruby/Rails Testing
 Plug 'benmills/vimux'
@@ -56,6 +57,9 @@ Plug 'rodjek/vim-puppet'
 
 "Rust
 Plug 'rust-lang/rust.vim'
+
+"Haskell
+Plug 'neovimhaskell/haskell-vim'
 
 "Go
 Plug 'fatih/vim-go'
