@@ -12,7 +12,7 @@ alias ....="cd ../../.."
 alias ltree="tree -L 1"
 alias updatedb="/usr/libexec/locate.updatedb"
 
-alias update="brew update && brew upgrade && rustup update"
+alias update="brew update && brew upgrade && brew cleanup && rustup update"
 
 # Because I'm dumb
 alias vim="nvim"
