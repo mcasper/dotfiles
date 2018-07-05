@@ -66,8 +66,8 @@ Plug 'fatih/vim-go'
 
 "Elm
 " Plug 'lambdatoast/elm.vim'
-" Plug 'ElmCast/elm-vim'
-Plug 'mdxprograms/elm-vim', { 'branch': 'patch-1' }
+Plug 'ElmCast/elm-vim'
+" Plug 'mdxprograms/elm-vim', { 'branch': 'patch-1' }
 
 "Swift
 Plug 'toyamarinyon/vim-swift'
