@@ -10,13 +10,33 @@ Plug 'junegunn/vim-easy-align'
 " Plug 'ervandew/supertab'
 " Plug 'valloric/youcompleteme'
 " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'roxma/nvim-completion-manager'
-Plug 'othree/csscomplete.vim'
-Plug 'roxma/nvim-cm-tern',  {'do': 'npm install'}
-Plug 'roxma/ncm-elm-oracle'
-Plug 'racer-rust/vim-racer'
-Plug 'roxma/nvim-cm-racer'
-Plug 'roxma/ncm-rct-complete'
+" Plug 'roxma/nvim-completion-manager'
+" Requirement of ncm2
+" Plug 'ncm2/ncm2'
+" Plug 'roxma/nvim-yarp'
+" Plug 'ncm2/ncm2-tern',  {'do': 'npm install'}
+" Plug 'ncm2/ncm2-racer'
+" Plug 'racer-rust/vim-racer'
+" Plug 'ncm2/ncm2-cssomni'
+" Plug 'ncm2/ncm2-tmux'
+" Plug 'ncm2/ncm2-match-highlight'
+" Plug 'ncm2/ncm2-bufword'
+
+" Plug 'othree/csscomplete.vim'
+" Plug 'roxma/nvim-cm-tern',  {'do': 'npm install'}
+" Plug 'roxma/ncm-elm-oracle'
+" Plug 'racer-rust/vim-racer'
+" Plug 'roxma/nvim-cm-racer'
+" Plug 'roxma/ncm-rct-complete'
+"
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+" Plug 'pbogut/deoplete-elm', { 'do': 'npm install -g elm-oracle' }
 
 "tpope
 Plug 'tpope/vim-commentary'

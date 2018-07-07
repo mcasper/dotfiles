@@ -68,7 +68,16 @@ au BufEnter * set guicursor=a:hor10
 au BufLeave * set guicursor=a:hor10
 
 " Plugin Settings
+
+" FZF
 let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
+
+" ncm2
+" autocmd BufEnter * call ncm2#enable_for_buffer()
+" set completeopt=noinsert,menuone,noselect
+
+" deoplete
+let g:deoplete#enable_at_startup = 1
 
 let g:jsx_ext_required = 0
 
@@ -82,7 +91,7 @@ let g:mix_format_on_save = 1
 " let g:ycm_collect_identifiers_from_comments_and_strings = 1
 " let g:ycm_server_python_interpreter = '/usr/local/bin/python2'
 " let g:python2_host_prog = '/usr/local/bin/python2'
-" let g:python3_host_prog = '/usr/local/bin/python3'
+let g:python3_host_prog = '/usr/local/bin/python3'
 " let g:ycm_semantic_triggers = {
      " \ 'elm' : ['.'],
      " \}
