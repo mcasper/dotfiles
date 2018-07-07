@@ -3,9 +3,9 @@ dotfiles
 
 Matt Casper's dotfiles
 
-Clone this repo to `~/code/dotfiles`
+Clone this repo to `~/dotfiles`
 
 And run:
 ```shell
-./bootstrap.zsh
+cd ~/dotfiles && ./bootstrap.zsh
 ```
