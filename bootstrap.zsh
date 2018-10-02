@@ -67,7 +67,7 @@ rehash
 
 # Setup neovim
 mkdir -p $HOME/.config
-ln -sf $HOME/code/dotfiles/files/nvim $HOME/.config
+ln -sf $HOME/dotfiles/files/nvim $HOME/.config
 
 # Install vim-plug
 if ! [ -f "$HOME/.local/share/nvim/site/autoload/plug.vim" ]; then
