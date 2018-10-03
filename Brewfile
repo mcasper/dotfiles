@@ -3,6 +3,7 @@ cask "docker"
 cask "handbrake"
 cask "homebrew/cask-versions/java8"
 cask "java"
+cask "karabiner-elements"
 
 tap "caskroom/cask"
 tap "homebrew/boneyard"

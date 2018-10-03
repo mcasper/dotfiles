@@ -67,6 +67,15 @@ fi
 # Rehash so zsh can find all its commands
 rehash
 
+# Iterm Colors
+if [[ ! -e "$HOME/code/iterm_colors" ]]; then
+  mkdir -p "$HOME/code/iterm_colors"
+  wget https://github.com/mbadolato/iTerm2-Color-Schemes/raw/master/schemes/PencilDark.itermcolors -O "$HOME/code/iterm_colors/PencilDark.itermcolors"
+  wget https://github.com/mbadolato/iTerm2-Color-Schemes/raw/master/schemes/PencilLight.itermcolors -O "$HOME/code/iterm_colors/PencilLight.itermcolors"
+fi
+
+echo "Follow instructions for setting up profile colors: https://github.com/mbadolato/iTerm2-Color-Schemes#installation-instructions"
+
 # Setup neovim
 mkdir -p $HOME/.config
 ln -sf $HOME/dotfiles/files/config/nvim $HOME/.config
