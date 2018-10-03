@@ -26,6 +26,8 @@ if [[ $(/usr/bin/gcc 2>&1) =~ "no developer tools were found" ]] || [[ ! -x /usr
   xcode-select --install
 fi
 
+sudo xcodebuild -license accept
+
 # Download and install Homebrew
 if [[ ! -x /usr/local/bin/brew ]]; then
   echo "Installing Homebrew"
@@ -100,13 +102,17 @@ latest_ruby=$(rbenv install --list | grep -E '^\s+[0-9]\.[0-9]\.[0-9]$' | tail -
 
 if ! rbenv versions | grep -q "$latest_ruby"; then
   rbenv install "$latest_ruby"
+  eval "$(rbenv init -)"
   gem install bundler
 fi
 rbenv global "$latest_ruby"
 
 # Rust
 curl https://sh.rustup.rs -sSf | bash -s -- -y
+source $HOME/.cargo/env
 rustup update
+rustup component add rust-src
+rustup default nightly
 rustup component add rust-src
 
 if ! [[ -n $(cargo install --list | grep ripgrep) ]]; then
