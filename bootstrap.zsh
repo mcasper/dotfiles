@@ -2,6 +2,22 @@
 
 # Bootstrap a development environment for Matt Casper
 # usage: ./bootstrap.zsh
+#
+# Other steps:
+# Install iterm3
+# Install 1password
+# Create ssh key for GitHub
+# Add ssh key password to keychain
+# Setup sshconfig
+# Install iterm color scheme
+# Remap left fn -> control
+# Remap caps lock -> control
+# Reduce the size of the dock
+# Turn off sound effects
+# Add fingerprints
+# Remove text shortcuts
+# Turn off smart quotes
+# In iterm2, set left option as Esc+
 
 set -eo pipefail
 
