@@ -72,7 +72,7 @@ npm install -g tern
 rcup -f -d "$HOME/dotfiles/files" -v
 . "$HOME/.zshrc"
 
-SERVICES=("postgresql" "elasticsearch" "memcached" "redis")
+SERVICES=("postgresql" "elasticsearch" "memcached" "redis" "consul")
 for service in "${SERVICES[@]}"; do brew services start "$service"; done
 
 # Set default shell
