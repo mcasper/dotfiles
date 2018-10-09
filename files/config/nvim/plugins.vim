@@ -59,6 +59,9 @@ Plug 'junegunn/fzf.vim'
 Plug 'elixir-lang/vim-elixir'
 " Plug 'mhinz/vim-mix-format'
 
+" Terraform
+Plug 'hashivim/vim-terraform'
+
 "Ruby/Rails Testing
 Plug 'benmills/vimux'
 Plug 'janko-m/vim-test'
