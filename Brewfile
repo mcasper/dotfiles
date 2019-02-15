@@ -7,7 +7,6 @@ cask "karabiner-elements"
 
 tap "caskroom/cask"
 tap "facebook/fb"
-tap "homebrew/boneyard"
 tap "homebrew/services"
 tap "joshuaclayton/formulae"
 tap "mcasper/formulae"
