@@ -65,6 +65,7 @@ Plug 'hashivim/vim-terraform'
 "Ruby/Rails Testing
 Plug 'benmills/vimux'
 Plug 'janko-m/vim-test'
+Plug 'ngmy/vim-rubocop'
 
 "Crystal
 Plug 'rhysd/vim-crystal'
