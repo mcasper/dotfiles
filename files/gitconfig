@@ -41,3 +41,5 @@
   p = push
   ad = add --patch
   pim = pull origin master
+[protocol]
+  version = 2
