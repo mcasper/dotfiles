@@ -85,7 +85,12 @@ zstyle ':vcs_info:*' formats \
 zstyle ':vcs_info:git*+set-message:*' hooks git-untracked
 zstyle ':vcs_info:*' enable git
 
-precmd () { vcs_info }
+precmd () {
+  pwd=$(pwd)
+  if [[ "${pwd}" != "/Users/mattcasper/code/work/procore" ]]; then
+    vcs_info
+  fi
+}
 PROMPT='%F{5} - %F{2}%M%F{5} %F{3}%3~ ${vcs_info_msg_0_}%f$ '
 
 # Source FZF
