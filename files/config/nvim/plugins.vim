@@ -38,6 +38,9 @@ else
 endif
 " Plug 'pbogut/deoplete-elm', { 'do': 'npm install -g elm-oracle' }
 
+" Asynchronous Building/Linting
+Plug 'neomake/neomake'
+
 "tpope
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-dispatch'

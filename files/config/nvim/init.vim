@@ -69,6 +69,10 @@ au BufLeave * set guicursor=a:hor10
 
 " Plugin Settings
 
+" Neomake
+" Run on buffer write, with no delay
+call neomake#configure#automake('w')
+
 " FZF
 let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
 
