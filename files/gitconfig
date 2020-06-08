@@ -43,3 +43,5 @@
   pim = pull origin master
 [protocol]
   version = 2
+[pull]
+	rebase = false
