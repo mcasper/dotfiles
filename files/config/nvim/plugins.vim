@@ -36,7 +36,10 @@ else
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
-" Plug 'pbogut/deoplete-elm', { 'do': 'npm install -g elm-oracle' }
+
+" npm install -g @elm-tooling/elm-language-server
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'andys8/vim-elm-syntax'
 
 " Asynchronous Building/Linting
 Plug 'neomake/neomake'
@@ -94,7 +97,6 @@ Plug 'fatih/vim-go'
 "Elm
 " Plug 'lambdatoast/elm.vim'
 Plug 'ElmCast/elm-vim'
-" Plug 'mdxprograms/elm-vim', { 'branch': 'patch-1' }
 
 "Swift
 Plug 'toyamarinyon/vim-swift'
