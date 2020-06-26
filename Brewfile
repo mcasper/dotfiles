@@ -1,6 +1,8 @@
 cask "android-studio"
+cask "chromedriver"
 cask "docker"
 cask "handbrake"
+cask "java"
 cask "karabiner-elements"
 cask "phantomjs"
 
