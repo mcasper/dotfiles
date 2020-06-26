@@ -130,3 +130,6 @@ alias emacs="/usr/local/Cellar/emacs/25.3/bin/emacs -nw"
 if [ -f "$HOME/.asdf/asdf.sh" ]; then
   source $HOME/.asdf/asdf.sh
 fi
+
+
+. $(brew --prefix asdf)/asdf.sh

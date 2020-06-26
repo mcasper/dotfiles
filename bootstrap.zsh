@@ -5,11 +5,14 @@
 #
 # Other steps:
 # Install iterm3
+# Give iterm "Full Disk Access" in security settings
 # Install 1password
 # Create ssh key for GitHub
 # Add ssh key password to keychain
 # Setup sshconfig
-# Install iterm color scheme
+# Install iterm color scheme - git@github.com:mattly/iterm-colors-pencil
+# Set cursor to underline in Iterm
+# Turn up key repeat and turn down delay
 # Remap left fn -> control
 # Remap caps lock -> control
 # Reduce the size of the dock
@@ -47,7 +50,7 @@ sudo xcodebuild -license accept
 # Download and install Homebrew
 if [[ ! -x /usr/local/bin/brew ]]; then
   echo "Installing Homebrew"
-  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 fi
 
 # Install homebrew bundle
@@ -94,7 +97,8 @@ echo "Follow instructions for setting up profile colors: https://github.com/mbad
 
 # Setup neovim
 mkdir -p $HOME/.config
-ln -sf $HOME/dotfiles/files/config/nvim $HOME/.config
+rm -rf $HOME/.config/nvim
+ln -sfF $HOME/dotfiles/files/config/nvim $HOME/.config
 
 # Install vim-plug
 if ! [ -f "$HOME/.local/share/nvim/site/autoload/plug.vim" ]; then
@@ -106,24 +110,37 @@ fi
 
 ## Language specific installations
 
-# Elixir - kiex (version manager)
-if ! type kiex > /dev/null 2>&1; then
-  curl -sSL https://raw.githubusercontent.com/taylor/kiex/master/install | bash -s
-  . "$HOME/.zshrc"
+# Erlang - asdf (version manager)
+if ! asdf plugin list | grep erlang; then
+  asdf plugin add erlang
 fi
 
-latest_elixir=$(kiex list known | tail -n 1 | xargs)
+latest_erlang=$(asdf list all erlang | tail -n 1 | xargs)
 
-if ! [[ -n $(kiex list | grep "$latest_elixir") ]]; then
-  kiex install "$latest_elixir"
+if ! [[ -n $(asdf list erlang | grep "$latest_erlang") ]]; then
+  asdf install erlang "$latest_erlang"
 fi
 
-kiex use "$latest_elixir"
-kiex default "$latest_elixir"
-mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new.ez --force
+asdf global erlang "$latest_erlang"
+
+# Elixir - asdf (version manager)
+if ! asdf plugin list | grep elixir; then
+  asdf plugin add elixir
+fi
+
+latest_elixir=$(asdf list all elixir | grep -E '\d+\.\d+\.\d+$' | tail -n 1 | xargs)
+
+if ! [[ -n $(asdf list elixir | grep "$latest_elixir") ]]; then
+  asdf install erlang "$latest_elixir"
+fi
+
+asdf global elixir "$latest_elixir"
+mix local.hex --force
+mix local.rebar --force
+mix archive.install hex phx_new 1.5.3 --force
 
 # Ruby - rbenv (version manager)
-latest_ruby=$(rbenv install --list | grep -E '^\s+[0-9]\.[0-9]\.[0-9]$' | tail -n 1 | xargs)
+latest_ruby=$(rbenv install --list 2>&1 | grep -E '^(\s+)?[0-9]+\.[0-9]+\.[0-9]+$' | tail -n 1 | xargs)
 
 if ! rbenv versions | grep -q "$latest_ruby"; then
   rbenv install "$latest_ruby"
@@ -153,10 +170,4 @@ if [[ ! -e /usr/local/bin/python ]]; then
   ln -sfn /usr/bin/python /usr/local/bin/python
 fi
 
-pip2 install neovim --upgrade
 pip3 install neovim --upgrade
-
-# Google Cloud SDK
-wget -O /Users/mattcasper/google-cloud-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-138.0.0-darwin-x86_64.tar.gz
-tar -xzf /Users/mattcasper/google-cloud-sdk.tar.gz -f /Users/mattcasper/google-cloud-sdk
-rm -rf /Users/mattcasper/google-cloud-sdk.tar.gz
