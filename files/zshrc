@@ -63,7 +63,7 @@ export HISTFILE=~/.history
 setopt SHARE_HISTORY
 
 # Path VARs
-export GOPATH="$HOME/code/gocode"
+export GOPATH="$HOME/code/go"
 export PATH="/usr/local/bin:/usr/bin:/usr/local/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
 
