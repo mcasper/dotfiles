@@ -44,6 +44,6 @@
 [protocol]
   version = 2
 [pull]
-	rebase = false
+  rebase = false
 [checkout]
   defaultRemote = origin
