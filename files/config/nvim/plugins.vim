@@ -7,28 +7,6 @@ call plug#begin('~/.vim/plugged')
 Plug 'junegunn/vim-easy-align'
 
 " Completion
-" Plug 'ervandew/supertab'
-" Plug 'valloric/youcompleteme'
-" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-" Plug 'roxma/nvim-completion-manager'
-" Requirement of ncm2
-" Plug 'ncm2/ncm2'
-" Plug 'roxma/nvim-yarp'
-" Plug 'ncm2/ncm2-tern',  {'do': 'npm install'}
-" Plug 'ncm2/ncm2-racer'
-" Plug 'racer-rust/vim-racer'
-" Plug 'ncm2/ncm2-cssomni'
-" Plug 'ncm2/ncm2-tmux'
-" Plug 'ncm2/ncm2-match-highlight'
-" Plug 'ncm2/ncm2-bufword'
-
-" Plug 'othree/csscomplete.vim'
-" Plug 'roxma/nvim-cm-tern',  {'do': 'npm install'}
-" Plug 'roxma/ncm-elm-oracle'
-" Plug 'racer-rust/vim-racer'
-" Plug 'roxma/nvim-cm-racer'
-" Plug 'roxma/ncm-rct-complete'
-"
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 else
@@ -36,10 +14,6 @@ else
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
-
-" npm install -g @elm-tooling/elm-language-server
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
-" Plug 'andys8/vim-elm-syntax'
 
 " Asynchronous Building/Linting
 Plug 'neomake/neomake'
@@ -63,7 +37,7 @@ Plug 'junegunn/fzf.vim'
 
 "Elixir
 Plug 'elixir-lang/vim-elixir'
-" Plug 'mhinz/vim-mix-format'
+Plug 'mhinz/vim-mix-format'
 
 " Terraform
 Plug 'hashivim/vim-terraform'
@@ -95,7 +69,6 @@ Plug 'neovimhaskell/haskell-vim'
 Plug 'fatih/vim-go'
 
 "Elm
-" Plug 'lambdatoast/elm.vim'
 Plug 'ElmCast/elm-vim'
 
 "Swift
@@ -107,11 +80,5 @@ Plug 'pangloss/vim-javascript'
 
 "Status Bar
 " Plug 'vim-airline/vim-airline'
-
-"Searching
-Plug 'rking/ag.vim'
-
-"AutoFormat
-" Plug 'Chiel92/vim-autoformat'
 
 call plug#end()

@@ -76,10 +76,6 @@ call neomake#configure#automake('w')
 " FZF
 let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
 
-" ncm2
-" autocmd BufEnter * call ncm2#enable_for_buffer()
-" set completeopt=noinsert,menuone,noselect
-
 " deoplete
 let g:deoplete#enable_at_startup = 1
 autocmd FileType elm
@@ -89,21 +85,11 @@ let g:jsx_ext_required = 0
 
 let test#strategy = "vimux"
 
-let g:mix_format_on_save = 1
+" let g:mix_format_on_save = 1
 let g:mix_format_silent_errors = 1
 
-" let g:ycm_rust_src_path = '/usr/local/src'
-" let g:ycm_complete_in_comments = 1
-" let g:ycm_complete_in_strings = 1
-" let g:ycm_collect_identifiers_from_comments_and_strings = 1
-" let g:ycm_server_python_interpreter = '/usr/local/bin/python2'
 " let g:python2_host_prog = '/usr/local/bin/python2'
 let g:python3_host_prog = '/usr/local/bin/python3'
-" let g:ycm_semantic_triggers = {
-     " \ 'elm' : ['.'],
-     " \}
-
-" let g:deoplete#enable_at_startup = 1
 
 set shortmess+=c
 " inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
@@ -157,9 +143,6 @@ map <Leader>n :call RenameFile()<cr>
 map <Leader>p :call AddDebugger("o")<cr>
 map <Leader>P :call AddDebugger("O")<cr>
 map <Leader>d :call RemoveAllDebuggers()<cr>
-
-" Turn into function
-map <Leader>ar :topleft :split config/routes.rb<CR>
 
 nmap <silent> <leader>s :TestNearest<CR>
 nmap <silent> <leader>r :TestFile<CR>
