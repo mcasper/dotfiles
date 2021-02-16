@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "assets/elm"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "../analyzer-go"
+		}
+	],
+	"settings": {}
+}
