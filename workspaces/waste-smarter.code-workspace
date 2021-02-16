@@ -1,13 +1,13 @@
 {
 	"folders": [
 		{
-			"path": "assets/elm"
+			"path": "../../code/global/waste_smarter"
 		},
 		{
-			"path": "."
+			"path": "../../code/global/analyzer-go"
 		},
 		{
-			"path": "../analyzer-go"
+			"path": "../../code/global/waste_smarter/assets/elm"
 		}
 	],
 	"settings": {}
