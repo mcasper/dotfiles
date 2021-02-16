@@ -1,9 +1,7 @@
 ## Aliases ##
 
 # General
-alias la="ls -al"
 alias ln="ln -v"
-alias mkdir="mkdir -p"
 alias grep="grep --color=auto"
 alias cp="cp -r"
 alias ..="cd ../"
@@ -29,27 +27,13 @@ alias t2="tmux -2"
 alias b="bundle"
 alias be="bundle exec"
 
-# Rails
-alias migrate="bin/rake db:migrate"
-alias rake="bin/rake"
-
-# Elixir
-alias imix="iex -S mix"
-alias server="iex -S mix phoenix.server"
-
 # Git
 alias g="git"
 alias co="git checkout"
-alias gcm="git checkout master"
 alias gs="git status"
-alias gpush="git push"
-alias gpull="git pull"
 alias gpoh="git push origin HEAD"
-alias gsu="git submodule update"
 alias gap="git add -p"
 alias grm="git pull --rebase origin master"
-alias grd="git pull --rebase origin development"
-alias gupdate="git pull && git-clean -y"
 
 alias light="export LIGHT_SHELL=1"
 alias dark="export LIGHT_SHELL=0"
@@ -67,11 +51,6 @@ export GOPATH="$HOME/code/go"
 export PATH="/usr/local/bin:/usr/bin:/usr/local/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
 
-# Start rbenv
-if type rbenv > /dev/null; then
-  eval "$(rbenv init -)"
-fi
-
 # Path Settings
 # - MATTCASPER.local work/go/action_tracker_queue (master) $
 setopt prompt_subst
@@ -85,12 +64,7 @@ zstyle ':vcs_info:*' formats \
 zstyle ':vcs_info:git*+set-message:*' hooks git-untracked
 zstyle ':vcs_info:*' enable git
 
-precmd () {
-  pwd=$(pwd)
-  if [[ "${pwd}" != "/Users/mattcasper/code/work/procore" ]]; then
-    vcs_info
-  fi
-}
+precmd () { vcs_info }
 PROMPT='%F{5} - %F{2}%M%F{5} %F{3}%3~ ${vcs_info_msg_0_}%f$ '
 
 # Source FZF
@@ -107,29 +81,10 @@ if [ -d "$HOME/.cargo" ]; then
   source "$HOME/.cargo/env"
 fi
 
-# Kiex
-[ -f "$HOME/.kiex/scripts/kiex" ] && source "$HOME/.kiex/scripts/kiex"
-
-# added by travis gem
-[ -f "$HOME/.travis/travis.sh" ] && source "$HOME/.travis/travis.sh"
-
 fpath+=~/.zfunc
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f /Users/mattcasper/google-cloud-sdk/path.zsh.inc ]; then
-  source '/Users/mattcasper/google-cloud-sdk/path.zsh.inc'
-fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f /Users/mattcasper/google-cloud-sdk/completion.zsh.inc ]; then
-  source '/Users/mattcasper/google-cloud-sdk/completion.zsh.inc'
-fi
-
-alias emacs="/usr/local/Cellar/emacs/25.3/bin/emacs -nw"
 
 if [ -f "$HOME/.asdf/asdf.sh" ]; then
   source $HOME/.asdf/asdf.sh
 fi
-
 
 . $(brew --prefix asdf)/asdf.sh
