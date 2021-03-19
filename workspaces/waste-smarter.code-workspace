@@ -5,9 +5,6 @@
 		},
 		{
 			"path": "../../code/global/analyzer-go"
-		},
-		{
-			"path": "../../code/global/waste_smarter/assets/elm"
 		}
 	],
 	"settings": {}
