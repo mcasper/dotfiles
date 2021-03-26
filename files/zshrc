@@ -51,6 +51,13 @@ export GOPATH="$HOME/code/go"
 export PATH="/usr/local/bin:/usr/bin:/usr/local/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
 
+# For react-native android
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/tools
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+
 # Path Settings
 # - MATTCASPER.local work/go/action_tracker_queue (master) $
 setopt prompt_subst
