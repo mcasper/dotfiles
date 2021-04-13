@@ -19,7 +19,6 @@ endif
 syntax on
 filetype plugin indent on
 
-set nocompatible
 set relativenumber
 set wildmenu
 set backspace=indent,eol,start
@@ -69,23 +68,10 @@ au BufLeave * set guicursor=a:hor10
 
 " Plugin Settings
 
-" Neomake
-" Run on buffer write, with no delay
-call neomake#configure#automake('w')
-
 " FZF
-let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
-
-" deoplete
-let g:deoplete#enable_at_startup = 1
-autocmd FileType elm
-\ call deoplete#custom#buffer_option('auto_complete', v:false)
+let $FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --hidden --follow --glob "!.git/*"'
 
 let g:jsx_ext_required = 0
-
-let test#strategy = "vimux"
-
-" let g:mix_format_on_save = 1
 let g:mix_format_silent_errors = 1
 
 " let g:python2_host_prog = '/usr/local/bin/python2'
@@ -97,8 +83,6 @@ autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS noci
 let g:rust_src_path = '/Users/mattcasper/.rustup/toolchains/nightly-x86_64-apple-darwin/lib/rustlib/src/rust/src'
 
 
-let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 0
-
 " Verify These
 
 " Prevent Vim from clobbering the scrollback buffer. See
@@ -106,8 +90,6 @@ let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 0
 set t_ti= t_te=
 " keep more context when scrolling off the end of a buffer
 set scrolloff=3
-
-let g:elm_format_autosave = 1
 
 " Autocmds
 
@@ -138,11 +120,16 @@ map <Leader>c  :bp\|bd #<CR>
 map <Leader>ws :%s/\s\+$//<CR>
 map <Leader>le :%s/\r$//<CR>
 map <Leader>hs :s/:\([^ ]*\)\(\s*\)=>/\1:/g<CR>
-map <Leader>i :call CorrectIndentation()<cr>
-map <Leader>n :call RenameFile()<cr>
-map <Leader>p :call AddDebugger("o")<cr>
-map <Leader>P :call AddDebugger("O")<cr>
-map <Leader>d :call RemoveAllDebuggers()<cr>
+map <Leader>i :call CorrectIndentation()<CR>
+map <Leader>n :call RenameFile()<CR>
+map <Leader>p :call AddDebugger("o")<CR>
+map <Leader>P :call AddDebugger("O")<CR>
+map <Leader>d :call RemoveAllDebuggers()<CR>
+map <Leader>a :CocAction<CR>
+
+try
+    nmap <silent> aa :call CocAction('diagnosticNext')<cr>
+endtry
 
 nmap <silent> <leader>s :TestNearest<CR>
 nmap <silent> <leader>r :TestFile<CR>

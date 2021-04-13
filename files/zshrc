@@ -33,7 +33,7 @@ alias co="git checkout"
 alias gs="git status"
 alias gpoh="git push origin HEAD"
 alias gap="git add -p"
-alias grm="git pull --rebase origin master"
+alias grm="git pull --rebase origin main"
 
 alias light="export LIGHT_SHELL=1"
 alias dark="export LIGHT_SHELL=0"

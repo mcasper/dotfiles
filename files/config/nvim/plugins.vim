@@ -6,17 +6,10 @@ call plug#begin('~/.vim/plugged')
 " misc
 Plug 'junegunn/vim-easy-align'
 
-" Completion
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
-
-" Asynchronous Building/Linting
-Plug 'neomake/neomake'
+" https://github.com/neoclide/coc.nvim
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'elixir-lsp/coc-elixir', {'do': 'yarn install && yarn prepack'}
+Plug 'josa42/coc-go'
 
 "tpope
 Plug 'tpope/vim-commentary'
@@ -32,12 +25,12 @@ Plug 'junegunn/seoul256.vim'
 Plug 'reedes/vim-colors-pencil'
 
 "Fuzzy Finder
-Plug 'junegunn/fzf'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
 "Elixir
 Plug 'elixir-lang/vim-elixir'
-Plug 'mhinz/vim-mix-format'
+" Plug 'mhinz/vim-mix-format'
 
 " Terraform
 Plug 'hashivim/vim-terraform'
