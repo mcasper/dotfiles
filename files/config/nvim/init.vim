@@ -62,14 +62,15 @@ set ruler
 set synmaxcol=250
 
 set guicursor=a:hor10
-au VimLeave * set guicursor=a:hor10
-au BufEnter * set guicursor=a:hor10
-au BufLeave * set guicursor=a:hor10
+autocmd VimLeave * set guicursor=a:hor10
+autocmd BufEnter * set guicursor=a:hor10
+autocmd BufLeave * set guicursor=a:hor10
+autocmd VimLeave * call system('printf "\e[5 q" > $TTY')
 
 " Plugin Settings
 
 " FZF
-let $FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --hidden --follow --glob "!.git/*"'
+let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
 
 let g:jsx_ext_required = 0
 let g:mix_format_silent_errors = 1
