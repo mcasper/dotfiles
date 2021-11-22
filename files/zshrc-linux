@@ -1,0 +1,4 @@
+# Linux specific aliases and configs
+
+# asdf
+. ~/.asdf/asdf.sh

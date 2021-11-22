@@ -7,5 +7,5 @@ Clone this repo to `~/dotfiles`
 
 And run:
 ```shell
-cd ~/dotfiles && ./bootstrap.zsh
+cd ~/dotfiles && bash bootstrap.sh
 ```

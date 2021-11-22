@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Bootstrap a development environment for Matt Casper
-# usage: ./bootstrap.zsh
+# Bootstrap a mac development environment for Matt Casper
+# usage: bash bootstrap-mac.sh
 #
 # Other steps:
 # Install iterm3
@@ -23,8 +23,6 @@
 # In iterm2, set left option as Esc+
 
 set -eou pipefail
-
-#TMUX=${TMUX-}
 
 # "${VAR-}" takes the value of the variable, or empty string if it doesn't exist
 if [ -n "${TMUX-}" ]; then
@@ -95,8 +93,6 @@ echo "Follow instructions for setting up profile colors: https://github.com/mbad
 
 # Setup neovim
 mkdir -p $HOME/.config
-rm -rf $HOME/.config/nvim
-ln -sfF $HOME/dotfiles/files/config/nvim $HOME/.config
 
 # Install vim-plug
 if ! [ -f "$HOME/.local/share/nvim/site/autoload/plug.vim" ]; then
