@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # Bootstrap a development environment for Matt Casper
 # usage: ./bootstrap.zsh
@@ -22,7 +22,9 @@
 # Turn off smart quotes
 # In iterm2, set left option as Esc+
 
-set -eo pipefail
+set -eou pipefail
+
+#TMUX=${TMUX-}
 
 # "${VAR-}" takes the value of the variable, or empty string if it doesn't exist
 if [ -n "${TMUX-}" ]; then
@@ -73,18 +75,14 @@ npm install -g tern
 
 # Dotfiles
 rcup -f -d "$HOME/dotfiles/files" -v
-. "$HOME/.zshrc"
 
 SERVICES=("postgresql" "elasticsearch" "memcached" "redis" "consul")
-for service in "${SERVICES[@]}"; do brew services start "$service"; done
+for service in "${SERVICES[@]}"; do brew services restart "$service"; done
 
 # Set default shell
 if ! [ "$SHELL" = "/bin/zsh" ]; then
   chsh -s /bin/zsh
 fi
-
-# Rehash so zsh can find all its commands
-rehash
 
 # Iterm Colors
 if [[ ! -e "$HOME/code/iterm_colors" ]]; then
@@ -108,46 +106,7 @@ else
   nvim +PlugUpdate +qall
 fi
 
-## Language specific installations
-
-# Erlang - asdf (version manager)
-if ! asdf plugin list | grep erlang; then
-  asdf plugin add erlang
-fi
-
-latest_erlang=$(asdf list all erlang | tail -n 1 | xargs)
-
-if ! [[ -n $(asdf list erlang | grep "$latest_erlang") ]]; then
-  asdf install erlang "$latest_erlang"
-fi
-
-asdf global erlang "$latest_erlang"
-
-# Elixir - asdf (version manager)
-if ! asdf plugin list | grep elixir; then
-  asdf plugin add elixir
-fi
-
-latest_elixir=$(asdf list all elixir | grep -E '\d+\.\d+\.\d+$' | tail -n 1 | xargs)
-
-if ! [[ -n $(asdf list elixir | grep "$latest_elixir") ]]; then
-  asdf install erlang "$latest_elixir"
-fi
-
-asdf global elixir "$latest_elixir"
-mix local.hex --force
-mix local.rebar --force
-mix archive.install hex phx_new 1.5.3 --force
-
-# Ruby - rbenv (version manager)
-latest_ruby=$(rbenv install --list 2>&1 | grep -E '^(\s+)?[0-9]+\.[0-9]+\.[0-9]+$' | tail -n 1 | xargs)
-
-if ! rbenv versions | grep -q "$latest_ruby"; then
-  rbenv install "$latest_ruby"
-  eval "$(rbenv init -)"
-  gem install bundler
-fi
-rbenv global "$latest_ruby"
+## Language specific installations that don't use asdf
 
 # Rust
 curl https://sh.rustup.rs -sSf | bash -s -- -y
@@ -165,9 +124,6 @@ if ! [[ -n $(cargo install --list | grep racer) ]]; then
   cargo install racer
 fi
 
-# Python
-if [[ ! -e /usr/local/bin/python ]]; then
-  ln -sfn /usr/bin/python /usr/local/bin/python
-fi
-
 pip3 install neovim --upgrade
+
+echo "All done! Restart your shell and you're good to go"
