@@ -27,6 +27,7 @@ sudo apt install -y \
     git \
     neovim \
     nodejs \
+    python3-pip \
     rcm \
     ripgrep \
     tmux \
