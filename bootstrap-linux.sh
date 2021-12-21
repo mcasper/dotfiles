@@ -20,6 +20,8 @@ if [[ $(pwd) != "$HOME/dotfiles" ]]; then
   exit 1
 fi
 
+sudo apt install -y curl
+
 progress "Installing common packages"
 curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 sudo apt update -y
