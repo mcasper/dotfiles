@@ -50,7 +50,7 @@ sudo xcodebuild -license accept
 # Download and install Homebrew
 if [[ ! -x /usr/local/bin/brew ]]; then
   echo "Installing Homebrew"
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
 # Install homebrew bundle

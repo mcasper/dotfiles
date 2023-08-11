@@ -109,3 +109,4 @@ fi
 
 # added by travis gem
 [ -f /Users/mattcasper/.travis/travis.sh ] && source /Users/mattcasper/.travis/travis.sh
+. "$HOME/.cargo/env"
