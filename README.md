@@ -5,7 +5,15 @@ Matt Casper's dotfiles
 
 Clone this repo to `~/dotfiles`
 
-And run:
+## macOS/Linux
+
 ```shell
 cd ~/dotfiles && bash bootstrap.sh
+```
+
+## Windows
+
+In an admin terminal:
+```powershell
+cd $HOME\dotfiles && bootstrap.ps1
 ```
