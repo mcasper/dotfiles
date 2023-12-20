@@ -1,1 +1,1 @@
-Set-Location ..\
+Set-Location ..

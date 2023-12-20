@@ -6,6 +6,9 @@ function Prompt {
     $END = "[0m"
     $path = (Get-Location).path.split("\\")[-3..-1] -join "\"
     $branch = $(git rev-parse --abbrev-ref HEAD)
+    if ($branch.length > 30) {
+        $branch = $branch.substring(0,30)
+    }
     $branch_string = " (${ESC}${GREEN}${branch}${ESC}${END})"
     if (!$branch) {
         $branch_string = ""
