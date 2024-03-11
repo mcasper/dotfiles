@@ -4,6 +4,17 @@
 " Use vim-plug for plugin management (:Plug[Install|Update])
 " https://github.com/junegunn/vim-plug
 
+" TODO: Support this windows version
+" " Plugins
+" if filereadable(expand("$LOCALAPPDATA/nvim/plugins.vim"))
+"   source $LOCALAPPDATA/nvim/plugins.vim
+" endif
+
+" " Functions
+" if filereadable(expand("$LOCALAPPDATA/nvim/functions.vim"))
+"   source $LOCALAPPDATA/nvim/functions.vim
+" endif
+
 " Plugins
 if filereadable(expand("$HOME/.config/nvim/plugins.vim"))
   source $HOME/.config/nvim/plugins.vim
@@ -67,6 +78,9 @@ autocmd BufEnter * set guicursor=a:hor10
 autocmd BufLeave * set guicursor=a:hor10
 autocmd VimLeave * call system('printf "\e[5 q" > $TTY')
 
+" 4 spaces for cpp
+autocmd FileType cpp setlocal shiftwidth=4 tabstop=4
+
 " Plugin Settings
 
 " FZF
@@ -114,7 +128,13 @@ map <Leader>w :w!<CR>
 map <Leader>q :bd<CR>
 map <Leader>Q :q<CR>
 map <Leader>f  :FZF<CR>
+" TODO: Windows versions
+" map <Leader>vi :tabe $LOCALAPPDATA/nvim/init.vim<CR>
+" map <Leader>vl :tabe $LOCALAPPDATA/nvim/lua/init.lua<CR>
+" map <Leader>vp :tabe $LOCALAPPDATA/nvim/plugins.vim<CR>
+" map <Leader>vs :source $LOCALAPPDATA/nvim/init.vim<CR>
 map <Leader>vi :tabe ~/.config/nvim/init.vim<CR>
+map <Leader>vl :tabe ~/.config/nvim/lua/init.lua<CR>
 map <Leader>vp :tabe ~/.config/nvim/plugins.vim<CR>
 map <Leader>vs :source ~/.config/nvim/init.vim<CR>
 map <Leader>c  :bp\|bd #<CR>
@@ -164,3 +184,6 @@ endif
 
 " Make it more obvious which paren I'm on
 hi MatchParen cterm=none ctermbg=black ctermfg=yellow
+
+" Start to migrate over to lua based config
+lua require('init')
