@@ -9,8 +9,10 @@ Plug 'junegunn/vim-easy-align'
 " https://github.com/neoclide/coc.nvim
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'elixir-lsp/coc-elixir', {'do': 'yarn install && yarn prepack'}
-Plug 'neoclide/coc-rls'
 Plug 'josa42/coc-go'
+
+"Copilot
+Plug 'github/copilot.vim'
 
 "tpope
 Plug 'tpope/vim-commentary'
