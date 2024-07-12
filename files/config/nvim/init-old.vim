@@ -129,14 +129,12 @@ map <Leader>q :bd<CR>
 map <Leader>Q :q<CR>
 map <Leader>f  :FZF<CR>
 " TODO: Windows versions
-" map <Leader>vi :tabe $LOCALAPPDATA/nvim/init.vim<CR>
-" map <Leader>vl :tabe $LOCALAPPDATA/nvim/lua/init.lua<CR>
+" map <Leader>vi :tabe $LOCALAPPDATA/nvim/init.lua<CR>
 " map <Leader>vp :tabe $LOCALAPPDATA/nvim/plugins.vim<CR>
-" map <Leader>vs :source $LOCALAPPDATA/nvim/init.vim<CR>
-map <Leader>vi :tabe ~/.config/nvim/init.vim<CR>
-map <Leader>vl :tabe ~/.config/nvim/lua/init.lua<CR>
+" map <Leader>vs :source $LOCALAPPDATA/nvim/init.lua<CR>
+map <Leader>vi :tabe ~/.config/nvim/init.lua<CR>
 map <Leader>vp :tabe ~/.config/nvim/plugins.vim<CR>
-map <Leader>vs :source ~/.config/nvim/init.vim<CR>
+map <Leader>vs :source ~/.config/nvim/init.lua<CR>
 map <Leader>c  :bp\|bd #<CR>
 map <Leader>ws :%s/\s\+$//<CR>
 map <Leader>le :%s/\r$//<CR>
