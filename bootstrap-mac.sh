@@ -36,7 +36,7 @@ if [[ $(pwd) != "$HOME/dotfiles" ]]; then
 fi
 
 # Setup code directory
-mkdir -p ~/code/home
+mkdir -p ~/code/mcasper
 mkdir -p ~/code/work
 
 # Install essentials when necessary
@@ -74,7 +74,7 @@ npm install -g tern
 # Dotfiles
 rcup -f -d "$HOME/dotfiles/files" -v
 
-SERVICES=("postgresql" "elasticsearch" "memcached" "redis" "consul")
+SERVICES=("postgresql" "redis")
 for service in "${SERVICES[@]}"; do brew services restart "$service"; done
 
 # Set default shell
@@ -111,14 +111,6 @@ rustup update
 rustup component add rust-src
 rustup default nightly
 rustup component add rust-src
-
-if ! [[ -n $(cargo install --list | grep ripgrep) ]]; then
-  cargo install ripgrep
-fi
-
-if ! [[ -n $(cargo install --list | grep racer) ]]; then
-  cargo install racer
-fi
 
 pip3 install neovim --upgrade
 
