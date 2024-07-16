@@ -52,6 +52,7 @@ vim.opt.guicursor = "a:hor10"
 
 -- Autocmds
 vim.cmd([[
+    " Try to preserve the underline cursor
     autocmd VimLeave * set guicursor=a:hor10
     autocmd BufEnter * set guicursor=a:hor10
     autocmd BufLeave * set guicursor=a:hor10
@@ -86,8 +87,8 @@ nmap("<Leader>c", " :bp\\|bd #<CR>")
 nmap("<Leader>ws", ":%s/\\s\\+$//<CR>")
 nmap("<Leader>le", ":%s/\\r$//<CR>")
 nmap("<Leader>hs", ":s/:\\([^ ]*\\)\\(\\s*\\)=>/\1:/g<CR>")
-nmap("<Leader>i", ":call CorrectIndentation()<CR>")
-nmap("<Leader>n", ":call RenameFile()<CR>")
+nmap("<Leader>i", ":lua CorrectIndentation()<CR>")
+nmap("<Leader>n", ":lua RenameFile()<CR>")
 nmap("<Leader>p", ":call AddDebugger(\"o\")<CR>")
 nmap("<Leader>P", ":call AddDebugger(\"O\")<CR>")
 nmap("<Leader>d", ":call RemoveAllDebuggers()<CR>")
@@ -109,27 +110,22 @@ nmap("<Right>", ":bn<CR>")
 nmap("<Left>", ":bp<CR>")
 
 vim.cmd([[
+    " Enter should clear search
     function! MapCR()
         nnoremap <CR> :nohlsearch<CR>
     endfunction
     call MapCR()
 ]])
 
--- Functions - convert these to lua one day
-vim.cmd([[
-  " Correct Indentation
-  function! CorrectIndentation()
-    execute "silent normal! gg=G"
-  endfunction
+function CorrectIndentation()
+  vim.cmd([[silent normal! gg=G]])
+end
 
-  " RENAME CURRENT FILE (thanks Gary Bernhardt) (thanks Ben Orenstein)
-  function! RenameFile()
-    let old_name = expand('%')
-    let new_name = input('New file name: ', expand('%'), 'file')
-    if new_name != '' && new_name != old_name
-      exec ':saveas ' . new_name
-      exec ':silent !rm ' . old_name
-      redraw!
-    endif
-  endfunction
-]])
+function RenameFile()
+  local old_name = vim.fn.expand('%')
+  local new_name = vim.fn.input('New file name: ', old_name, 'file')
+  if new_name ~= '' and new_name ~= old_name then
+    vim.cmd('saveas ' .. new_name)
+    vim.cmd('silent !rm ' .. old_name)
+  end
+end
