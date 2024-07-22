@@ -3,9 +3,6 @@
 alias updatedb="/usr/libexec/locate.updatedb"
 alias update="brew update; sleep 1; brew upgrade; sleep 1; brew cleanup; rustup update"
 
-# Z
-source `brew --prefix`/etc/profile.d/z.sh
-
 # asdf
 . $(brew --prefix asdf)/libexec/asdf.sh
 

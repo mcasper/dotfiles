@@ -47,6 +47,7 @@ setopt SHARE_HISTORY
 export GOPATH="$HOME/code/go"
 export PATH="/usr/local/bin:/usr/bin:/usr/local/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
+export PATH="/opt/homebrew/bin:$PATH"
 
 # Path Settings
 # - MATTCASPER.local work/go/action_tracker_queue (master) $
@@ -86,5 +87,3 @@ else
   echo "I don't have a configuration for platform ${PLATFORM}"
   exit 1
 fi
-
-. $(brew --prefix asdf)/libexec/asdf.sh

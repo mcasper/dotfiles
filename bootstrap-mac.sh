@@ -39,19 +39,13 @@ fi
 mkdir -p ~/code/mcasper
 mkdir -p ~/code/work
 
-# Install essentials when necessary
-if [[ $(/usr/bin/gcc 2>&1) =~ "no developer tools were found" ]] || [[ ! -x /usr/bin/gcc ]]; then
-  echo "Installing Xcode"
-  xcode-select --install
-fi
-
-sudo xcodebuild -license accept
-
 # Download and install Homebrew
-if [[ ! -x /usr/local/bin/brew ]]; then
+if [[ ! -x /opt/homebrew/bin/brew ]]; then
   echo "Installing Homebrew"
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
+
+export PATH="${PATH}:/opt/homebrew/bin"
 
 # Install homebrew bundle
 echo "Updating brew, running 'brew bundle', and upgrading packages"
@@ -74,7 +68,7 @@ npm install -g tern
 # Dotfiles
 rcup -f -d "$HOME/dotfiles/files" -v
 
-SERVICES=("postgresql" "redis")
+SERVICES=("redis")
 for service in "${SERVICES[@]}"; do brew services restart "$service"; done
 
 # Set default shell
@@ -93,14 +87,6 @@ echo "Follow instructions for setting up profile colors: https://github.com/mbad
 
 # Setup neovim
 mkdir -p $HOME/.config
-
-# Install vim-plug
-if ! [ -f "$HOME/.local/share/nvim/site/autoload/plug.vim" ]; then
-  curl -fLo "$HOME/.local/share/nvim/site/autoload/plug.vim" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  nvim +PlugInstall +qall
-else
-  nvim +PlugUpdate +qall
-fi
 
 ## Language specific installations that don't use asdf
 
