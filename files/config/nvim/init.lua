@@ -1,5 +1,7 @@
 -- Matt Casper's neovim config
 -- https://github.com/mcasper/dotfiles
+--
+-- TODO: Gblame
 
 -- lazy.nvim
 require("config.lazy")
@@ -108,6 +110,8 @@ nmap("<C-h>", "<C-W>h")
 nmap("<C-l>", "<C-W>l")
 nmap("<Right>", ":bn<CR>")
 nmap("<Left>", ":bp<CR>")
+
+nmap("K", ":Rg <C-R><C-W><CR>")
 
 vim.cmd([[
     " Enter should clear search

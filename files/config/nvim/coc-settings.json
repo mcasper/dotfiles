@@ -1,10 +1,74 @@
 {
-  "coc.preferences.formatOnSaveFiletypes": ["css", "markdown", "elixir", "html", "elm", "json", "rust"],
+  "[elm][javascript][eruby][ruby][typescript][typescriptreact][yaml][lua][json][css][python][toml]": {
+    "coc.preferences.formatOnSave": true
+  },
+  "codeLens.enable": true,
+  "suggest.noselect": false,
+  "suggest.enablePreselect": false,
   "languageserver": {
-    "elmLS": {
-      "command": "elm-language-server",
-      "filetypes": ["elm"],
-      "rootPatterns": ["elm.json"]
+    "efm": {
+      "command": "efm-langserver",
+      "args": [],
+      "filetypes": [
+        "eruby",
+        "ruby",
+        "toml"
+      ],
+      "initializationOptions": {
+        "documentFormatting": true,
+        "documentRangeFormatting": true,
+        "hover": true,
+        "documentSymbol": true,
+        "codeAction": true,
+        "completion": true
+      }
+    },
+    "terraform": {
+      "command": "terraform-ls",
+      "args": [
+        "serve"
+      ],
+      "filetypes": [
+        "terraform",
+        "tf"
+      ],
+      "initializationOptions": {}
+    },
+    "ruby-lsp": {
+      "command": "ruby-lsp",
+      "initializationOptions": {
+        "experimentalFeaturesEnabled": false,
+        "enabledFeatures": [
+          "codeActions",
+          "diagnostics",
+          "documentHighlights",
+          "documentLink",
+          "documentSymbols",
+          "foldingRanges",
+          "formatting",
+          "hover",
+          "inlayHint",
+          "onTypeFormatting",
+          "selectionRanges",
+          "semanticHighlighting",
+          "completion"
+        ],
+        "formatter": "auto"
+      },
+      "filetypes": [
+        "ruby"
+      ]
     }
+  },
+  "prettier.printWidth": 90,
+  "css.lint.unknownAtRules": "ignore",
+  "tailwindCSS.experimental.classRegex": [
+    "tw_w+s+=s+\"(.*)\"",
+    "\\bclass\\s*:\\s*\\\"([_a-zA-Z0-9\\s\\-\\:\\/]+)\\\"",
+    "\\btw_class\\s*:\\s*\\\"([_a-zA-Z0-9\\s\\-\\:\\/]+)\\\"",
+    "\\bclasses\\s*:\\s*\\\"([_a-zA-Z0-9\\s\\-\\:\\/]+)\\\""
+  ],
+  "tailwindCSS.includeLanguages": {
+    "ruby": "html"
   }
 }

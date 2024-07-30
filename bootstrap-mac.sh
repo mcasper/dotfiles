@@ -21,6 +21,7 @@
 # Remove text shortcuts
 # Turn off smart quotes
 # In iterm2, set left option as Esc+
+# Instal atuin
 
 set -eou pipefail
 
