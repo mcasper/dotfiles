@@ -94,7 +94,9 @@ nmap("<Leader>n", ":lua RenameFile()<CR>")
 nmap("<Leader>p", ":call AddDebugger(\"o\")<CR>")
 nmap("<Leader>P", ":call AddDebugger(\"O\")<CR>")
 nmap("<Leader>d", ":call RemoveAllDebuggers()<CR>")
-nmap("<Leader>a", ":CocAction<CR>")
+
+nmap("<Leader>a", "<cmd>ArgWrap<CR>")
+vim.g.argwrap_tail_comma = true
 
 nmap("aa", ":call CocAction('diagnosticNext')<cr>")
 nmap("<Leader>s", ":TestNearest<CR>")
