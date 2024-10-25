@@ -1,7 +1,5 @@
 -- Matt Casper's neovim config
 -- https://github.com/mcasper/dotfiles
---
--- TODO: Gblame
 
 -- lazy.nvim
 require("config.lazy")
@@ -114,6 +112,11 @@ nmap("<Right>", ":bn<CR>")
 nmap("<Left>", ":bp<CR>")
 
 nmap("K", ":Rg <C-R><C-W><CR>")
+
+-- FZF ripgrep command
+vim.cmd([[
+  let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
+]])
 
 vim.cmd([[
     " Enter should clear search
