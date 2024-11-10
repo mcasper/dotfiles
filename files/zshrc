@@ -44,9 +44,7 @@ export HISTFILE=~/.history
 setopt SHARE_HISTORY
 
 # Path VARs
-export GOPATH="$HOME/code/go"
 export PATH="/usr/local/bin:/usr/bin:/usr/local/bin:$PATH"
-export PATH="$GOPATH/bin:$PATH"
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH="/opt/homebrew/opt/bison/bin:$PATH"
 
@@ -88,7 +86,17 @@ else
   echo "I don't have a configuration for platform ${PLATFORM}"
   exit 1
 fi
-eval "$(/Users/mattcasper/.local/bin/mise activate zsh)"
 
-. "$HOME/.atuin/bin/env"
+if [ -f ~/.local/bin/mise ]; then
+  eval "$(/Users/mattcasper/.local/bin/mise activate zsh)"
+fi
+
+if [ -f /opt/homebrew/bin/mise ]; then
+  eval "$(/opt/homebrew/bin/mise activate zsh)"
+fi
+
+if [ -f ~/.atuin/bin/env ]; then
+  . "$HOME/.atuin/bin/env"
+fi
+
 eval "$(atuin init --disable-up-arrow zsh)"
