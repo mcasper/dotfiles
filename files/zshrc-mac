@@ -3,9 +3,6 @@
 alias updatedb="/usr/libexec/locate.updatedb"
 alias update="brew update; sleep 1; brew upgrade; sleep 1; brew cleanup; rustup update"
 
-# asdf
-. $(brew --prefix asdf)/libexec/asdf.sh
-
 # For react-native android
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/emulator
