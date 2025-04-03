@@ -47,6 +47,7 @@ setopt SHARE_HISTORY
 export PATH="/usr/local/bin:/usr/bin:/usr/local/bin:$PATH"
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH="/opt/homebrew/opt/bison/bin:$PATH"
+export PATH=./bin:$PATH
 
 # Path Settings
 # - MATTCASPER.local work/go/action_tracker_queue (master) $
