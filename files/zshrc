@@ -31,6 +31,7 @@ alias gs="git status"
 alias gpoh="git push origin HEAD"
 alias gap="git add -p"
 alias grm="git pull --rebase origin main"
+alias glist="git for-each-ref --sort=-committerdate refs/heads/ --format='%(committerdate:short) %(refname:short)'"
 
 alias light="export LIGHT_SHELL=1"
 alias dark="export LIGHT_SHELL=0"
