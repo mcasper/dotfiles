@@ -49,6 +49,7 @@ export PATH="/usr/local/bin:/usr/bin:/usr/local/bin:$PATH"
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH="/opt/homebrew/opt/bison/bin:$PATH"
 export PATH=./bin:$PATH
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
 # Path Settings
 # - MATTCASPER.local work/go/action_tracker_queue (master) $
@@ -89,13 +90,7 @@ else
   exit 1
 fi
 
-if [ -f ~/.local/bin/mise ]; then
-  eval "$(/Users/mattcasper/.local/bin/mise activate zsh)"
-fi
 
-if [ -f /opt/homebrew/bin/mise ]; then
-  eval "$(/opt/homebrew/bin/mise activate zsh)"
-fi
 
 if [ -f ~/.atuin/bin/env ]; then
   . "$HOME/.atuin/bin/env"
