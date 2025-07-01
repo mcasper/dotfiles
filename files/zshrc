@@ -97,3 +97,5 @@ if [ -f ~/.atuin/bin/env ]; then
 fi
 
 eval "$(atuin init --disable-up-arrow zsh)"
+
+. "$HOME/.local/bin/env"

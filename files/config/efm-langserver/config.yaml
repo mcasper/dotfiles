@@ -19,6 +19,10 @@ tools:
     format-stdin: true
     format-command: rubyfmt
 
+  biome: &biome
+    format-stdin: true
+    format-command: npx biome check --organize-imports-enabled=true --formatter-enabled=false --linter-enabled=false --stdin-file-path=file.ts --fix
+
 languages:
   # ruby:
   #   - <<: *rubyfmt
@@ -28,3 +32,11 @@ languages:
   eruby:
     - <<: *erb-formatter
     - <<: *rustywind
+  tsx:
+    - <<: *rustywind
+    - <<: *biome
+  typescriptreact:
+    - <<: *rustywind
+    - <<: *biome
+  typescript:
+    - <<: *biome

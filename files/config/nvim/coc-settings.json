@@ -12,7 +12,10 @@
       "filetypes": [
         "eruby",
         "ruby",
-        "toml"
+        "toml",
+        "typescript",
+        "typescriptreact",
+        "tsx"
       ],
       "initializationOptions": {
         "documentFormatting": true,
@@ -71,5 +74,9 @@
   ],
   "tailwindCSS.includeLanguages": {
     "ruby": "html"
-  }
+  },
+  "pyright.inlayHints.functionReturnTypes": false,
+  "pyright.inlayHints.variableTypes": false,
+  "pyright.inlayHints.parameterTypes": false,
+  "python.formatting.provider": "ruff"
 }
