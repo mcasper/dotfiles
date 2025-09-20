@@ -99,3 +99,10 @@ fi
 eval "$(atuin init --disable-up-arrow zsh)"
 
 . "$HOME/.local/bin/env"
+
+# bun completions
+[ -s "/Users/mattcasper/.bun/_bun" ] && source "/Users/mattcasper/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
