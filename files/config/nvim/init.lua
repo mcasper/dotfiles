@@ -1,6 +1,10 @@
 -- Matt Casper's neovim config
 -- https://github.com/mcasper/dotfiles
 
+-- Set leader key
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+
 -- Mapping helpers
 function map(mode, shortcut, command)
     vim.api.nvim_set_keymap(mode, shortcut, command, { noremap = true, silent = true })
@@ -78,7 +82,7 @@ nmap("<Leader>q", ":bd<CR>")
 nmap("<Leader>Q", ":q<CR>")
 nmap("<Leader>f", ":FZF<CR>")
 nmap("<Leader>vi", ":tabe ~/.config/nvim/init.lua<CR>")
-nmap("<Leader>vp", ":tabe ~/.config/nvim/plugins.vim<CR>")
+nmap("<Leader>vp", ":tabe ~/.config/nvim/init.lua<CR>")
 nmap("<Leader>vs", ":source ~/.config/nvim/init.lua<CR>")
 nmap("<Leader>c", " :bp\\|bd #<CR>")
 nmap("<Leader>ws", ":%s/\\s\\+$//<CR>")
@@ -154,12 +158,6 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
   end
 end
 vim.opt.rtp:prepend(lazypath)
-
--- Make sure to setup `mapleader` and `maplocalleader` before
--- loading lazy.nvim so that mappings are correct.
--- This is also a good place to setup other settings (vim.opt)
-vim.g.mapleader = " "
-vim.g.maplocalleader = "\\"
 
 -- Setup lazy.nvim
 require("lazy").setup({
