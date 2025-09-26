@@ -1,3 +1,0 @@
-return {
-  "jvirtanen/vim-hcl"
-}

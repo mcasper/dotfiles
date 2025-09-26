@@ -1,9 +1,6 @@
 -- Matt Casper's neovim config
 -- https://github.com/mcasper/dotfiles
 
--- lazy.nvim
-require("config.lazy")
-
 -- Mapping helpers
 function map(mode, shortcut, command)
     vim.api.nvim_set_keymap(mode, shortcut, command, { noremap = true, silent = true })
@@ -138,3 +135,199 @@ function RenameFile()
     vim.cmd('silent !rm ' .. old_name)
   end
 end
+
+-- Plugins
+
+-- Bootstrap lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  if vim.v.shell_error ~= 0 then
+    vim.api.nvim_echo({
+      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+      { out, "WarningMsg" },
+      { "\nPress any key to exit..." },
+    }, true, {})
+    vim.fn.getchar()
+    os.exit(1)
+  end
+end
+vim.opt.rtp:prepend(lazypath)
+
+-- Make sure to setup `mapleader` and `maplocalleader` before
+-- loading lazy.nvim so that mappings are correct.
+-- This is also a good place to setup other settings (vim.opt)
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+
+-- Setup lazy.nvim
+require("lazy").setup({
+  spec = {
+    -- Arg (un)wrapping
+    {
+      "FooSoft/vim-argwrap",
+    },
+
+    -- Formatting
+    {
+      "stevearc/conform.nvim",
+      config = function()
+        -- Command to enable/disable autoformat-on-save
+        vim.api.nvim_create_user_command("FormatDisable", function(args)
+          if args.bang then
+            -- FormatDisable! will disable formatting just for this buffer
+            vim.b.disable_autoformat = true
+          else
+            vim.g.disable_autoformat = true
+          end
+        end, {
+          desc = "Disable autoformat-on-save",
+          bang = true,
+        })
+        vim.api.nvim_create_user_command("FormatEnable", function()
+          vim.b.disable_autoformat = false
+          vim.g.disable_autoformat = false
+        end, {
+          desc = "Re-enable autoformat-on-save",
+        })
+
+        require("conform").setup({
+          formatters_by_ft = {
+            eruby = { "erb_format", "rustywind" },
+            javascript = { "biome", "biome-check", "biome-organize-imports", "rustywind" },
+            lua = { "stylua" },
+            python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
+            -- ruby = { "syntax_tree", " rubocop" },
+            rust = { "rustfmt", lsp_format = "fallback" },
+            toml = { "taplo" },
+            typescript = { "biome", "biome-check", "biome-organize-imports", "rustywind" },
+            typescriptreact = { "biome", "biome-check", "biome-organize-imports", "rustywind" },
+          },
+          format_on_save = function(bufnr)
+            -- Disable with a global or buffer-local variable
+            if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+              return
+            end
+            return { timeout_ms = 500, lsp_format = "fallback" }
+          end,
+        })
+      end,
+    },
+
+    -- Git
+    {
+      "tpope/vim-fugitive"
+    },
+
+    -- Fuzzy search
+    {
+        "junegunn/fzf",
+    },
+    {
+        "junegunn/fzf.vim",
+    },
+
+    -- Golang
+    {
+      "fatih/vim-go"
+    },
+
+    -- Terraform/Packer
+    {
+      "jvirtanen/vim-hcl"
+    },
+
+    -- Breakpoints
+    {
+      "mcasper/vim-infer-debugger"
+    },
+
+    -- LSP
+    {
+      "neovim/nvim-lspconfig",
+      config = function()
+        vim.lsp.enable("ruby_lsp")
+        vim.lsp.enable("ts_ls")
+        vim.lsp.enable("tailwindcss")
+        vim.lsp.enable("basedpyright")
+
+        vim.diagnostic.config({
+          virtual_lines = {
+            current_line = true,
+          },
+        })
+      end,
+    },
+
+    -- Mkdir
+    {
+      "pbrisbin/vim-mkdir"
+    },
+
+    -- Colors
+    {
+        "junegunn/seoul256.vim",
+        lazy = false,
+        config = function()
+            -- TODO: light mode
+            -- vim.cmd([[let g:seoul256_background = 255]])
+            -- vim.cmd([[colo seoul256-light]])
+            -- vim.cmd([[set background=light]])
+
+            vim.cmd([[let g:seoul256_background = 234]])
+            vim.cmd([[colo seoul256]])
+            vim.cmd([[set background=dark]])
+        end,
+    },
+
+    -- Autocomplete
+    {
+        {
+          "supermaven-inc/supermaven-nvim",
+          commit = "40bde487fe31723cdd180843b182f70c6a991226",
+          config = function()
+            require("supermaven-nvim").setup({})
+          end,
+        }
+    },
+
+    -- Tests
+    {
+        "vim-test/vim-test",
+    },
+
+    -- Treesitter
+    {
+      "nvim-treesitter/nvim-treesitter",
+      run = ":TSUpdate",
+      event = "BufRead",
+      config = function()
+        local configs = require("nvim-treesitter.configs")
+
+        configs.setup({
+          ensure_installed = {
+            "lua",
+            "javascript",
+            "html",
+            "css",
+            "typescript",
+            "tsx",
+            "ruby",
+          },
+          sync_install = false,
+          highlight = { enable = true },
+          indent = { enable = true },
+        })
+      end
+    },
+
+    -- Terraform again?
+    {
+      'hashivim/vim-terraform'
+    }
+  },
+  -- Configure any other settings here. See the documentation for more details.
+  -- colorscheme that will be used when installing plugins.
+  install = { colorscheme = { "habamax" } },
+})

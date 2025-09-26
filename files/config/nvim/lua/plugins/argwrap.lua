@@ -1,3 +1,0 @@
-return {
-  "FooSoft/vim-argwrap",
-}
