@@ -245,6 +245,15 @@ require("lazy").setup({
 		{
 			"neovim/nvim-lspconfig",
 			config = function()
+				vim.lsp.config("ruby_lsp", {
+					init_options = {
+						addonSettings = {
+							["Ruby LSP Rails"] = {
+								enablePendingMigrationsPrompt = false,
+							},
+						},
+					},
+				})
 				vim.lsp.enable("ruby_lsp")
 				vim.lsp.enable("ts_ls")
 				vim.lsp.enable("tailwindcss")
