@@ -18,6 +18,10 @@ function vmap(shortcut, command)
 	map("v", shortcut, command)
 end
 
+function tmap(shortcut, command)
+	map("t", shortcut, command)
+end
+
 vim.cmd.filetype({ "plugin", "indent", "on" })
 
 -- Options
@@ -89,7 +93,7 @@ nmap("<Leader>ws", ":%s/\\s\\+$//<CR>")
 nmap("<Leader>le", ":%s/\\r$//<CR>")
 nmap("<Leader>hs", ":s/:\\([^ ]*\\)\\(\\s*\\)=>/\1:/g<CR>")
 nmap("<Leader>i", ":lua CorrectIndentation()<CR>")
-nmap("<Leader>n", ":lua RenameFile()<CR>")
+nmap("<Leader>n", ":call RenameFile()<CR>")
 nmap("<Leader>p", ':call AddDebugger("o")<CR>')
 nmap("<Leader>P", ':call AddDebugger("O")<CR>')
 nmap("<Leader>d", ":call RemoveAllDebuggers()<CR>")
@@ -131,14 +135,17 @@ function CorrectIndentation()
 	vim.cmd([[silent normal! gg=G]])
 end
 
-function RenameFile()
-	local old_name = vim.fn.expand("%")
-	local new_name = vim.fn.input("New file name: ", old_name, "file")
-	if new_name ~= "" and new_name ~= old_name then
-		vim.cmd("saveas " .. new_name)
-		vim.cmd("silent !rm " .. old_name)
-	end
-end
+vim.cmd([[
+  function! RenameFile()
+    let old_name = expand('%')
+    let new_name = input('New file name: ', expand('%'), 'file')
+    if new_name != '' && new_name != old_name
+      exec ':saveas ' . new_name
+      exec ':silent !rm ' . old_name
+      redraw!
+    endif
+  endfunction
+]])
 
 -- Plugins
 
@@ -198,9 +205,10 @@ require("lazy").setup({
 						python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
 						-- ruby = { "syntax_tree", " rubocop" },
 						rust = { "rustfmt", lsp_format = "fallback" },
-						toml = { "taplo" },
+						toml = { "taplo", "pyproject-fmt" },
 						typescript = { "biome", "biome-check", "biome-organize-imports", "rustywind" },
 						typescriptreact = { "biome", "biome-check", "biome-organize-imports", "rustywind" },
+						zig = { "zigfmt" },
 					},
 					format_on_save = function(bufnr)
 						-- Disable with a global or buffer-local variable
@@ -257,7 +265,15 @@ require("lazy").setup({
 				vim.lsp.enable("ruby_lsp")
 				vim.lsp.enable("ts_ls")
 				vim.lsp.enable("tailwindcss")
-				vim.lsp.enable("basedpyright")
+				vim.lsp.enable("ty")
+				vim.lsp.config("ty", {
+					settings = {
+						ty = {
+							diagnosticMode = "workspace",
+						},
+					},
+				})
+				vim.lsp.enable("zls")
 
 				vim.diagnostic.config({
 					virtual_lines = {
@@ -301,6 +317,10 @@ require("lazy").setup({
 		-- Tests
 		{
 			"vim-test/vim-test",
+			init = function()
+				-- Make escape work in the Neovim terminal.
+				tmap("<Esc>", "<C-\\><C-n>")
+			end,
 		},
 
 		-- Treesitter
