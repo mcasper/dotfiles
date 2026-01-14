@@ -48,8 +48,8 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 SKILLS_SOURCE="${SCRIPT_DIR}/skills"
 
 # Installation paths
-CLAUDE_DIR="${HOME}/.claude/plugins/repos/local-skills"
-CODEX_DIR="${HOME}/.codex/superpowers/skills"
+CLAUDE_DIR="${HOME}/.claude/skills"
+CODEX_DIR="${HOME}/.codex/skills"
 
 echo -e "${BLUE}=== Agent Skills Installer ===${NC}"
 echo -e "Source: ${SKILLS_SOURCE}"
@@ -71,30 +71,14 @@ echo ""
 install_to_claude() {
     echo -e "${BLUE}Installing to Claude Code...${NC}"
 
-    # Create plugin directory structure
-    mkdir -p "${CLAUDE_DIR}/skills"
-
-    # Create plugin.json if it doesn't exist
-    if [[ ! -f "${CLAUDE_DIR}/plugin.json" ]]; then
-        cat > "${CLAUDE_DIR}/plugin.json" <<'EOF'
-{
-  "name": "local-skills",
-  "description": "Personal coding agent skills library",
-  "version": "1.0.0",
-  "author": {
-    "name": "Local User"
-  },
-  "keywords": ["skills", "tdd", "debugging", "collaboration"]
-}
-EOF
-        echo -e "  ${GREEN}✓${NC} Created plugin.json"
-    fi
+    # Create skills directory
+    mkdir -p "${CLAUDE_DIR}"
 
     # Install skills
     for skill_dir in "${SKILLS_SOURCE}"/*; do
         if [[ -d "${skill_dir}" ]]; then
             skill_name=$(basename "${skill_dir}")
-            target_path="${CLAUDE_DIR}/skills/${skill_name}"
+            target_path="${CLAUDE_DIR}/${skill_name}"
 
             # Remove existing symlink/directory
             if [[ -L "${target_path}" ]] || [[ -d "${target_path}" ]]; then
@@ -119,14 +103,8 @@ EOF
 install_to_codex() {
     echo -e "${BLUE}Installing to Codex...${NC}"
 
-    # Check if Codex superpowers directory exists
-    if [[ ! -d "${HOME}/.codex/superpowers" ]]; then
-        echo -e "${YELLOW}Warning: Codex superpowers directory not found${NC}"
-        echo -e "Creating ${HOME}/.codex/superpowers/skills"
-        mkdir -p "${HOME}/.codex/superpowers/skills"
-    else
-        mkdir -p "${CODEX_DIR}"
-    fi
+    # Create skills directory
+    mkdir -p "${CODEX_DIR}"
 
     # Install skills
     for skill_dir in "${SKILLS_SOURCE}"/*; do
