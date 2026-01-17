@@ -8,23 +8,14 @@ import sys
 import shutil
 from pathlib import Path
 
-FISH_CONFIG = """\
-# default fish config for the devcontainer
-set -g __fish_git_prompt_showdirtystate 0
-set -g __fish_git_prompt_showuntrackedfiles 0
-set -g __fish_git_prompt_showupstream none
+ZSH_CONFIG = """\
+# default zsh config for the devcontainer
+autoload -Uz vcs_info
+precmd() { vcs_info }
+zstyle ':vcs_info:git:*' formats '%b'
 
-function fish_greeting
-  echo "mikeastock/agents · autonomous coding sandbox"
-end
-
-function fish_prompt
-  set_color cyan
-  echo -n (prompt_pwd)
-  set_color normal
-  fish_vcs_prompt
-  echo -n " > "
-end
+setopt PROMPT_SUBST
+PROMPT='%F{cyan}%~%f ${vcs_info_msg_0_:+(%F{green}${vcs_info_msg_0_}%f) }> '
 """
 
 TMUX_CONFIG = """\
@@ -151,57 +142,19 @@ def ensure_claude_config() -> None:
     log(f"wrote default claude settings to {claude_config}")
 
 
-def ensure_fish_config() -> None:
-    fish_config_dir = (
-        Path(
-            os.environ.get(
-                "XDG_CONFIG_HOME",
-                str(Path.home() / ".config"),
-            )
-        )
-        / "fish"
-    )
-    fish_config_dir.mkdir(parents=True, exist_ok=True)
-    fish_config = fish_config_dir / "config.fish"
-    if fish_config.exists():
-        existing = fish_config.read_text(encoding="utf-8")
-        if existing.lstrip().startswith("# default fish config for the devcontainer"):
-            fish_config.write_text(FISH_CONFIG, encoding="utf-8")
-            log(f"updated default fish config at {fish_config}")
+def ensure_zsh_config() -> None:
+    zshrc = Path.home() / ".zshrc"
+    if zshrc.exists():
+        existing = zshrc.read_text(encoding="utf-8")
+        if existing.lstrip().startswith("# default zsh config for the devcontainer"):
+            zshrc.write_text(ZSH_CONFIG, encoding="utf-8")
+            log(f"updated default zsh config at {zshrc}")
             return
-        log(f"skipping fish config (already exists at {fish_config})")
+        log(f"skipping zsh config (already exists at {zshrc})")
         return
 
-    fish_config.write_text(FISH_CONFIG, encoding="utf-8")
-    log(f"wrote default fish config to {fish_config}")
-
-
-def ensure_fish_history() -> None:
-    history_volume = Path("/commandhistory")
-    history_volume.mkdir(parents=True, exist_ok=True)
-    target = history_volume / ".fish_history"
-
-    fish_history = Path.home() / ".local" / "share" / "fish" / "fish_history"
-    fish_history.parent.mkdir(parents=True, exist_ok=True)
-
-    if fish_history.is_symlink():
-        if fish_history.resolve() == target:
-            return
-        fish_history.unlink()
-        fish_history.symlink_to(target)
-        log(f"updated fish history symlink at {fish_history}")
-        return
-
-    if fish_history.exists():
-        if not target.exists():
-            fish_history.replace(target)
-            log(f"moved fish history to {target}")
-        else:
-            log(f"existing fish history left at {fish_history}")
-            return
-
-    fish_history.symlink_to(target)
-    log(f"linked fish history to {target}")
+    zshrc.write_text(ZSH_CONFIG, encoding="utf-8")
+    log(f"wrote default zsh config to {zshrc}")
 
 
 def ensure_dir_ownership(path: Path) -> None:
@@ -264,11 +217,10 @@ def main() -> None:
     ensure_dir_ownership(Path.home() / ".claude")
     ensure_dir_ownership(Path.home() / ".codex")
     ensure_dir_ownership(Path.home() / ".config" / "gh")
-    ensure_fish_history()
     ensure_global_gitignore(workspace)
     ensure_codex_config()
     ensure_claude_config()
-    ensure_fish_config()
+    ensure_zsh_config()
     upgrade_coding_agents()
     log("configured defaults for container use")
 
