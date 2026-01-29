@@ -52,7 +52,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     procps \
     sudo \
     zsh \
-    fish \
     unzip \
     openssh-client \
     gh \
@@ -80,7 +79,7 @@ RUN git config --system worktree.useRelativePaths true \
   && git config --system --add safe.directory /workspace
 
 RUN if ! id -u "dev" >/dev/null 2>&1; then \
-    useradd -m -s /usr/bin/fish "dev"; \
+    useradd -m -s /usr/bin/zsh "dev"; \
   fi
 
 # Ensure dev user has access to the global npm prefix.
@@ -119,7 +118,7 @@ RUN echo '. /etc/profile.d/00-commandhistory.sh' >> /etc/bash.bashrc \
 ENV DEVCONTAINER=true
 
 # Create workspace + agent config dirs and set permissions.
-RUN mkdir -p /workspace /home/dev/.claude /home/dev/.codex /home/dev/.npm /home/dev/.config/fish /home/dev/.cache \
+RUN mkdir -p /workspace /home/dev/.claude /home/dev/.codex /home/dev/.npm /home/dev/.cache /home/dev/.config \
   && touch /home/dev/.zshrc \
   && chown -R dev:dev /workspace /home/dev/.claude /home/dev/.codex /home/dev/.npm /home/dev/.config /home/dev/.cache /home/dev/.zshrc
 
@@ -142,7 +141,7 @@ ENV NPM_CONFIG_CACHE=/home/dev/.npm
 # Default shell + editor.
 ENV HOME=/home/dev
 ENV XDG_CONFIG_HOME=/home/dev/.config
-ENV SHELL=/usr/bin/fish
+ENV SHELL=/usr/bin/zsh
 ENV EDITOR=vim
 ENV VISUAL=vim
 

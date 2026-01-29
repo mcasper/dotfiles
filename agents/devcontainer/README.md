@@ -73,7 +73,6 @@ Currently injected secrets:
 |-----------|----------------|-------|
 | `~/.claude` | `/home/dev/.claude` | Claude Code config, history, skills |
 | `~/.codex` | `/home/dev/.codex` | Codex CLI config |
-| `~/.pi` | `/home/dev/.pi` | Pi agent config |
 | `~/.gitconfig` | `/home/dev/.gitconfig` | Git config (readonly) |
 
 ### Ruby/Bundler Configuration
