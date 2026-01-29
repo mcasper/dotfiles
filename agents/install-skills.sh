@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
-# install-skills.sh - Install coding agent skills to Claude Code and Codex
+# install-skills.sh - Install coding agent skills to Claude Code, Codex, and Pi
 #
 # Usage:
-#   ./install-skills.sh [--symlink|--copy] [--claude|--codex|--all]
+#   ./install-skills.sh [--symlink|--copy] [--claude|--codex|--pi|--all]
 #
 # Options:
 #   --symlink    Create symlinks (default, allows live editing)
 #   --copy       Copy files (better for stability)
 #   --claude     Install to Claude Code only
 #   --codex      Install to Codex only
-#   --all        Install to both (default)
+#   --pi         Install to Pi only
+#   --all        Install to all (default)
 
 set -euo pipefail
 
@@ -31,6 +32,7 @@ while [[ $# -gt 0 ]]; do
         --copy) MODE="copy"; shift ;;
         --claude) TARGET="claude"; shift ;;
         --codex) TARGET="codex"; shift ;;
+        --pi) TARGET="pi"; shift ;;
         --all) TARGET="all"; shift ;;
         -h|--help)
             grep '^#' "$0" | tail -n +2 | cut -c 3-
@@ -50,6 +52,7 @@ SKILLS_SOURCE="${SCRIPT_DIR}/skills"
 # Installation paths
 CLAUDE_DIR="${HOME}/.claude/skills"
 CODEX_DIR="${HOME}/.codex/skills"
+PI_DIR="${HOME}/.pi/agent/skills"
 
 echo -e "${BLUE}=== Agent Skills Installer ===${NC}"
 echo -e "Source: ${SKILLS_SOURCE}"
@@ -132,6 +135,38 @@ install_to_codex() {
     echo ""
 }
 
+install_to_pi() {
+    echo -e "${BLUE}Installing to Pi...${NC}"
+
+    # Create skills directory
+    mkdir -p "${PI_DIR}"
+
+    # Install skills
+    for skill_dir in "${SKILLS_SOURCE}"/*; do
+        if [[ -d "${skill_dir}" ]]; then
+            skill_name=$(basename "${skill_dir}")
+            target_path="${PI_DIR}/${skill_name}"
+
+            # Remove existing symlink/directory
+            if [[ -L "${target_path}" ]] || [[ -d "${target_path}" ]]; then
+                rm -rf "${target_path}"
+            fi
+
+            if [[ "${MODE}" == "symlink" ]]; then
+                ln -s "${skill_dir}" "${target_path}"
+                echo -e "  ${GREEN}✓${NC} Linked: ${skill_name}"
+            else
+                cp -r "${skill_dir}" "${target_path}"
+                echo -e "  ${GREEN}✓${NC} Copied: ${skill_name}"
+            fi
+        fi
+    done
+
+    echo -e "${GREEN}✓ Pi installation complete${NC}"
+    echo -e "  Location: ${PI_DIR}"
+    echo ""
+}
+
 # Install based on target
 case "${TARGET}" in
     claude)
@@ -140,9 +175,13 @@ case "${TARGET}" in
     codex)
         install_to_codex
         ;;
+    pi)
+        install_to_pi
+        ;;
     all)
         install_to_claude
         install_to_codex
+        install_to_pi
         ;;
 esac
 
@@ -160,6 +199,13 @@ fi
 if [[ "${TARGET}" == "codex" ]] || [[ "${TARGET}" == "all" ]]; then
     echo -e "  ${YELLOW}Codex:${NC}"
     echo -e "    Skills are ready to use in your next session"
+    echo ""
+fi
+
+if [[ "${TARGET}" == "pi" ]] || [[ "${TARGET}" == "all" ]]; then
+    echo -e "  ${YELLOW}Pi:${NC}"
+    echo -e "    Skills are ready to use in your next session"
+    echo -e "    Use /skill:name to invoke a specific skill"
     echo ""
 fi
 

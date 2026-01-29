@@ -11,7 +11,7 @@ agents/
 │   ├── systematic-debugging/
 │   ├── test-driven-development/
 │   └── ...
-├── install-skills.sh    # Installation script for Claude Code and Codex
+├── install-skills.sh    # Installation script for Claude Code, Codex, and Pi
 └── README.md           # This file
 ```
 
@@ -30,7 +30,7 @@ Use the provided script to install skills to your coding agents:
 
 ### Quick Start
 
-Install to both Claude Code and Codex:
+Install to Claude Code, Codex, and Pi:
 ```bash
 ./agents/install-skills.sh
 ```
@@ -41,6 +41,7 @@ Install to both Claude Code and Codex:
 # Install to specific platform
 ./agents/install-skills.sh --claude
 ./agents/install-skills.sh --codex
+./agents/install-skills.sh --pi
 
 # Choose installation method
 ./agents/install-skills.sh --symlink  # Default: allows live editing
@@ -48,6 +49,7 @@ Install to both Claude Code and Codex:
 
 # Combine options
 ./agents/install-skills.sh --copy --claude
+./agents/install-skills.sh --symlink --pi
 ```
 
 ### Installation Modes
@@ -68,6 +70,14 @@ After installation:
 ### Codex
 
 Skills are automatically loaded in your next Codex session.
+
+### Pi
+
+After installation:
+1. Start a new Pi session
+2. Skills are discovered automatically at startup
+3. Use `/skill:name` to invoke a specific skill (e.g., `/skill:systematic-debugging`)
+4. Pi shows available skills when relevant to your task
 
 ## Updating
 
