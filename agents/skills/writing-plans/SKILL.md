@@ -99,7 +99,7 @@ After saving the plan:
 **"Plan saved to `docs/plans/<filename>.md`. Ready to execute?"**
 
 **If yes:**
-- **REQUIRED SUB-SKILL:** Use superpowers:subagent-driven-development skill to implement the plan
+- Proceed to implement the plan
 
 **If no / new session preferred:**
 - User can start fresh session with: "Execute the plan in docs/plans/<filename>.md"
