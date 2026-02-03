@@ -60,7 +60,7 @@ EXTENSIONS_SOURCE="${SCRIPT_DIR}/extensions"
 CLAUDE_DIR="${HOME}/.claude/skills"
 CODEX_DIR="${HOME}/.codex/skills"
 PI_DIR="${HOME}/.pi/agent/skills"
-PI_EXTENSIONS_DIR="${HOME}/.pi/extensions"
+PI_EXTENSIONS_DIR="${HOME}/.pi/agent/extensions"
 
 echo -e "${BLUE}=== Agent Skills & Extensions Installer ===${NC}"
 echo -e "Mode: ${MODE}"
@@ -83,7 +83,9 @@ if [[ "${INSTALL_EXTENSIONS}" == true ]]; then
     echo -e "Extensions source: ${EXTENSIONS_SOURCE}"
     # Check if extensions source directory exists
     if [[ -d "${EXTENSIONS_SOURCE}" ]]; then
-        EXTENSION_COUNT=$(find "${EXTENSIONS_SOURCE}" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
+        DIR_COUNT=$(find "${EXTENSIONS_SOURCE}" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
+        FILE_COUNT=$(find "${EXTENSIONS_SOURCE}" -mindepth 1 -maxdepth 1 -name "*.ts" -type f | wc -l | tr -d ' ')
+        EXTENSION_COUNT=$((DIR_COUNT + FILE_COUNT))
         echo -e "Found ${GREEN}${EXTENSION_COUNT}${NC} extensions to install"
     else
         echo -e "${YELLOW}Warning: Extensions directory not found at ${EXTENSIONS_SOURCE}${NC}"
@@ -201,6 +203,7 @@ install_to_pi() {
         # Create extensions directory
         mkdir -p "${PI_EXTENSIONS_DIR}"
 
+        # Install directory-based extensions
         for ext_dir in "${EXTENSIONS_SOURCE}"/*; do
             if [[ -d "${ext_dir}" ]]; then
                 ext_name=$(basename "${ext_dir}")
@@ -216,6 +219,27 @@ install_to_pi() {
                     echo -e "  ${GREEN}✓${NC} Linked extension: ${ext_name}"
                 else
                     cp -r "${ext_dir}" "${target_path}"
+                    echo -e "  ${GREEN}✓${NC} Copied extension: ${ext_name}"
+                fi
+            fi
+        done
+
+        # Install single-file extensions (.ts files)
+        for ext_file in "${EXTENSIONS_SOURCE}"/*.ts; do
+            if [[ -f "${ext_file}" ]]; then
+                ext_name=$(basename "${ext_file}")
+                target_path="${PI_EXTENSIONS_DIR}/${ext_name}"
+
+                # Remove existing symlink/file
+                if [[ -L "${target_path}" ]] || [[ -f "${target_path}" ]]; then
+                    rm -f "${target_path}"
+                fi
+
+                if [[ "${MODE}" == "symlink" ]]; then
+                    ln -s "${ext_file}" "${target_path}"
+                    echo -e "  ${GREEN}✓${NC} Linked extension: ${ext_name}"
+                else
+                    cp "${ext_file}" "${target_path}"
                     echo -e "  ${GREEN}✓${NC} Copied extension: ${ext_name}"
                 fi
             fi
