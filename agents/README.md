@@ -6,13 +6,14 @@ This directory contains coding agent skills and configurations for AI-powered de
 
 ```
 agents/
+├── AGENTS.md            # Shared global agent instructions
 ├── skills/              # Skill definitions for coding agents
 │   ├── brainstorming/
 │   ├── systematic-debugging/
 │   ├── test-driven-development/
 │   └── ...
 ├── install-skills.sh    # Installation script for Claude Code, Codex, and Pi
-└── README.md           # This file
+└── README.md            # This file
 ```
 
 ## Skills
@@ -54,9 +55,17 @@ Install to Claude Code, Codex, and Pi:
 
 ### Installation Modes
 
-**Symlink (Default)**: Creates symbolic links to the skills directory. Changes you make to skills are immediately reflected in both agents. Best for development.
+**Symlink (Default)**: Creates symbolic links to the source files. Changes you make are immediately reflected in installed skills/extensions/instructions. Best for development.
 
-**Copy**: Copies skill files to the installation locations. More stable but requires re-running the script to update. Best for production use.
+**Copy**: Copies files to installation locations. More stable but requires re-running the script to update. Best for production use.
+
+### Global Instructions File
+
+The installer also manages the shared top-level instruction file from `agents/AGENTS.md`:
+
+- **Pi**: `~/.pi/agent/AGENTS.md`
+- **Codex**: `~/.codex/AGENTS.md`
+- **Claude Code**: `~/.claude/CLAUDE.md`
 
 ## Usage
 
@@ -66,10 +75,12 @@ After installation:
 1. Restart Claude Code
 2. Skills will be automatically available
 3. Use `/help` to see available skills
+4. Global instructions are synced to `~/.claude/CLAUDE.md`
 
 ### Codex
 
 Skills are automatically loaded in your next Codex session.
+Global instructions are synced to `~/.codex/AGENTS.md`.
 
 ### Pi
 
@@ -78,6 +89,7 @@ After installation:
 2. Skills are discovered automatically at startup
 3. Use `/skill:name` to invoke a specific skill (e.g., `/skill:systematic-debugging`)
 4. Pi shows available skills when relevant to your task
+5. Global instructions are synced to `~/.pi/agent/AGENTS.md`
 
 ## Updating
 

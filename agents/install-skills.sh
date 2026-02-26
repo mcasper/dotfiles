@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# install-skills.sh - Install coding agent skills and extensions to Claude Code, Codex, and Pi
+# install-skills.sh - Install coding agent skills, extensions, and global instructions to Claude Code, Codex, and Pi
 #
 # Usage:
 #   ./install-skills.sh [--symlink|--copy] [--claude|--codex|--pi|--all] [--skills-only|--extensions-only]
@@ -55,12 +55,16 @@ done
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 SKILLS_SOURCE="${SCRIPT_DIR}/skills"
 EXTENSIONS_SOURCE="${SCRIPT_DIR}/extensions"
+AGENTS_SOURCE="${SCRIPT_DIR}/AGENTS.md"
 
 # Installation paths
 CLAUDE_DIR="${HOME}/.claude/skills"
 CODEX_DIR="${HOME}/.codex/skills"
 PI_DIR="${HOME}/.pi/agent/skills"
 PI_EXTENSIONS_DIR="${HOME}/.pi/agent/extensions"
+CLAUDE_AGENT_FILE="${HOME}/.claude/CLAUDE.md"
+CODEX_AGENT_FILE="${HOME}/.codex/AGENTS.md"
+PI_AGENT_FILE="${HOME}/.pi/agent/AGENTS.md"
 
 echo -e "${BLUE}=== Agent Skills & Extensions Installer ===${NC}"
 echo -e "Mode: ${MODE}"
@@ -92,79 +96,108 @@ if [[ "${INSTALL_EXTENSIONS}" == true ]]; then
         INSTALL_EXTENSIONS=false
     fi
 fi
+
+if [[ ! -f "${AGENTS_SOURCE}" ]]; then
+    echo -e "${RED}Error: AGENTS.md not found at ${AGENTS_SOURCE}${NC}"
+    exit 1
+fi
+
+echo -e "Agent instructions source: ${AGENTS_SOURCE}"
 echo ""
 
-install_to_claude() {
-    if [[ "${INSTALL_SKILLS}" != true ]]; then
-        echo -e "${YELLOW}Skipping Claude Code (extensions-only mode, Claude only supports skills)${NC}"
-        return
+install_instruction_file() {
+    local source_path="$1"
+    local target_path="$2"
+    local label="$3"
+
+    mkdir -p "$(dirname "${target_path}")"
+
+    if [[ -L "${target_path}" ]] || [[ -f "${target_path}" ]]; then
+        rm -f "${target_path}"
     fi
 
+    if [[ "${MODE}" == "symlink" ]]; then
+        ln -s "${source_path}" "${target_path}"
+        echo -e "  ${GREEN}✓${NC} Linked ${label}: ${target_path}"
+    else
+        cp "${source_path}" "${target_path}"
+        echo -e "  ${GREEN}✓${NC} Copied ${label}: ${target_path}"
+    fi
+}
+
+install_to_claude() {
     echo -e "${BLUE}Installing to Claude Code...${NC}"
 
-    # Create skills directory
-    mkdir -p "${CLAUDE_DIR}"
-
     # Install skills
-    for skill_dir in "${SKILLS_SOURCE}"/*; do
-        if [[ -d "${skill_dir}" ]]; then
-            skill_name=$(basename "${skill_dir}")
-            target_path="${CLAUDE_DIR}/${skill_name}"
+    if [[ "${INSTALL_SKILLS}" == true ]]; then
+        # Create skills directory
+        mkdir -p "${CLAUDE_DIR}"
 
-            # Remove existing symlink/directory
-            if [[ -L "${target_path}" ]] || [[ -d "${target_path}" ]]; then
-                rm -rf "${target_path}"
-            fi
+        for skill_dir in "${SKILLS_SOURCE}"/*; do
+            if [[ -d "${skill_dir}" ]]; then
+                skill_name=$(basename "${skill_dir}")
+                target_path="${CLAUDE_DIR}/${skill_name}"
 
-            if [[ "${MODE}" == "symlink" ]]; then
-                ln -s "${skill_dir}" "${target_path}"
-                echo -e "  ${GREEN}✓${NC} Linked: ${skill_name}"
-            else
-                cp -r "${skill_dir}" "${target_path}"
-                echo -e "  ${GREEN}✓${NC} Copied: ${skill_name}"
+                # Remove existing symlink/directory
+                if [[ -L "${target_path}" ]] || [[ -d "${target_path}" ]]; then
+                    rm -rf "${target_path}"
+                fi
+
+                if [[ "${MODE}" == "symlink" ]]; then
+                    ln -s "${skill_dir}" "${target_path}"
+                    echo -e "  ${GREEN}✓${NC} Linked: ${skill_name}"
+                else
+                    cp -r "${skill_dir}" "${target_path}"
+                    echo -e "  ${GREEN}✓${NC} Copied: ${skill_name}"
+                fi
             fi
-        fi
-    done
+        done
+        echo -e "  Skills location: ${CLAUDE_DIR}"
+    else
+        echo -e "  ${YELLOW}Skipping skills (extensions-only mode)${NC}"
+    fi
+
+    install_instruction_file "${AGENTS_SOURCE}" "${CLAUDE_AGENT_FILE}" "global instructions"
 
     echo -e "${GREEN}✓ Claude Code installation complete${NC}"
-    echo -e "  Location: ${CLAUDE_DIR}"
     echo ""
 }
 
 install_to_codex() {
-    if [[ "${INSTALL_SKILLS}" != true ]]; then
-        echo -e "${YELLOW}Skipping Codex (extensions-only mode, Codex only supports skills)${NC}"
-        return
-    fi
-
     echo -e "${BLUE}Installing to Codex...${NC}"
 
-    # Create skills directory
-    mkdir -p "${CODEX_DIR}"
-
     # Install skills
-    for skill_dir in "${SKILLS_SOURCE}"/*; do
-        if [[ -d "${skill_dir}" ]]; then
-            skill_name=$(basename "${skill_dir}")
-            target_path="${CODEX_DIR}/${skill_name}"
+    if [[ "${INSTALL_SKILLS}" == true ]]; then
+        # Create skills directory
+        mkdir -p "${CODEX_DIR}"
 
-            # Remove existing symlink/directory
-            if [[ -L "${target_path}" ]] || [[ -d "${target_path}" ]]; then
-                rm -rf "${target_path}"
-            fi
+        for skill_dir in "${SKILLS_SOURCE}"/*; do
+            if [[ -d "${skill_dir}" ]]; then
+                skill_name=$(basename "${skill_dir}")
+                target_path="${CODEX_DIR}/${skill_name}"
 
-            if [[ "${MODE}" == "symlink" ]]; then
-                ln -s "${skill_dir}" "${target_path}"
-                echo -e "  ${GREEN}✓${NC} Linked: ${skill_name}"
-            else
-                cp -r "${skill_dir}" "${target_path}"
-                echo -e "  ${GREEN}✓${NC} Copied: ${skill_name}"
+                # Remove existing symlink/directory
+                if [[ -L "${target_path}" ]] || [[ -d "${target_path}" ]]; then
+                    rm -rf "${target_path}"
+                fi
+
+                if [[ "${MODE}" == "symlink" ]]; then
+                    ln -s "${skill_dir}" "${target_path}"
+                    echo -e "  ${GREEN}✓${NC} Linked: ${skill_name}"
+                else
+                    cp -r "${skill_dir}" "${target_path}"
+                    echo -e "  ${GREEN}✓${NC} Copied: ${skill_name}"
+                fi
             fi
-        fi
-    done
+        done
+        echo -e "  Skills location: ${CODEX_DIR}"
+    else
+        echo -e "  ${YELLOW}Skipping skills (extensions-only mode)${NC}"
+    fi
+
+    install_instruction_file "${AGENTS_SOURCE}" "${CODEX_AGENT_FILE}" "global instructions"
 
     echo -e "${GREEN}✓ Codex installation complete${NC}"
-    echo -e "  Location: ${CODEX_DIR}"
     echo ""
 }
 
@@ -247,6 +280,8 @@ install_to_pi() {
         echo -e "  Extensions location: ${PI_EXTENSIONS_DIR}"
     fi
 
+    install_instruction_file "${AGENTS_SOURCE}" "${PI_AGENT_FILE}" "global instructions"
+
     echo -e "${GREEN}✓ Pi installation complete${NC}"
     echo ""
 }
@@ -275,14 +310,20 @@ echo -e "${BLUE}Next steps:${NC}"
 
 if [[ "${TARGET}" == "claude" ]] || [[ "${TARGET}" == "all" ]]; then
     echo -e "  ${YELLOW}Claude Code:${NC}"
-    echo -e "    Restart Claude Code to load the skills"
-    echo -e "    Use /help to see available skills"
+    if [[ "${INSTALL_SKILLS}" == true ]]; then
+        echo -e "    Restart Claude Code to load the skills"
+        echo -e "    Use /help to see available skills"
+    fi
+    echo -e "    Global instructions installed at ${CLAUDE_AGENT_FILE}"
     echo ""
 fi
 
 if [[ "${TARGET}" == "codex" ]] || [[ "${TARGET}" == "all" ]]; then
     echo -e "  ${YELLOW}Codex:${NC}"
-    echo -e "    Skills are ready to use in your next session"
+    if [[ "${INSTALL_SKILLS}" == true ]]; then
+        echo -e "    Skills are ready to use in your next session"
+    fi
+    echo -e "    Global instructions installed at ${CODEX_AGENT_FILE}"
     echo ""
 fi
 
@@ -295,11 +336,12 @@ if [[ "${TARGET}" == "pi" ]] || [[ "${TARGET}" == "all" ]]; then
     if [[ "${INSTALL_EXTENSIONS}" == true ]]; then
         echo -e "    Extensions are ready to use in your next session"
     fi
+    echo -e "    Global instructions installed at ${PI_AGENT_FILE}"
     echo ""
 fi
 
 if [[ "${MODE}" == "symlink" ]]; then
-    echo -e "${BLUE}Note:${NC} Skills are symlinked - changes to source files will be reflected immediately"
+    echo -e "${BLUE}Note:${NC} Installed files are symlinked - changes to source files will be reflected immediately"
 else
-    echo -e "${BLUE}Note:${NC} Skills are copied - run this script again to update"
+    echo -e "${BLUE}Note:${NC} Installed files are copied - run this script again to update"
 fi
