@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+path="${1:-$PWD}"
+
+if [[ ! -d "$path" ]]; then
+  path="$(dirname -- "$path")"
+fi
+
+label="$(basename -- "$path")"
+
+if repo_root="$(git -C "$path" rev-parse --show-toplevel 2>/dev/null)"; then
+  label="$(basename -- "$repo_root")"
+
+  if branch="$(git -C "$repo_root" symbolic-ref --quiet --short HEAD 2>/dev/null)"; then
+    printf '%s (%s)\n' "$label" "$branch"
+    exit 0
+  fi
+
+  if short_sha="$(git -C "$repo_root" rev-parse --short HEAD 2>/dev/null)"; then
+    printf '%s (%s)\n' "$label" "$short_sha"
+    exit 0
+  fi
+fi
+
+printf '%s\n' "$label"
