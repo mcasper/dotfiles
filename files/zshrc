@@ -36,6 +36,9 @@ alias glist="git for-each-ref --sort=-committerdate refs/heads/ --format='%(comm
 alias light="export LIGHT_SHELL=1"
 alias dark="export LIGHT_SHELL=0"
 
+alias claude-yolo="claude --dangerously-skip-permissions"
+alias codex-yolo="codex --yolo"
+
 ## User configuration ##
 
 # History
