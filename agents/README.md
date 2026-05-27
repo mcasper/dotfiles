@@ -12,6 +12,7 @@ agents/
 │   ├── systematic-debugging/
 │   ├── test-driven-development/
 │   └── ...
+├── prompts/             # Pi prompt templates
 ├── install-skills.sh    # Installation script for Claude Code, Codex, and Pi
 └── README.md            # This file
 ```
@@ -48,6 +49,9 @@ Install to Claude Code, Codex, and Pi:
 ./agents/install-skills.sh --symlink  # Default: allows live editing
 ./agents/install-skills.sh --copy     # Copies files for stability
 
+# Install Pi prompt templates only
+./agents/install-skills.sh --pi --prompts-only
+
 # Combine options
 ./agents/install-skills.sh --copy --claude
 ./agents/install-skills.sh --symlink --pi
@@ -58,6 +62,10 @@ Install to Claude Code, Codex, and Pi:
 **Symlink (Default)**: Creates symbolic links to the source files. Changes you make are immediately reflected in installed skills/extensions/instructions. Best for development.
 
 **Copy**: Copies files to installation locations. More stable but requires re-running the script to update. Best for production use.
+
+### Pi Prompt Templates
+
+Pi prompt templates are managed from `agents/prompts/*.md` and installed to `~/.pi/agent/prompts` when targeting Pi. Use `--prompts-only` to install only prompt templates.
 
 ### Global Instructions File
 
@@ -88,8 +96,9 @@ After installation:
 1. Start a new Pi session
 2. Skills are discovered automatically at startup
 3. Use `/skill:name` to invoke a specific skill (e.g., `/skill:systematic-debugging`)
-4. Pi shows available skills when relevant to your task
-5. Global instructions are synced to `~/.pi/agent/AGENTS.md`
+4. Use prompt templates by typing `/template-name` (e.g., `/dummy`)
+5. Pi shows available skills when relevant to your task
+6. Global instructions are synced to `~/.pi/agent/AGENTS.md`
 
 ## Updating
 
