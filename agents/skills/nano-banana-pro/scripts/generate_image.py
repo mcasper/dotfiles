@@ -14,6 +14,7 @@ Usage:
 """
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -41,11 +42,18 @@ def main():
         default=None,
         help="Output resolution: 1K (default), 2K, or 4K",
     )
+    parser.add_argument(
+        "--api-key",
+        default=None,
+        help="Gemini API key. Defaults to GEMINI_API_KEY or GOOGLE_API_KEY.",
+    )
 
     args = parser.parse_args()
 
-    # Get API key (falls back to the unresolved sentinel when httpjail manages auth)
-    api_key = "__GEMINI_API_KEY_UNSET__"
+    api_key = args.api_key or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+    if not api_key:
+        print("Error: GEMINI_API_KEY or GOOGLE_API_KEY is required.", file=sys.stderr)
+        sys.exit(1)
 
     # Import here to avoid slow import on argument errors
     from google import genai
@@ -105,7 +113,15 @@ def main():
 
         # Process response and convert to PNG
         image_saved = False
-        for part in response.parts:
+        parts = response.parts
+        if parts is None and response.candidates:
+            candidate = response.candidates[0]
+            if candidate.content is not None:
+                parts = candidate.content.parts
+        if parts is None:
+            print(f"Error: No response parts were returned. Full response: {response}", file=sys.stderr)
+            sys.exit(1)
+        for part in parts:
             if part.text is not None:
                 print(f"Model response: {part.text}")
             elif part.inline_data is not None:
