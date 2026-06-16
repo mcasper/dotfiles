@@ -314,15 +314,6 @@ require("lazy").setup({
 			end,
 		},
 
-		-- Autocomplete
-		{
-			{
-				"supermaven-inc/supermaven-nvim",
-				config = function()
-					require("supermaven-nvim").setup({})
-				end,
-			},
-		},
 
 		-- Tests
 		{
