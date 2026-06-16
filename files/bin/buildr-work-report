@@ -14,7 +14,7 @@ import sys
 from typing import Any
 
 
-DEFAULT_ROOT = "/Users/mattcasper/code/buildr"
+DEFAULT_ROOT = str(pathlib.Path.home() / "code" / "buildr")
 DEFAULT_PATTERN = "app*"
 AGENT_TOOLS = ("pi", "codex", "claude")
 
