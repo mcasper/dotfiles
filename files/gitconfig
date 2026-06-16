@@ -1,7 +1,7 @@
 [user]
   name = Matt Casper
   email = matthewvcasper@gmail.com
-	signingkey = /Users/mattcasper/.ssh/id_ed25519.pub
+	signingkey = ~/.ssh/id_ed25519.pub
 [push]
   default = simple
 [core]
@@ -55,3 +55,5 @@
 	format = ssh
 [commit]
 	gpgsign = true
+[include]
+	path = ~/.gitconfig.local

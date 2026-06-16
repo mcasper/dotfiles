@@ -1,4 +1,17 @@
 # Linux specific aliases and configs
 
-# asdf
-. ~/.asdf/asdf.sh
+# Cache encrypted SSH key passphrases across shells until logout/reboot.
+# First shell prompts for the key passphrase; later shells reuse the agent.
+if command -v keychain >/dev/null 2>&1 && [ -f "$HOME/.ssh/id_ed25519" ]; then
+  eval "$(keychain --eval --quiet id_ed25519)"
+fi
+
+# mise (preferred runtime/tool-version manager)
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+fi
+
+# asdf (legacy projects)
+if [ -f "$HOME/.asdf/asdf.sh" ]; then
+  . "$HOME/.asdf/asdf.sh"
+fi

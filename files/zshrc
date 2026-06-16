@@ -100,9 +100,11 @@ if [ -f ~/.atuin/bin/env ]; then
   . "$HOME/.atuin/bin/env"
 fi
 
-eval "$(atuin init --disable-up-arrow zsh)"
+if command -v atuin >/dev/null 2>&1; then
+  eval "$(atuin init --disable-up-arrow zsh)"
+fi
 
-. "$HOME/.local/bin/env"
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
 
 # bun completions
 [ -s "/Users/mattcasper/.bun/_bun" ] && source "/Users/mattcasper/.bun/_bun"
@@ -112,4 +114,6 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 export PATH="$HOME/.claude/local:$PATH"
-export PATH="$(go env GOPATH)/bin:$PATH"
+if command -v go >/dev/null 2>&1; then
+  export PATH="$(go env GOPATH)/bin:$PATH"
+fi

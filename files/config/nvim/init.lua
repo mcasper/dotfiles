@@ -253,7 +253,17 @@ require("lazy").setup({
 		{
 			"neovim/nvim-lspconfig",
 			config = function()
-				vim.lsp.config("ruby_lsp", {
+				local function setup_lsp(server, opts)
+					opts = opts or {}
+					if vim.lsp.config and vim.lsp.enable then
+						vim.lsp.config(server, opts)
+						vim.lsp.enable(server)
+					else
+						require("lspconfig")[server].setup(opts)
+					end
+				end
+
+				setup_lsp("ruby_lsp", {
 					init_options = {
 						addonSettings = {
 							["Ruby LSP Rails"] = {
@@ -262,24 +272,24 @@ require("lazy").setup({
 						},
 					},
 				})
-				vim.lsp.enable("ruby_lsp")
-				vim.lsp.enable("ts_ls")
-				vim.lsp.enable("tailwindcss")
-				vim.lsp.enable("ty")
-				vim.lsp.config("ty", {
+				setup_lsp("ts_ls")
+				setup_lsp("tailwindcss")
+				setup_lsp("ty", {
 					settings = {
 						ty = {
 							diagnosticMode = "workspace",
 						},
 					},
 				})
-				vim.lsp.enable("zls")
+				setup_lsp("zls")
 
-				vim.diagnostic.config({
-					virtual_lines = {
-						current_line = true,
-					},
-				})
+				if vim.diagnostic then
+					vim.diagnostic.config({
+						virtual_lines = {
+							current_line = true,
+						},
+					})
+				end
 			end,
 		},
 
