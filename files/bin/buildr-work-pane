@@ -1,0 +1,14 @@
+#!/bin/bash
+# Run buildr workspace selector and open a shell in the chosen repo.
+#
+# This script is meant to be the tmux window's initial process. From an
+# interactive shell, use the `bw` function instead, which cd's in the current
+# shell without nesting.
+
+_dir="$("$HOME/dotfiles/files/bin/buildr-work-selector")" || true
+
+if [[ -n "$_dir" ]]; then
+  cd "$_dir" || true
+fi
+
+exec "$SHELL"

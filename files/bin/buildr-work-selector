@@ -1,0 +1,246 @@
+#!/usr/bin/env python3
+"""Interactive TUI for selecting an open buildr repo to work in.
+
+Usage (in .zshrc or tmux config):
+    eval "$(buildr-work-selector)"
+
+Displays repos for the active configured pattern in a navigable list.
+Arrow keys to move, Tab to switch patterns, Enter to select, q/Esc to quit.
+On selection, prints the chosen repo path to stdout.
+"""
+
+from __future__ import annotations
+
+import curses
+import importlib.machinery
+import os
+import pathlib
+import re
+import sys
+from importlib.util import module_from_spec, spec_from_file_location
+
+# Re-use all the data collection from buildr-work-report
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+
+
+def _load_report_module():
+    report_path = str(pathlib.Path(__file__).resolve().parent / "buildr-work-report")
+    loader = importlib.machinery.SourceFileLoader("buildr_work_report", report_path)
+    spec = spec_from_file_location("buildr_work_report", report_path, loader=loader)
+    mod = module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+report_mod = _load_report_module()
+
+DEFAULT_ROOT = report_mod.DEFAULT_ROOT
+PATTERNS = ("app*", "forge*")
+DEFAULT_PATTERN = PATTERNS[0]
+STATE_FILE = (
+    pathlib.Path(os.environ.get("XDG_STATE_HOME", pathlib.Path.home() / ".local" / "state"))
+    / "buildr-work-selector"
+    / "last-pattern"
+)
+
+
+def natural_repo_key(repo: dict) -> list[object]:
+    return [int(chunk) if chunk.isdigit() else chunk.lower() for chunk in re.split(r"(\d+)", repo["name"])]
+
+
+def gather_repos(pattern: str) -> list[dict]:
+    """Build report and return repos for a single configured pattern."""
+    report = report_mod.build_report(pathlib.Path(DEFAULT_ROOT), pattern)
+    repos = report["repos"]
+    repos.sort(key=natural_repo_key)
+    return repos
+
+
+def load_last_pattern(state_path: pathlib.Path) -> str | None:
+    try:
+        pattern = state_path.read_text(encoding="utf-8").strip()
+    except FileNotFoundError:
+        return None
+    except OSError:
+        return None
+    return pattern or None
+
+
+def resolve_initial_pattern_index(state_path: pathlib.Path) -> int:
+    pattern = load_last_pattern(state_path)
+    if pattern in PATTERNS:
+        return PATTERNS.index(pattern)
+    return 0
+
+
+def save_last_pattern(state_path: pathlib.Path, pattern_index: int) -> None:
+    try:
+        state_path.parent.mkdir(parents=True, exist_ok=True)
+        state_path.write_text(f"{PATTERNS[pattern_index]}\n", encoding="utf-8")
+    except OSError:
+        pass
+
+
+def cycle_pattern_index(pattern_index: int) -> int:
+    return (pattern_index + 1) % len(PATTERNS)
+
+
+def run_tui(initial_pattern_index: int, state_path: pathlib.Path) -> str | None:
+    """Run curses TUI, return selected repo path or None."""
+
+    def _main(stdscr: curses.window) -> str | None:
+        curses.curs_set(0)
+        curses.set_escdelay(25)
+        curses.use_default_colors()
+
+        curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_CYAN)
+        curses.init_pair(2, curses.COLOR_GREEN, -1)
+        curses.init_pair(3, curses.COLOR_YELLOW, -1)
+        curses.init_pair(4, curses.COLOR_RED, -1)
+        curses.init_pair(5, curses.COLOR_CYAN, -1)
+        curses.init_pair(6, curses.COLOR_WHITE, -1)
+
+        pattern_index = initial_pattern_index
+        repos = gather_repos(PATTERNS[pattern_index])
+        selected = 0
+        scroll_offset = 0
+
+        def switch_pattern() -> None:
+            nonlocal pattern_index, repos, selected, scroll_offset
+            pattern_index = cycle_pattern_index(pattern_index)
+            save_last_pattern(state_path, pattern_index)
+            repos = gather_repos(PATTERNS[pattern_index])
+            selected = 0
+            scroll_offset = 0
+
+        while True:
+            stdscr.erase()
+            max_y, max_x = stdscr.getmaxyx()
+
+            title = " buildr workspace selector "
+            stdscr.addnstr(0, 0, title.center(max_x), max_x, curses.color_pair(5) | curses.A_BOLD)
+
+            help_text = f" pattern: {PATTERNS[pattern_index]}  |  ↑↓ navigate  ⇥ cycle patterns  ⏎ select  1-9 quick select  q quit "
+            stdscr.addnstr(1, 0, help_text[:max_x].ljust(max_x), max_x, curses.color_pair(6))
+
+            col_repo = 2
+            header_y = 3
+            header = f"{'#':<4}{'REPO':<20}{'BRANCH':<26}{'STATUS':<10}{'AGENTS'}"
+            stdscr.addnstr(header_y, col_repo, header[: max_x - col_repo], max_x - col_repo, curses.A_BOLD | curses.color_pair(5))
+            stdscr.addnstr(header_y + 1, col_repo, "─" * min(len(header), max_x - col_repo), max_x - col_repo, curses.color_pair(6))
+
+            list_start_y = header_y + 2
+            visible_rows = max(1, max_y - list_start_y - 2)
+
+            if repos:
+                selected = min(selected, len(repos) - 1)
+                if selected < scroll_offset:
+                    scroll_offset = selected
+                elif selected >= scroll_offset + visible_rows:
+                    scroll_offset = selected - visible_rows + 1
+            else:
+                selected = 0
+                scroll_offset = 0
+
+            if repos:
+                for i in range(visible_rows):
+                    idx = scroll_offset + i
+                    if idx >= len(repos):
+                        break
+
+                    repo = repos[idx]
+                    y = list_start_y + i
+                    if y >= max_y - 1:
+                        break
+
+                    is_open = repo.get("open", False)
+                    has_agents = repo.get("agent_count", 0) > 0
+                    is_dirty = repo.get("status") == "dirty"
+
+                    if idx == selected:
+                        attr = curses.color_pair(1) | curses.A_BOLD
+                    elif is_open:
+                        attr = curses.color_pair(2)
+                    elif has_agents:
+                        attr = curses.color_pair(4)
+                    elif is_dirty:
+                        attr = curses.color_pair(3)
+                    else:
+                        attr = curses.color_pair(6)
+
+                    name = repo["name"]
+                    branch = (repo.get("branch") or "unknown")[:25]
+                    status = repo.get("status", "unknown")
+                    agents_str = ", ".join(f"{a['tool']}({a['pid']})" for a in repo.get("agents", [])) if repo.get("agents") else "-"
+                    marker = "●" if is_open else " "
+                    num_label = str(idx + 1) if idx < 9 else " "
+                    row = f"{num_label:<3}{marker} {name:<18}{branch:<26}{status:<10}{agents_str}".ljust(max_x - 1)
+
+                    try:
+                        stdscr.addnstr(y, 1, row[: max_x - 2], max_x - 2, attr)
+                    except curses.error:
+                        pass
+            else:
+                empty_message = f"No repos found for {PATTERNS[pattern_index]}. Press Tab to switch patterns."
+                try:
+                    stdscr.addnstr(list_start_y, 2, empty_message[: max_x - 4], max_x - 4, curses.color_pair(3))
+                except curses.error:
+                    pass
+
+            open_count = sum(1 for repo in repos if repo.get("open"))
+            busy_count = sum(1 for repo in repos if repo.get("agent_count", 0) > 0)
+            dirty_count = sum(1 for repo in repos if repo.get("status") == "dirty" and repo.get("agent_count", 0) == 0)
+            footer = f" {len(repos)} repos | ● {open_count} open | {busy_count} busy | {dirty_count} dirty "
+            try:
+                stdscr.addnstr(max_y - 1, 0, footer.center(max_x)[:max_x], max_x, curses.color_pair(6))
+            except curses.error:
+                pass
+
+            stdscr.refresh()
+
+            key = stdscr.getch()
+            if key == ord("q") or key == 27:
+                return None
+            if key == 9:
+                switch_pattern()
+                continue
+            if key == curses.KEY_UP or key == ord("k"):
+                selected = max(0, selected - 1)
+            elif key == curses.KEY_DOWN or key == ord("j"):
+                selected = min(len(repos) - 1, selected + 1) if repos else 0
+            elif key == ord("g"):
+                selected = 0
+            elif key == ord("G"):
+                selected = len(repos) - 1 if repos else 0
+            elif key in (curses.KEY_ENTER, 10, 13) and repos:
+                return repos[selected]["path"]
+            elif ord("1") <= key <= ord("9"):
+                pick = key - ord("1")
+                if pick < len(repos):
+                    return repos[pick]["path"]
+
+    return curses.wrapper(_main)
+
+
+def main() -> int:
+    pattern_index = resolve_initial_pattern_index(STATE_FILE)
+
+    saved_stdout_fd = os.dup(1)
+    tty_fd = os.open("/dev/tty", os.O_WRONLY)
+    os.dup2(tty_fd, 1)
+    os.close(tty_fd)
+
+    try:
+        selected_path = run_tui(pattern_index, STATE_FILE)
+    finally:
+        os.dup2(saved_stdout_fd, 1)
+        os.close(saved_stdout_fd)
+
+    if selected_path:
+        print(selected_path)
+        return 0
+    return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

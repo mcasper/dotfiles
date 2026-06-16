@@ -1,0 +1,263 @@
+#!/usr/bin/env python3
+"""Report active buildr repo work across git status + running coding agents."""
+
+from __future__ import annotations
+
+import argparse
+import datetime as dt
+import fnmatch
+import json
+import pathlib
+import re
+import subprocess
+import sys
+from typing import Any
+
+
+DEFAULT_ROOT = "/Users/mattcasper/code/buildr"
+DEFAULT_PATTERN = "app*"
+AGENT_TOOLS = ("pi", "codex", "claude")
+
+
+def run_command(args: list[str], check: bool = True) -> str:
+    result = subprocess.run(args, capture_output=True, text=True)
+    if check and result.returncode != 0:
+        raise RuntimeError(result.stderr.strip() or result.stdout.strip() or f"command failed: {' '.join(args)}")
+    return result.stdout
+
+
+def is_subpath(path: pathlib.Path, parent: pathlib.Path) -> bool:
+    try:
+        path.resolve().relative_to(parent.resolve())
+        return True
+    except ValueError:
+        return False
+
+
+def discover_repos(root: pathlib.Path, pattern: str) -> list[dict[str, Any]]:
+    repos: list[dict[str, Any]] = []
+    if not root.exists():
+        return repos
+
+    for child in sorted(root.iterdir(), key=lambda p: p.name):
+        if not child.is_dir():
+            continue
+        if not fnmatch.fnmatch(child.name, pattern):
+            continue
+
+        try:
+            run_command(["git", "-C", str(child), "rev-parse", "--is-inside-work-tree"])
+        except RuntimeError:
+            continue
+
+        repos.append(
+            {
+                "name": child.name,
+                "path": str(child.resolve()),
+                "branch": None,
+                "status": "unknown",
+                "status_error": None,
+                "agents": [],
+                "agent_count": 0,
+                "open": False,
+            }
+        )
+    return repos
+
+
+def collect_repo_status(repo: dict[str, Any]) -> None:
+    repo_path = repo["path"]
+    try:
+        branch = run_command(["git", "-C", repo_path, "rev-parse", "--abbrev-ref", "HEAD"]).strip()
+        porcelain = run_command(["git", "-C", repo_path, "status", "--porcelain"])
+        repo["branch"] = branch or "(detached)"
+        repo["status"] = "clean" if porcelain.strip() == "" else "dirty"
+    except RuntimeError as exc:
+        repo["status"] = "error"
+        repo["status_error"] = str(exc)
+        repo["branch"] = repo["branch"] or "unknown"
+
+
+def detect_tool_from_command(command: str) -> str | None:
+    command_lower = command.lower()
+    for tool in AGENT_TOOLS:
+        if re.search(rf"(?<![a-z0-9]){re.escape(tool)}(?![a-z0-9])", command_lower):
+            return tool
+    return None
+
+
+def parse_ps_processes() -> list[dict[str, Any]]:
+    try:
+        output = run_command(["ps", "-axo", "pid=,command="])
+    except RuntimeError:
+        return []
+
+    procs: list[dict[str, Any]] = []
+    for raw_line in output.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        parts = line.split(None, 1)
+        if len(parts) != 2:
+            continue
+        pid_str, command = parts
+        if not pid_str.isdigit():
+            continue
+        pid = int(pid_str)
+        tool = detect_tool_from_command(command)
+        if not tool:
+            continue
+        procs.append({"pid": pid, "tool": tool, "command": command})
+    return procs
+
+
+def get_process_cwd(pid: int) -> str | None:
+    try:
+        output = run_command(["lsof", "-a", "-p", str(pid), "-d", "cwd", "-Fn"], check=False)
+    except RuntimeError:
+        return None
+
+    for line in output.splitlines():
+        if line.startswith("n") and len(line) > 1:
+            return line[1:]
+    return None
+
+
+def map_agents_to_repos(repos: list[dict[str, Any]], agents: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    repo_paths = [(repo["name"], pathlib.Path(repo["path"])) for repo in repos]
+    unmapped: list[dict[str, Any]] = []
+
+    for agent in agents:
+        cwd = get_process_cwd(agent["pid"])
+        agent["cwd"] = cwd
+        matched_repo: dict[str, Any] | None = None
+        matched_len = -1
+
+        if cwd:
+            cwd_path = pathlib.Path(cwd)
+            for repo in repos:
+                repo_path = pathlib.Path(repo["path"])
+                if is_subpath(cwd_path, repo_path):
+                    this_len = len(str(repo_path))
+                    if this_len > matched_len:
+                        matched_len = this_len
+                        matched_repo = repo
+
+        if matched_repo is None:
+            agent["repo"] = None
+            unmapped.append(agent)
+        else:
+            agent["repo"] = matched_repo["name"]
+            matched_repo["agents"].append({"tool": agent["tool"], "pid": agent["pid"], "cwd": cwd})
+
+    for repo in repos:
+        repo["agent_count"] = len(repo["agents"])
+
+    return unmapped
+
+
+def compute_open_repos(repos: list[dict[str, Any]]) -> list[str]:
+    open_repos = [repo["name"] for repo in repos if repo["status"] == "clean" and repo["agent_count"] == 0]
+    return sorted(open_repos)
+
+
+def choose_open_repo(open_repos: list[str]) -> str | None:
+    return open_repos[0] if open_repos else None
+
+
+def render_table(repos: list[dict[str, Any]], open_repos: list[str], suggested_open_repo: str | None, verbose: bool = False) -> str:
+    headers = ["REPO", "BRANCH", "STATUS", "AGENTS", "OPEN"]
+    rows: list[list[str]] = []
+
+    for repo in repos:
+        agents = ", ".join(f"{a['tool']}({a['pid']})" for a in repo["agents"]) if repo["agents"] else "-"
+        rows.append(
+            [
+                repo["name"],
+                repo.get("branch") or "unknown",
+                repo["status"],
+                agents,
+                "yes" if repo["open"] else "no",
+            ]
+        )
+
+    widths = [len(h) for h in headers]
+    for row in rows:
+        for i, cell in enumerate(row):
+            widths[i] = max(widths[i], len(cell))
+
+    def fmt_row(cells: list[str]) -> str:
+        return "  ".join(cell.ljust(widths[i]) for i, cell in enumerate(cells))
+
+    lines = [fmt_row(headers), fmt_row(["-" * w for w in widths])]
+    lines.extend(fmt_row(row) for row in rows)
+
+    lines.append("")
+    lines.append(f"Open repos ({len(open_repos)}): {', '.join(open_repos) if open_repos else '-'}")
+    lines.append(f"Suggested open repo: {suggested_open_repo or '-'}")
+
+    if verbose:
+        error_repos = [r for r in repos if r.get("status") == "error" and r.get("status_error")]
+        if error_repos:
+            lines.append("")
+            lines.append("Repo status errors:")
+            for repo in error_repos:
+                lines.append(f"- {repo['name']}: {repo['status_error']}")
+
+    return "\n".join(lines)
+
+
+def build_report(root: pathlib.Path, repos_pattern: str, only_open: bool = False) -> dict[str, Any]:
+    repos = discover_repos(root, repos_pattern)
+
+    for repo in repos:
+        collect_repo_status(repo)
+
+    agents = parse_ps_processes()
+    unmapped_agents = map_agents_to_repos(repos, agents)
+
+    open_repos = compute_open_repos(repos)
+    suggested_open_repo = choose_open_repo(open_repos)
+
+    for repo in repos:
+        repo["open"] = repo["name"] in open_repos
+
+    if only_open:
+        repos = [repo for repo in repos if repo["open"]]
+
+    return {
+        "root": str(root),
+        "generated_at": dt.datetime.now().astimezone().isoformat(),
+        "repos_pattern": repos_pattern,
+        "repos": repos,
+        "agents": agents,
+        "open_repos": open_repos,
+        "suggested_open_repo": suggested_open_repo,
+        "unmapped_agents": unmapped_agents,
+    }
+
+
+def parse_args(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Report buildr repo status + active coding agents")
+    parser.add_argument("--root", default=DEFAULT_ROOT, help="Root directory containing app repos")
+    parser.add_argument("--repos-pattern", default=DEFAULT_PATTERN, help="Directory glob for repos (default: app*)")
+    parser.add_argument("--format", choices=("table", "json"), default="table", help="Output format (default: table)")
+    parser.add_argument("--only-open", action="store_true", help="Only include open repos in repo listing")
+    parser.add_argument("--verbose", action="store_true", help="Include extra diagnostics in table mode")
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str]) -> int:
+    args = parse_args(argv)
+    report = build_report(pathlib.Path(args.root), args.repos_pattern, only_open=args.only_open)
+
+    if args.format == "json":
+        print(json.dumps(report, indent=2))
+        return 0
+
+    print(render_table(report["repos"], report["open_repos"], report["suggested_open_repo"], verbose=args.verbose))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
