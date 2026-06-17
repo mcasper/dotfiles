@@ -57,3 +57,7 @@
 	gpgsign = true
 [include]
 	path = ~/.gitconfig.local
+[gpg "ssh"]
+	allowedSignersFile = /home/mattcasper/.ssh/allowed_signers
+[tag]
+	gpgsign = true

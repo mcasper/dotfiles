@@ -4,9 +4,11 @@
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
 import datetime as dt
 import fnmatch
 import json
+import os
 import pathlib
 import re
 import subprocess
@@ -17,19 +19,22 @@ from typing import Any
 DEFAULT_ROOT = str(pathlib.Path.home() / "code" / "buildr")
 DEFAULT_PATTERN = "app*"
 AGENT_TOOLS = ("pi", "codex", "claude")
+AGENT_TOOL_RE = re.compile(rf"(?<![a-z0-9])({'|'.join(map(re.escape, AGENT_TOOLS))})(?![a-z0-9])", re.IGNORECASE)
+DEFAULT_JOBS = max(1, min(16, (os.cpu_count() or 4)))
+_GIT_ENV = {**os.environ, "GIT_OPTIONAL_LOCKS": "0"}
 
 
 def run_command(args: list[str], check: bool = True) -> str:
-    result = subprocess.run(args, capture_output=True, text=True)
+    env = _GIT_ENV if args and args[0] == "git" else None
+    result = subprocess.run(args, capture_output=True, text=True, env=env)
     if check and result.returncode != 0:
         raise RuntimeError(result.stderr.strip() or result.stdout.strip() or f"command failed: {' '.join(args)}")
     return result.stdout
 
 
-def is_subpath(path: pathlib.Path, parent: pathlib.Path) -> bool:
+def is_subpath(path: str, parent: str) -> bool:
     try:
-        path.resolve().relative_to(parent.resolve())
-        return True
+        return os.path.commonpath((path, parent)) == parent
     except ValueError:
         return False
 
@@ -45,9 +50,10 @@ def discover_repos(root: pathlib.Path, pattern: str) -> list[dict[str, Any]]:
         if not fnmatch.fnmatch(child.name, pattern):
             continue
 
-        try:
-            run_command(["git", "-C", str(child), "rev-parse", "--is-inside-work-tree"])
-        except RuntimeError:
+        # Avoid spawning `git rev-parse` for every candidate: for normal repos,
+        # worktrees, and submodules a .git dir/file is enough to identify the
+        # checkout. The later status call will surface any broken repo errors.
+        if not (child / ".git").exists():
             continue
 
         repos.append(
@@ -65,13 +71,23 @@ def discover_repos(root: pathlib.Path, pattern: str) -> list[dict[str, Any]]:
     return repos
 
 
+def parse_status_branch(header: str) -> str:
+    branch_info = header[3:] if header.startswith("## ") else header
+    if branch_info.startswith("No commits yet on "):
+        return branch_info.removeprefix("No commits yet on ").split("...", 1)[0]
+    if branch_info.startswith("HEAD"):
+        return "(detached)"
+    return branch_info.split("...", 1)[0] or "unknown"
+
+
 def collect_repo_status(repo: dict[str, Any]) -> None:
     repo_path = repo["path"]
     try:
-        branch = run_command(["git", "-C", repo_path, "rev-parse", "--abbrev-ref", "HEAD"]).strip()
-        porcelain = run_command(["git", "-C", repo_path, "status", "--porcelain"])
-        repo["branch"] = branch or "(detached)"
-        repo["status"] = "clean" if porcelain.strip() == "" else "dirty"
+        # One git process gives us both the branch and dirty/clean state.
+        porcelain = run_command(["git", "-C", repo_path, "status", "--porcelain=v1", "--branch"])
+        lines = porcelain.splitlines()
+        repo["branch"] = parse_status_branch(lines[0]) if lines else "unknown"
+        repo["status"] = "clean" if len(lines) <= 1 else "dirty"
     except RuntimeError as exc:
         repo["status"] = "error"
         repo["status_error"] = str(exc)
@@ -79,11 +95,8 @@ def collect_repo_status(repo: dict[str, Any]) -> None:
 
 
 def detect_tool_from_command(command: str) -> str | None:
-    command_lower = command.lower()
-    for tool in AGENT_TOOLS:
-        if re.search(rf"(?<![a-z0-9]){re.escape(tool)}(?![a-z0-9])", command_lower):
-            return tool
-    return None
+    match = AGENT_TOOL_RE.search(command)
+    return match.group(1).lower() if match else None
 
 
 def parse_ps_processes() -> list[dict[str, Any]]:
@@ -111,37 +124,53 @@ def parse_ps_processes() -> list[dict[str, Any]]:
     return procs
 
 
-def get_process_cwd(pid: int) -> str | None:
-    try:
-        output = run_command(["lsof", "-a", "-p", str(pid), "-d", "cwd", "-Fn"], check=False)
-    except RuntimeError:
-        return None
+def collect_process_cwds(pids: list[int]) -> dict[int, str]:
+    if not pids:
+        return {}
 
+    cwds: dict[int, str] = {}
+
+    # Linux: /proc is dramatically faster than spawning lsof once per process.
+    proc_root = pathlib.Path("/proc")
+    if proc_root.exists():
+        for pid in pids:
+            try:
+                cwds[pid] = os.path.realpath(os.readlink(proc_root / str(pid) / "cwd"))
+            except OSError:
+                pass
+        return cwds
+
+    # macOS/BSD fallback: one lsof for all PIDs, parsed as p<n>/n<cwd> fields.
+    try:
+        output = run_command(["lsof", "-a", "-d", "cwd", "-Fn", "-p", ",".join(map(str, pids))], check=False)
+    except (OSError, RuntimeError):
+        return cwds
+
+    current_pid: int | None = None
     for line in output.splitlines():
-        if line.startswith("n") and len(line) > 1:
-            return line[1:]
-    return None
+        if line.startswith("p") and line[1:].isdigit():
+            current_pid = int(line[1:])
+        elif line.startswith("n") and current_pid is not None:
+            cwds[current_pid] = line[1:]
+    return cwds
 
 
 def map_agents_to_repos(repos: list[dict[str, Any]], agents: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    repo_paths = [(repo["name"], pathlib.Path(repo["path"])) for repo in repos]
+    repo_paths = sorted(((repo, repo["path"]) for repo in repos), key=lambda item: len(item[1]), reverse=True)
+    cwd_by_pid = collect_process_cwds([agent["pid"] for agent in agents])
     unmapped: list[dict[str, Any]] = []
 
     for agent in agents:
-        cwd = get_process_cwd(agent["pid"])
+        cwd = cwd_by_pid.get(agent["pid"])
         agent["cwd"] = cwd
         matched_repo: dict[str, Any] | None = None
-        matched_len = -1
 
         if cwd:
-            cwd_path = pathlib.Path(cwd)
-            for repo in repos:
-                repo_path = pathlib.Path(repo["path"])
-                if is_subpath(cwd_path, repo_path):
-                    this_len = len(str(repo_path))
-                    if this_len > matched_len:
-                        matched_len = this_len
-                        matched_repo = repo
+            cwd_real = os.path.realpath(cwd)
+            for repo, repo_path in repo_paths:
+                if is_subpath(cwd_real, repo_path):
+                    matched_repo = repo
+                    break
 
         if matched_repo is None:
             agent["repo"] = None
@@ -207,11 +236,12 @@ def render_table(repos: list[dict[str, Any]], open_repos: list[str], suggested_o
     return "\n".join(lines)
 
 
-def build_report(root: pathlib.Path, repos_pattern: str, only_open: bool = False) -> dict[str, Any]:
+def build_report(root: pathlib.Path, repos_pattern: str, only_open: bool = False, jobs: int = DEFAULT_JOBS) -> dict[str, Any]:
     repos = discover_repos(root, repos_pattern)
 
-    for repo in repos:
-        collect_repo_status(repo)
+    if repos:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, min(jobs, len(repos)))) as executor:
+            list(executor.map(collect_repo_status, repos))
 
     agents = parse_ps_processes()
     unmapped_agents = map_agents_to_repos(repos, agents)
@@ -244,12 +274,13 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--format", choices=("table", "json"), default="table", help="Output format (default: table)")
     parser.add_argument("--only-open", action="store_true", help="Only include open repos in repo listing")
     parser.add_argument("--verbose", action="store_true", help="Include extra diagnostics in table mode")
+    parser.add_argument("--jobs", type=int, default=DEFAULT_JOBS, help=f"Concurrent git status jobs (default: {DEFAULT_JOBS})")
     return parser.parse_args(argv)
 
 
 def main(argv: list[str]) -> int:
     args = parse_args(argv)
-    report = build_report(pathlib.Path(args.root), args.repos_pattern, only_open=args.only_open)
+    report = build_report(pathlib.Path(args.root), args.repos_pattern, only_open=args.only_open, jobs=args.jobs)
 
     if args.format == "json":
         print(json.dumps(report, indent=2))

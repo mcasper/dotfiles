@@ -117,3 +117,5 @@ export PATH="$HOME/.claude/local:$PATH"
 if command -v go >/dev/null 2>&1; then
   export PATH="$(go env GOPATH)/bin:$PATH"
 fi
+
+source /home/mattcasper/.daytona.completion_script.zsh

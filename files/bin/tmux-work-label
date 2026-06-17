@@ -3,24 +3,58 @@ set -euo pipefail
 
 path="${1:-$PWD}"
 
-if [[ ! -d "$path" ]]; then
-  path="$(dirname -- "$path")"
+if [[ -d "$path" ]]; then
+  dir="$path"
+else
+  dir="${path%/*}"
+  [[ "$dir" == "$path" ]] && dir="."
 fi
 
-label="$(basename -- "$path")"
+fallback_label="${dir##*/}"
+[[ -z "$fallback_label" ]] && fallback_label="/"
+if ! dir="$(cd -- "$dir" 2>/dev/null && pwd -P)"; then
+  printf '%s\n' "$fallback_label"
+  exit 0
+fi
 
-if repo_root="$(git -C "$path" rev-parse --show-toplevel 2>/dev/null)"; then
-  label="$(basename -- "$repo_root")"
+label="${dir##*/}"
+[[ -z "$label" ]] && label="/"
+search="$dir"
 
-  if branch="$(git -C "$repo_root" symbolic-ref --quiet --short HEAD 2>/dev/null)"; then
-    printf '%s (%s)\n' "$label" "$branch"
+while [[ -n "$search" && "$search" != "/" ]]; do
+  git_meta="$search/.git"
+  if [[ -e "$git_meta" ]]; then
+    label="${search##*/}"
+
+    # .git can be a directory or a gitfile (worktrees/submodules).
+    if [[ -f "$git_meta" ]]; then
+      IFS= read -r gitdir_line < "$git_meta" || gitdir_line=""
+      if [[ "$gitdir_line" == gitdir:* ]]; then
+        gitdir="${gitdir_line#gitdir: }"
+        [[ "$gitdir" != /* ]] && gitdir="$search/$gitdir"
+        git_meta="$gitdir"
+      fi
+    fi
+
+    if [[ -r "$git_meta/HEAD" ]]; then
+      IFS= read -r head < "$git_meta/HEAD" || head=""
+      if [[ "$head" == ref:\ refs/heads/* ]]; then
+        printf '%s (%s)\n' "$label" "${head#ref: refs/heads/}"
+        exit 0
+      elif [[ -n "$head" ]]; then
+        printf '%s (%s)\n' "$label" "${head:0:7}"
+        exit 0
+      fi
+    fi
+
+    printf '%s\n' "$label"
     exit 0
   fi
 
-  if short_sha="$(git -C "$repo_root" rev-parse --short HEAD 2>/dev/null)"; then
-    printf '%s (%s)\n' "$label" "$short_sha"
-    exit 0
-  fi
-fi
+  parent="${search%/*}"
+  [[ "$parent" == "$search" ]] && break
+  [[ -z "$parent" ]] && parent="/"
+  search="$parent"
+done
 
 printf '%s\n' "$label"
