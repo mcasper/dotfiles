@@ -8,10 +8,10 @@ This directory contains coding agent skills and configurations for AI-powered de
 agents/
 ├── AGENTS.md            # Shared global agent instructions
 ├── skills/              # Skill definitions for coding agents
-│   ├── brainstorming/
-│   ├── systematic-debugging/
-│   ├── test-driven-development/
-│   └── ...
+│   ├── fetch-ci-build/
+│   ├── nano-banana-pro/
+│   ├── semantic-commit/
+│   └── sentry-issue/
 ├── prompts/             # Pi prompt templates
 ├── install-skills.sh    # Installation script for Claude Code, Codex, and Pi
 └── README.md            # This file
@@ -19,12 +19,12 @@ agents/
 
 ## Skills
 
-The skills in this directory are based on [obra/superpowers](https://github.com/obra/superpowers), modified to remove git worktree dependencies. These skills provide structured workflows for:
+This directory contains four standalone skills:
 
-- **Testing**: Test-driven development, verification patterns
-- **Debugging**: Systematic debugging, root cause analysis
-- **Collaboration**: Brainstorming, code reviews, planning
-- **Meta**: Writing new skills, documentation
+- **fetch-ci-build**: Fetch and diagnose GitHub Actions, Buildkite, and CircleCI failures
+- **nano-banana-pro**: Generate and edit images with Gemini 3.1 Flash Image
+- **semantic-commit**: Create commits that follow the Conventional Commits specification
+- **sentry-issue**: Investigate Sentry issues with `sentry-cli` and the Sentry API
 
 ## Installation
 
@@ -95,7 +95,7 @@ Global instructions are synced to `~/.codex/AGENTS.md`.
 After installation:
 1. Start a new Pi session
 2. Skills are discovered automatically at startup
-3. Use `/skill:name` to invoke a specific skill (e.g., `/skill:systematic-debugging`)
+3. Use `/skill:name` to invoke a specific skill (e.g., `/skill:fetch-ci-build`)
 4. Use prompt templates by typing `/template-name` (e.g., `/dummy`)
 5. Pi shows available skills when relevant to your task
 6. Global instructions are synced to `~/.pi/agent/AGENTS.md`
@@ -106,14 +106,3 @@ To update skills after making changes:
 
 **If using symlinks**: Changes are automatically reflected
 **If using copy mode**: Re-run the installation script
-
-## Modifications
-
-This skills collection differs from the original superpowers repository:
-- Removed `using-git-worktrees` skill
-- Removed all references to git worktrees from other skills
-- Streamlined workflow to work with standard git branches
-
-## Credits
-
-Skills based on [Superpowers](https://github.com/obra/superpowers) by Jesse Vincent.

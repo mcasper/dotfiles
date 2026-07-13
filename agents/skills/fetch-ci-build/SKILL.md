@@ -57,7 +57,7 @@ digraph workflow {
     ask [label="7. Ask: Apply fix?" shape=diamond];
     apply [label="Apply the fix"];
     complex [label="Complex failure?" shape=diamond];
-    debug [label="Use systematic-debugging skill"];
+    debug [label="Investigate root cause"];
     next [label="Next failure?" shape=diamond];
     done [label="Done"];
     
@@ -116,11 +116,11 @@ Ask how to proceed:
 - "Apply the suggested fix"
 - "Investigate further before fixing"
 - "Skip this failure"
-- "Use systematic-debugging for deeper investigation"
+- "Investigate the root cause"
 
 ### 7. Complex Failures
 
-If the failure requires deeper investigation (e.g., unclear root cause, flaky test, environmental issue), recommend the `systematic-debugging` skill.
+If the failure requires deeper investigation (e.g., unclear root cause, flaky test, environmental issue), trace it to the originating condition before proposing a fix.
 
 ## Error Types Detected
 
@@ -139,9 +139,3 @@ If the failure requires deeper investigation (e.g., unclear root cause, flaky te
 | Missing credentials | Check provider reference for required env vars/auth |
 | Build still running | Wait for completion or check partial results |
 | Rate limiting | Wait and retry |
-
-## Integration with Other Skills
-
-- **systematic-debugging**: Use for complex failures requiring root cause analysis
-- **test-driven-development**: After fixing, ensure tests follow TDD principles
-- **verification-before-completion**: Run tests locally before pushing fix
