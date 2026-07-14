@@ -326,25 +326,22 @@ require("lazy").setup({
 
 		-- Treesitter
 		{
-			"nvim-treesitter/nvim-treesitter",
-			run = ":TSUpdate",
-			event = "BufRead",
+			"romus204/tree-sitter-manager.nvim",
+			lazy = false,
 			config = function()
-				local configs = require("nvim-treesitter.configs")
+				local languages = {
+					"lua",
+					"javascript",
+					"html",
+					"css",
+					"typescript",
+					"tsx",
+					"ruby",
+				}
 
-				configs.setup({
-					ensure_installed = {
-						"lua",
-						"javascript",
-						"html",
-						"css",
-						"typescript",
-						"tsx",
-						"ruby",
-					},
-					sync_install = false,
-					highlight = { enable = true },
-					indent = { enable = true },
+				require("tree-sitter-manager").setup({
+					ensure_installed = languages,
+					highlight = languages,
 				})
 			end,
 		},
