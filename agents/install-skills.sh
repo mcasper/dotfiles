@@ -173,6 +173,24 @@ install_instruction_file() {
     fi
 }
 
+remove_stale_skill_links() {
+    local target_dir="$1"
+    local target_path
+    local source_path
+
+    [[ -d "${target_dir}" ]] || return
+
+    for target_path in "${target_dir}"/*; do
+        [[ -L "${target_path}" ]] || continue
+        source_path=$(readlink "${target_path}")
+
+        if [[ "${source_path}" == "${SKILLS_SOURCE}/"* ]] && [[ ! -d "${source_path}" ]]; then
+            rm "${target_path}"
+            echo -e "  ${YELLOW}✓${NC} Removed stale skill link: $(basename "${target_path}")"
+        fi
+    done
+}
+
 install_to_claude() {
     echo -e "${BLUE}Installing to Claude Code...${NC}"
 
@@ -180,6 +198,7 @@ install_to_claude() {
     if [[ "${INSTALL_SKILLS}" == true ]]; then
         # Create skills directory
         mkdir -p "${CLAUDE_DIR}"
+        remove_stale_skill_links "${CLAUDE_DIR}"
 
         for skill_dir in "${SKILLS_SOURCE}"/*; do
             if [[ -d "${skill_dir}" ]]; then
@@ -220,6 +239,7 @@ install_to_codex() {
     if [[ "${INSTALL_SKILLS}" == true ]]; then
         # Create skills directory
         mkdir -p "${CODEX_DIR}"
+        remove_stale_skill_links "${CODEX_DIR}"
 
         for skill_dir in "${SKILLS_SOURCE}"/*; do
             if [[ -d "${skill_dir}" ]]; then
@@ -260,6 +280,7 @@ install_to_pi() {
     if [[ "${INSTALL_SKILLS}" == true ]]; then
         # Create skills directory
         mkdir -p "${PI_DIR}"
+        remove_stale_skill_links "${PI_DIR}"
 
         for skill_dir in "${SKILLS_SOURCE}"/*; do
             if [[ -d "${skill_dir}" ]]; then
