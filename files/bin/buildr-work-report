@@ -10,7 +10,6 @@ import fnmatch
 import json
 import os
 import pathlib
-import re
 import subprocess
 import sys
 from typing import Any
@@ -18,8 +17,10 @@ from typing import Any
 
 DEFAULT_ROOT = str(pathlib.Path.home() / "code" / "buildr")
 DEFAULT_PATTERN = "app*"
-AGENT_TOOLS = ("pi", "codex", "claude")
-AGENT_TOOL_RE = re.compile(rf"(?<![a-z0-9])({'|'.join(map(re.escape, AGENT_TOOLS))})(?![a-z0-9])", re.IGNORECASE)
+# Only count processes whose argv0 basename is the agent itself. Matching the
+# tool name anywhere in the command line false-positives on leftovers like
+# `zmx run bdev-pi-render-perf-...` or kit-worker suffixes containing `pi-`.
+AGENT_TOOLS = frozenset({"pi", "codex", "claude"})
 DEFAULT_JOBS = max(1, min(16, (os.cpu_count() or 4)))
 _GIT_ENV = {**os.environ, "GIT_OPTIONAL_LOCKS": "0"}
 
@@ -95,8 +96,17 @@ def collect_repo_status(repo: dict[str, Any]) -> None:
 
 
 def detect_tool_from_command(command: str) -> str | None:
-    match = AGENT_TOOL_RE.search(command)
-    return match.group(1).lower() if match else None
+    """Return the agent tool when this process *is* the agent binary.
+
+    Uses argv0 basename only (``pi``, ``/path/to/claude``). Does not scan the
+    rest of the command line, so wrapper/session names that merely mention an
+    agent tool are ignored.
+    """
+    if not command:
+        return None
+    argv0 = command.split(None, 1)[0]
+    base = os.path.basename(argv0).lower()
+    return base if base in AGENT_TOOLS else None
 
 
 def parse_ps_processes() -> list[dict[str, Any]]:
@@ -267,6 +277,33 @@ def build_report(root: pathlib.Path, repos_pattern: str, only_open: bool = False
     }
 
 
+def self_test() -> None:
+    cases = [
+        ("pi", "pi"),
+        ("pi --help", "pi"),
+        ("/home/mattcasper/.local/share/mise/installs/node/24.14.0/bin/pi", "pi"),
+        ("claude -p --model x", "claude"),
+        ("/usr/local/bin/claude", "claude"),
+        ("codex app-server --remote-control", "codex"),
+        ("/home/mattcasper/.codex/packages/standalone/current/codex app-server", "codex"),
+        # Wrappers / session names that previously false-positived:
+        ("zmx run bdev-pi-render-perf-20260727130721 -d bash -lc cd app4 && exec bdev dev", None),
+        ("zmx run bdev-pi-test-b133ccb -d bash -lc claude -p --model x", None),
+        ("bash -lc 'cd app4 && pi'", None),
+        ("/bin/bash -c buildr-work-report --format json", None),
+        ("rg pi codex claude", None),
+        ("python3 -m pi", None),
+        ("", None),
+    ]
+    failures: list[str] = []
+    for command, expected in cases:
+        got = detect_tool_from_command(command)
+        if got != expected:
+            failures.append(f"detect_tool_from_command({command!r}) == {got!r}, expected {expected!r}")
+    if failures:
+        raise AssertionError("self-test failed:\n" + "\n".join(failures))
+
+
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Report buildr repo status + active coding agents")
     parser.add_argument("--root", default=DEFAULT_ROOT, help="Root directory containing app repos")
@@ -275,11 +312,17 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--only-open", action="store_true", help="Only include open repos in repo listing")
     parser.add_argument("--verbose", action="store_true", help="Include extra diagnostics in table mode")
     parser.add_argument("--jobs", type=int, default=DEFAULT_JOBS, help=f"Concurrent git status jobs (default: {DEFAULT_JOBS})")
+    parser.add_argument("--self-test", action="store_true", help="Run detector unit checks and exit")
     return parser.parse_args(argv)
 
 
 def main(argv: list[str]) -> int:
     args = parse_args(argv)
+    if args.self_test:
+        self_test()
+        print("self-test ok")
+        return 0
+
     report = build_report(pathlib.Path(args.root), args.repos_pattern, only_open=args.only_open, jobs=args.jobs)
 
     if args.format == "json":
