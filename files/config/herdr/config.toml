@@ -1,0 +1,38 @@
+# herdr configuration
+# https://herdr.dev
+
+[keys]
+# Match tmux prefix
+prefix = "ctrl+a"
+
+# Match tmux: shift+arrow switches windows/tabs without prefix
+previous_tab = "shift+left"
+next_tab = "shift+right"
+
+# Shift+up/down switches workspaces/spaces
+previous_workspace = "shift+up"
+next_workspace = "shift+down"
+
+# Match tmux splits: v = side-by-side, s = stacked
+split_vertical = "prefix+v"
+split_horizontal = "prefix+s"
+
+# prefix+1..9 jumps to an agent (default is switch_tab)
+focus_agent = "prefix+1..9"
+switch_tab = ""
+
+# Built-in new workspace is prefix+shift+n. Replace it with the
+# buildr repo picker so the workspace is created in the chosen checkout.
+new_workspace = ""
+
+[[keys.command]]
+key = "prefix+shift+n"
+type = "popup"
+description = "pick buildr repo → new workspace"
+width = "90%"
+height = "80%"
+command = '''
+dir="$("$HOME/dotfiles/files/bin/buildr-work-selector")" || exit 0
+[ -n "$dir" ] || exit 0
+"${HERDR_BIN_PATH:-herdr}" workspace create --cwd "$dir" --label "$(basename "$dir")" --focus
+'''
