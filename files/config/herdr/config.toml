@@ -1,3 +1,4 @@
+onboarding = false
 # herdr configuration
 # https://herdr.dev
 
@@ -36,3 +37,6 @@ dir="$("$HOME/dotfiles/files/bin/buildr-work-selector")" || exit 0
 [ -n "$dir" ] || exit 0
 "${HERDR_BIN_PATH:-herdr}" workspace create --cwd "$dir" --label "$(basename "$dir")" --focus
 '''
+
+[ui]
+agent_panel_sort = "spaces"
