@@ -35,7 +35,7 @@ def _load_report_module():
 report_mod = _load_report_module()
 
 DEFAULT_ROOT = report_mod.DEFAULT_ROOT
-PATTERNS = ("app*", "forge*")
+PATTERNS = ("app*", "forge*", "bedrock*")
 DEFAULT_PATTERN = PATTERNS[0]
 STATE_FILE = (
     pathlib.Path(os.environ.get("XDG_STATE_HOME", pathlib.Path.home() / ".local" / "state"))
