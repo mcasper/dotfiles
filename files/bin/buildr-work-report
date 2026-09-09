@@ -41,6 +41,19 @@ def is_subpath(path: str, parent: str) -> bool:
         return False
 
 
+def make_repo_entry(path: pathlib.Path, name: str | None = None) -> dict[str, Any]:
+    return {
+        "name": name or path.name,
+        "path": str(path.resolve()),
+        "branch": None,
+        "status": "unknown",
+        "status_error": None,
+        "agents": [],
+        "agent_count": 0,
+        "open": False,
+    }
+
+
 def discover_repos(root: pathlib.Path, pattern: str) -> list[dict[str, Any]]:
     repos: list[dict[str, Any]] = []
     if not root.exists():
@@ -58,18 +71,48 @@ def discover_repos(root: pathlib.Path, pattern: str) -> list[dict[str, Any]]:
         if not (child / ".git").exists():
             continue
 
-        repos.append(
-            {
-                "name": child.name,
-                "path": str(child.resolve()),
-                "branch": None,
-                "status": "unknown",
-                "status_error": None,
-                "agents": [],
-                "agent_count": 0,
-                "open": False,
-            }
-        )
+        repos.append(make_repo_entry(child))
+    return repos
+
+
+def expand_path(raw: str) -> pathlib.Path:
+    return pathlib.Path(os.path.expanduser(os.path.expandvars(str(raw))))
+
+
+def repos_from_dirs(dirs: list[str]) -> list[dict[str, Any]]:
+    """Build repo entries from an explicit directory list (no globbing).
+
+    Unlike discover_repos these are hand-picked, so a missing .git is reported
+    as `no-git` rather than silently dropping the entry. Directories that do
+    not exist are skipped, which is what lets one shared config carry both
+    work and personal groups.
+    """
+    repos: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    paths: list[pathlib.Path] = []
+
+    for raw in dirs:
+        path = expand_path(raw)
+        if not path.is_dir():
+            continue
+        resolved = str(path.resolve())
+        if resolved in seen:
+            continue
+        seen.add(resolved)
+        paths.append(path)
+
+    # Hand-picked lists span parents (nac/app vs tuple/app), so bare basenames
+    # can collide. Names key the open/agent bookkeeping, so disambiguate them.
+    name_counts: dict[str, int] = {}
+    for path in paths:
+        name_counts[path.name] = name_counts.get(path.name, 0) + 1
+
+    for path in paths:
+        name = path.name if name_counts[path.name] == 1 else f"{path.parent.name}/{path.name}"
+        entry = make_repo_entry(path, name=name)
+        if not (path / ".git").exists():
+            entry["status"] = "no-git"
+        repos.append(entry)
     return repos
 
 
@@ -84,6 +127,9 @@ def parse_status_branch(header: str) -> str:
 
 def collect_repo_status(repo: dict[str, Any]) -> None:
     repo_path = repo["path"]
+    if repo["status"] == "no-git":
+        repo["branch"] = "-"
+        return
     try:
         # One git process gives us both the branch and dirty/clean state.
         porcelain = run_command(["git", "-C", repo_path, "status", "--porcelain=v1", "--branch"])
@@ -247,8 +293,15 @@ def render_table(repos: list[dict[str, Any]], open_repos: list[str], suggested_o
     return "\n".join(lines)
 
 
-def build_report(root: pathlib.Path, repos_pattern: str, only_open: bool = False, jobs: int = DEFAULT_JOBS) -> dict[str, Any]:
-    repos = discover_repos(root, repos_pattern)
+def build_report(
+    root: pathlib.Path,
+    repos_pattern: str,
+    only_open: bool = False,
+    jobs: int = DEFAULT_JOBS,
+    repos: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    if repos is None:
+        repos = discover_repos(root, repos_pattern)
 
     if repos:
         with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, min(jobs, len(repos)))) as executor:
