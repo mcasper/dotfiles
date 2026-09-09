@@ -1,0 +1,8 @@
+# Ghostty configuration
+#
+# Enable Ghostty's SSH compatibility helpers:
+# - ssh-terminfo: automatically installs xterm-ghostty terminfo on remote hosts
+# - ssh-env: falls back/converts SSH environment for better compatibility
+# See: ghostty +show-config --default --docs
+shell-integration-features = no-cursor,title,ssh-env,ssh-terminfo,path
+cursor-style = underline
