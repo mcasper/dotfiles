@@ -1,0 +1,47 @@
+# Example configuration for buildr-work-selector.
+#
+# Copy to ~/.config/buildr-work-selector/config.toml and edit. The real config
+# is deliberately NOT tracked in this repo: it names machine-specific
+# checkouts, so each machine keeps its own. With no config file at all the
+# selector falls back to its built-in groups (app*/forge*/bedrock*/outlook*
+# under ~/code/buildr).
+#
+# Each [[group]] is one tab; Tab cycles through them. A group draws repos from
+# either or both of:
+#
+#   root + pattern   glob discovery, e.g. root = "~/code/buildr", pattern = "app*"
+#   dirs             an explicit list of directories, no globbing
+#
+# Optional per-group `sort`:
+#   "natural"  app1, app2, app10 (default for pattern groups)
+#   "config"   keep the order written here (default for dirs-only groups)
+#
+# A group is hidden when it can't resolve on this machine -- a pattern group
+# whose root is missing, or a dirs group where none of the directories exist.
+# So a config may safely list groups for machines it isn't running on.
+#
+# Paths may use ~ and $VARS. A listed directory that isn't a git checkout is
+# shown with status `no-git` rather than silently dropped, which makes typos
+# visible. Directories that don't exist are skipped.
+
+# Glob discovery: every checkout under a root matching a pattern.
+[[group]]
+name = "app"
+root = "~/code/buildr"
+pattern = "app*"
+
+# Hand-picked repos, shown in the order written here.
+[[group]]
+name = "personal"
+dirs = [
+  "~/dotfiles",
+  "~/code/mcasper/some-project",
+]
+
+# Both: glob results followed by extra checkouts that don't match the pattern.
+[[group]]
+name = "mixed"
+root = "~/code/buildr"
+pattern = "forge*"
+dirs = ["~/code/oss/pi"]
+sort = "natural"

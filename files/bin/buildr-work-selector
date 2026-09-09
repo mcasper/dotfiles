@@ -4,19 +4,27 @@
 Usage (in .zshrc or tmux config):
     eval "$(buildr-work-selector)"
 
-Displays repos for the active configured pattern in a navigable list.
-Arrow keys to move, Tab to switch patterns, Enter to select, q/Esc to quit.
-On selection, prints the chosen repo path to stdout.
+Displays repos for the active group in a navigable list. Arrow keys to move,
+Tab to switch groups, Enter to select, q/Esc to quit. On selection, prints the
+chosen repo path to stdout.
+
+Groups come from ~/.config/buildr-work-selector/config.toml, which is
+machine-local and untracked -- see examples/buildr-work-selector.toml in the
+dotfiles repo for the format. Groups whose directories don't exist on this
+machine are hidden, so one config can name groups for machines it isn't running
+on. With no config file the built-in DEFAULT_GROUPS apply.
 """
 
 from __future__ import annotations
 
+import argparse
 import curses
 import importlib.machinery
 import os
 import pathlib
 import re
 import sys
+import tomllib
 from importlib.util import module_from_spec, spec_from_file_location
 
 # Re-use all the data collection from buildr-work-report
@@ -35,8 +43,22 @@ def _load_report_module():
 report_mod = _load_report_module()
 
 DEFAULT_ROOT = report_mod.DEFAULT_ROOT
-PATTERNS = ("app*", "forge*", "bedrock*", "outlook*")
-DEFAULT_PATTERN = PATTERNS[0]
+expand_path = report_mod.expand_path
+
+# Used only when no config file exists, so an un-migrated work machine keeps
+# its current behaviour.
+DEFAULT_GROUPS = [
+    {"name": pattern, "root": DEFAULT_ROOT, "pattern": pattern, "dirs": [], "sort": "natural"}
+    for pattern in ("app*", "forge*", "bedrock*", "outlook*")
+]
+CONFIG_FILE = pathlib.Path(
+    os.environ.get(
+        "BUILDR_WORK_SELECTOR_CONFIG",
+        pathlib.Path(os.environ.get("XDG_CONFIG_HOME", pathlib.Path.home() / ".config"))
+        / "buildr-work-selector"
+        / "config.toml",
+    )
+)
 STATE_FILE = (
     pathlib.Path(os.environ.get("XDG_STATE_HOME", pathlib.Path.home() / ".local" / "state"))
     / "buildr-work-selector"
@@ -44,48 +66,136 @@ STATE_FILE = (
 )
 
 
+class ConfigError(Exception):
+    pass
+
+
+def normalize_group(raw: object, index: int) -> dict:
+    if not isinstance(raw, dict):
+        raise ConfigError(f"group #{index + 1} must be a table")
+
+    root = raw.get("root", DEFAULT_ROOT)
+    pattern = raw.get("pattern")
+    dirs = raw.get("dirs", [])
+
+    if not isinstance(dirs, list) or not all(isinstance(d, str) for d in dirs):
+        raise ConfigError(f"group #{index + 1}: 'dirs' must be a list of strings")
+    if pattern is not None and not isinstance(pattern, str):
+        raise ConfigError(f"group #{index + 1}: 'pattern' must be a string")
+    if not pattern and not dirs:
+        raise ConfigError(f"group #{index + 1}: needs a 'pattern' or a 'dirs' list")
+
+    name = raw.get("name") or pattern or f"group{index + 1}"
+    if not isinstance(name, str):
+        raise ConfigError(f"group #{index + 1}: 'name' must be a string")
+
+    # Hand-picked lists are already in a meaningful order; globbed ones are not.
+    sort = raw.get("sort") or ("config" if dirs and not pattern else "natural")
+    if sort not in ("natural", "config"):
+        raise ConfigError(f"group '{name}': 'sort' must be 'natural' or 'config'")
+
+    return {"name": name, "root": str(root), "pattern": pattern, "dirs": dirs, "sort": sort}
+
+
+def load_groups(config_path: pathlib.Path) -> list[dict]:
+    try:
+        raw_text = config_path.read_bytes()
+    except FileNotFoundError:
+        return list(DEFAULT_GROUPS)
+    except OSError as exc:
+        raise ConfigError(f"could not read {config_path}: {exc}") from exc
+
+    try:
+        data = tomllib.loads(raw_text.decode("utf-8"))
+    except (tomllib.TOMLDecodeError, UnicodeDecodeError) as exc:
+        raise ConfigError(f"could not parse {config_path}: {exc}") from exc
+
+    raw_groups = data.get("group") or data.get("groups") or []
+    if not isinstance(raw_groups, list):
+        raise ConfigError(f"{config_path}: expected [[group]] entries")
+
+    groups = [normalize_group(raw, i) for i, raw in enumerate(raw_groups)]
+    if not groups:
+        raise ConfigError(f"{config_path}: no [[group]] entries defined")
+    return groups
+
+
+def group_is_available(group: dict) -> bool:
+    """True when this machine has anything the group could show.
+
+    This is what makes one config work on several machines: a group pointing at
+    a root or directories that aren't here is hidden rather than shown empty.
+    """
+    if group["pattern"] and expand_path(group["root"]).is_dir():
+        return True
+    return any(expand_path(d).is_dir() for d in group["dirs"])
+
+
+def resolve_groups(config_path: pathlib.Path) -> list[dict]:
+    groups = load_groups(config_path)
+    available = [group for group in groups if group_is_available(group)]
+    # Nothing matches this machine: keep every group so the TUI can still say so.
+    return available or groups
+
+
 def natural_repo_key(repo: dict) -> list[object]:
     return [int(chunk) if chunk.isdigit() else chunk.lower() for chunk in re.split(r"(\d+)", repo["name"])]
 
 
-def gather_repos(pattern: str) -> list[dict]:
-    """Build report and return repos for a single configured pattern."""
-    report = report_mod.build_report(pathlib.Path(DEFAULT_ROOT), pattern)
+def gather_repos(group: dict) -> list[dict]:
+    """Build report and return repos for a single group."""
+    root = expand_path(group["root"])
+
+    repos: list[dict] = []
+    if group["pattern"]:
+        repos.extend(report_mod.discover_repos(root, group["pattern"]))
+    if group["dirs"]:
+        repos.extend(report_mod.repos_from_dirs(group["dirs"]))
+
+    seen: set[str] = set()
+    deduped = [repo for repo in repos if not (repo["path"] in seen or seen.add(repo["path"]))]
+
+    report = report_mod.build_report(root, group["pattern"] or "", repos=deduped)
     repos = report["repos"]
-    repos.sort(key=natural_repo_key)
+    if group["sort"] == "natural":
+        repos.sort(key=natural_repo_key)
     return repos
 
 
-def load_last_pattern(state_path: pathlib.Path) -> str | None:
+def load_last_group(state_path: pathlib.Path) -> str | None:
     try:
-        pattern = state_path.read_text(encoding="utf-8").strip()
+        name = state_path.read_text(encoding="utf-8").strip()
     except FileNotFoundError:
         return None
     except OSError:
         return None
-    return pattern or None
+    return name or None
 
 
-def resolve_initial_pattern_index(state_path: pathlib.Path) -> int:
-    pattern = load_last_pattern(state_path)
-    if pattern in PATTERNS:
-        return PATTERNS.index(pattern)
+def resolve_initial_group_index(state_path: pathlib.Path, groups: list[dict]) -> int:
+    name = load_last_group(state_path)
+    if not name:
+        return 0
+    for index, group in enumerate(groups):
+        # Match on pattern too, so state written by the pre-config version still works.
+        if name in (group["name"], group["pattern"]):
+            return index
     return 0
 
 
-def save_last_pattern(state_path: pathlib.Path, pattern_index: int) -> None:
+def save_last_group(state_path: pathlib.Path, groups: list[dict], group_index: int) -> None:
     try:
         state_path.parent.mkdir(parents=True, exist_ok=True)
-        state_path.write_text(f"{PATTERNS[pattern_index]}\n", encoding="utf-8")
+        state_path.write_text(f"{groups[group_index]['name']}\n", encoding="utf-8")
     except OSError:
         pass
 
 
-def cycle_pattern_index(pattern_index: int) -> int:
-    return (pattern_index + 1) % len(PATTERNS)
+def cycle_group_index(group_index: int, groups: list[dict]) -> int:
+    return (group_index + 1) % len(groups)
 
 
-def run_tui(initial_pattern_index: int, state_path: pathlib.Path) -> str | None:
+def run_tui(groups: list[dict], initial_group_index: int, state_path: pathlib.Path) -> str | None:
     """Run curses TUI, return selected repo path or None."""
 
     def _main(stdscr: curses.window) -> str | None:
@@ -100,16 +210,16 @@ def run_tui(initial_pattern_index: int, state_path: pathlib.Path) -> str | None:
         curses.init_pair(5, curses.COLOR_CYAN, -1)
         curses.init_pair(6, curses.COLOR_WHITE, -1)
 
-        pattern_index = initial_pattern_index
-        repos = gather_repos(PATTERNS[pattern_index])
+        group_index = initial_group_index
+        repos = gather_repos(groups[group_index])
         selected = 0
         scroll_offset = 0
 
-        def switch_pattern() -> None:
-            nonlocal pattern_index, repos, selected, scroll_offset
-            pattern_index = cycle_pattern_index(pattern_index)
-            save_last_pattern(state_path, pattern_index)
-            repos = gather_repos(PATTERNS[pattern_index])
+        def switch_group() -> None:
+            nonlocal group_index, repos, selected, scroll_offset
+            group_index = cycle_group_index(group_index, groups)
+            save_last_group(state_path, groups, group_index)
+            repos = gather_repos(groups[group_index])
             selected = 0
             scroll_offset = 0
 
@@ -120,7 +230,7 @@ def run_tui(initial_pattern_index: int, state_path: pathlib.Path) -> str | None:
             title = " buildr workspace selector "
             stdscr.addnstr(0, 0, title.center(max_x), max_x, curses.color_pair(5) | curses.A_BOLD)
 
-            help_text = f" pattern: {PATTERNS[pattern_index]}  |  ↑↓ navigate  ⇥ cycle patterns  ⏎ select  1-9 quick select  q quit "
+            help_text = f" group: {groups[group_index]['name']}  |  ↑↓ navigate  ⇥ cycle groups  ⏎ select  1-9 quick select  q quit "
             stdscr.addnstr(1, 0, help_text[:max_x].ljust(max_x), max_x, curses.color_pair(6))
 
             col_repo = 2
@@ -181,7 +291,7 @@ def run_tui(initial_pattern_index: int, state_path: pathlib.Path) -> str | None:
                     except curses.error:
                         pass
             else:
-                empty_message = f"No repos found for {PATTERNS[pattern_index]}. Press Tab to switch patterns."
+                empty_message = f"No repos found for {groups[group_index]['name']}. Press Tab to switch groups."
                 try:
                     stdscr.addnstr(list_start_y, 2, empty_message[: max_x - 4], max_x - 4, curses.color_pair(3))
                 except curses.error:
@@ -202,7 +312,7 @@ def run_tui(initial_pattern_index: int, state_path: pathlib.Path) -> str | None:
             if key == ord("q") or key == 27:
                 return None
             if key == 9:
-                switch_pattern()
+                switch_group()
                 continue
             if key == curses.KEY_UP or key == ord("k"):
                 selected = max(0, selected - 1)
@@ -222,8 +332,34 @@ def run_tui(initial_pattern_index: int, state_path: pathlib.Path) -> str | None:
     return curses.wrapper(_main)
 
 
-def main() -> int:
-    pattern_index = resolve_initial_pattern_index(STATE_FILE)
+def parse_args(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Pick a repo to work in")
+    parser.add_argument("--config", default=None, help=f"Config file (default: {CONFIG_FILE})")
+    parser.add_argument("--list", action="store_true", help="Print groups and their repos, then exit")
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str]) -> int:
+    args = parse_args(argv)
+    config_path = pathlib.Path(args.config) if args.config else CONFIG_FILE
+
+    try:
+        groups = resolve_groups(config_path)
+    except ConfigError as exc:
+        print(f"buildr-work-selector: {exc}", file=sys.stderr)
+        return 2
+
+    if args.list:
+        print(f"config: {config_path if config_path.exists() else str(config_path) + ' (absent, using defaults)'}")
+        for group in groups:
+            repos = gather_repos(group)
+            source = group["pattern"] or f"{len(group['dirs'])} dirs"
+            print(f"\n{group['name']} ({source}) - {len(repos)} repos")
+            for repo in repos:
+                print(f"  {repo['name']:<24}{repo.get('branch') or '-':<24}{repo['status']}")
+        return 0
+
+    group_index = resolve_initial_group_index(STATE_FILE, groups)
 
     saved_stdout_fd = os.dup(1)
     tty_fd = os.open("/dev/tty", os.O_WRONLY)
@@ -231,7 +367,7 @@ def main() -> int:
     os.close(tty_fd)
 
     try:
-        selected_path = run_tui(pattern_index, STATE_FILE)
+        selected_path = run_tui(groups, group_index, STATE_FILE)
     finally:
         os.dup2(saved_stdout_fd, 1)
         os.close(saved_stdout_fd)
@@ -243,4 +379,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))
