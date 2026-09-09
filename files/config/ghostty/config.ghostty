@@ -6,3 +6,8 @@
 # See: ghostty +show-config --default --docs
 shell-integration-features = no-cursor,title,ssh-env,ssh-terminfo,path
 cursor-style = underline
+
+# iTerm-style copy on select. The default (`true`) prefers the selection
+# clipboard, which macOS apps can't read; `clipboard` copies to the system
+# pasteboard as well, so Cmd+V elsewhere gets the selection.
+copy-on-select = clipboard
