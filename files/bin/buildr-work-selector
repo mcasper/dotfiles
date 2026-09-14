@@ -49,7 +49,7 @@ expand_path = report_mod.expand_path
 # its current behaviour.
 DEFAULT_GROUPS = [
     {"name": pattern, "root": DEFAULT_ROOT, "pattern": pattern, "dirs": [], "sort": "natural"}
-    for pattern in ("app*", "forge*", "bedrock*", "outlook*")
+    for pattern in ("app*", "bedrock*", "outlook*")
 ]
 CONFIG_FILE = pathlib.Path(
     os.environ.get(

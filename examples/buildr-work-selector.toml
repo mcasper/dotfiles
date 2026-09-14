@@ -3,7 +3,7 @@
 # Copy to ~/.config/buildr-work-selector/config.toml and edit. The real config
 # is deliberately NOT tracked in this repo: it names machine-specific
 # checkouts, so each machine keeps its own. With no config file at all the
-# selector falls back to its built-in groups (app*/forge*/bedrock*/outlook*
+# selector falls back to its built-in groups (app*/bedrock*/outlook*
 # under ~/code/buildr).
 #
 # Each [[group]] is one tab; Tab cycles through them. A group draws repos from
@@ -42,6 +42,6 @@ dirs = [
 [[group]]
 name = "mixed"
 root = "~/code/buildr"
-pattern = "forge*"
+pattern = "bedrock*"
 dirs = ["~/code/oss/pi"]
 sort = "natural"
