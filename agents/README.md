@@ -10,7 +10,6 @@ agents/
 ├── skills/              # Skill definitions for coding agents
 │   ├── fetch-ci-build/
 │   ├── nano-banana-pro/
-│   ├── semantic-commit/
 │   └── sentry-issue/
 ├── prompts/             # Pi prompt templates
 ├── install-skills.sh    # Installation script for Claude Code, Codex, and Pi
@@ -19,11 +18,10 @@ agents/
 
 ## Skills
 
-This directory contains four standalone skills:
+This directory contains three standalone skills:
 
 - **fetch-ci-build**: Fetch and diagnose GitHub Actions, Buildkite, and CircleCI failures
 - **nano-banana-pro**: Generate and edit images with Gemini 3.1 Flash Image
-- **semantic-commit**: Create commits that follow the Conventional Commits specification
 - **sentry-issue**: Investigate Sentry issues with `sentry-cli` and the Sentry API
 
 ## Installation
